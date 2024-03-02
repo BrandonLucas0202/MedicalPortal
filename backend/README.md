@@ -15,4 +15,10 @@ Execute in the `/backend` folder
 flask --app index run
 ```
 ## TODO
-- Switch project to use python envirnments (once we need to share the project to other teams)
+- Setup authentication system
+- Setup user objects (Patient, Doctor, Nurse, etc)
+- Setup database connection
+- Setup database objects/models (Im assuming most will also go under user objects)
+- Layout API endpoints and functionality (modules)
+- Implement modules
+- Switch project to use python environments (once we need to share the project to other teams)
