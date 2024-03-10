@@ -37,3 +37,7 @@ class PatientAccountDatabase:
         query = "DELETE FROM Pharmacy WHERE pharmacyID = %s"
         self.cursor.execute(query, (pharmacyID,))
         self.connection.commit()
+
+    def close(self):
+        self.cursor.close()
+        self.connection.close()
