@@ -16,7 +16,6 @@ flask --app index run
 ```
 ## TODO
 - Setup authentication system
-- Setup user objects (Patient, Doctor, Nurse, etc)
 - Setup database connection
 - Setup database objects/models (Im assuming most will also go under user objects)
 - Layout API endpoints and functionality (modules)
