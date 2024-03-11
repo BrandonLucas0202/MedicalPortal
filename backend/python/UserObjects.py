@@ -175,11 +175,18 @@ class Fee:
         self.amount = amount
 
 class BillFee:
-    def __init__(self, billID, feeID):
+    def __init__(self, billID, feeID, insuranceID):
         self.billID = billID
         self.feeID = feeID
+        self.insuranceID = insuranceID
 
-
+class AppointmentSummary:
+    def _int_(self, appointmentSummaryID, doctorAccountID, appointmentID, pactientID):
+        self.appointmentSummaryID = appointmentSummaryID
+        self.doctorAccountID = doctorAccountID
+        self.appointmentID = appointmentsID
+        self.pactientID = pactientID
+        
 # Example usage
 if __name__ == "__main__":
     # Replace these values with your MySQL server credentials
