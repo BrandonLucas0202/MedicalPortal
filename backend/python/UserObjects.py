@@ -181,11 +181,11 @@ class BillFee:
         self.insuranceID = insuranceID
 
 class AppointmentSummary:
-    def _int_(self, appointmentSummaryID, doctorAccountID, appointmentID, pactientID):
+    def _int_(self, appointmentSummaryID, doctorAccountID, appointmentID, patientID):
         self.appointmentSummaryID = appointmentSummaryID
         self.doctorAccountID = doctorAccountID
         self.appointmentID = appointmentsID
-        self.pactientID = pactientID
+        self.patientID = patientID
         
 # Example usage
 if __name__ == "__main__":
