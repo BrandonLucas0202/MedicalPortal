@@ -10,9 +10,9 @@ pip install flask
 ```
 
 # Running App
-Execute in the `/backend` folder
+Execute in the `/backend/python` folder
 ```
-flask --app index run
+flask --app backend run
 ```
 ## TODO
 - Setup authentication system
