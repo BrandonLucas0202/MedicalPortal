@@ -187,7 +187,7 @@ class AppointmentSummary:
         self.appointmentID = appointmentsID
         self.patientID = patientID
 
-class MessageReminder
+class MessageReminder:
     def _int_(self, messageReminderID, messageID, reminderID):
         self.messageReminderID = messageReminderID
         self.messageID = messageID
