@@ -57,11 +57,13 @@ CREATE TABLE Pharmacy (
 -- StaffAccount table
 CREATE TABLE StaffAccount (
   staffAccountID VARCHAR(36) NOT NULL,
-  role ENUM('Nurse', 'Doctor', 'SysAdmin','Clinical Staff' ),
+  role VARCHAR(20) NOT NULL,
   accountID VARCHAR(36),
   PRIMARY KEY (staffAccountID),
-  FOREIGN KEY (accountID) REFERENCES Account(accountID)
+  FOREIGN KEY (accountID) REFERENCES Account(accountID),
+  CHECK (role IN ('Nurse', 'Doctor', 'SysAdmin', 'Clinical Staff'))
 );
+
 
 -- Account table
 CREATE TABLE Account (
@@ -116,11 +118,13 @@ CREATE TABLE SysAdmin (
 -- Test table
 CREATE TABLE Test (
   testID VARCHAR(36) NOT NULL,
-  type ENUM('BloodTest', 'XRay', 'MRI', 'Other'), -- Assuming types of tests
+  type VARCHAR(20) NOT NULL,
   date DATE,
   labID VARCHAR(36),
-  PRIMARY KEY (testID)
+  PRIMARY KEY (testID),
+  CHECK (type IN ('BloodTest', 'XRay', 'MRI', 'Other'))
 );
+
 
 -- TestResult table
 CREATE TABLE TestResult (
@@ -150,15 +154,17 @@ CREATE TABLE Calendar (
 -- Appointment table
 CREATE TABLE Appointment (
   appointmentID VARCHAR(36) NOT NULL,
-  type ENUM('Consultation', 'FollowUp', 'Emergency'), -- Assuming types of appointments
+  type VARCHAR(20) NOT NULL,
   date DATE,
   time TIME,
   patientAccountID VARCHAR(36),
   doctorAccountID VARCHAR(36),
   PRIMARY KEY (appointmentID),
   FOREIGN KEY (patientAccountID) REFERENCES PatientAccount(accountID),
-  FOREIGN KEY (doctorAccountID) REFERENCES StaffAccount(staffAccountID)
+  FOREIGN KEY (doctorAccountID) REFERENCES StaffAccount(staffAccountID),
+  CHECK (type IN ('Consultation', 'FollowUp', 'Emergency'))
 );
+
 
 -- Bill table
 CREATE TABLE Bill (
