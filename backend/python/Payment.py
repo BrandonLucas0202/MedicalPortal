@@ -10,8 +10,6 @@ class PatientAccountDatabase:
         )
         self.cursor = self.connection.cursor()
 
-    # Other methods...
-
     # CRUD operations for Payment
     def add_payment(self, payment):
         query = "INSERT INTO Payment (paymentID, billID, amount, date) VALUES (%s, %s, %s, %s)"
