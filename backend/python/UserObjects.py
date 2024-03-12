@@ -186,6 +186,12 @@ class AppointmentSummary:
         self.doctorAccountID = doctorAccountID
         self.appointmentID = appointmentsID
         self.patientID = patientID
+
+class MessageReminder
+    def _int_(self, messageReminderID, messageID, reminderID):
+        self.messageReminderID = messageReminderID
+        self.messageID = messageID
+        self.reminderID = reminderID
         
 # Example usage
 if __name__ == "__main__":
