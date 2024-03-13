@@ -16,7 +16,6 @@ flask --app backend run
 ```
 ## TODO
 - Setup authentication system
-- Setup database connection
 - Setup database objects/models that could be outside of user objects 
 - Layout API endpoints and functionality (modules)
 - Implement modules
@@ -25,3 +24,4 @@ flask --app backend run
 ## DONE 
 - Setup user objects
 - setup database objects/ models (same as user objects)
+- setup database connection
