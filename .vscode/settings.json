@@ -12,7 +12,7 @@
             "name": "MedPortalDB",
             "username": "root",
             "database": "MedPortal",
-            "askForPassword": true
+            "askForPassword": false
         }
     ]
 }
