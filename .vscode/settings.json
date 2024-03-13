@@ -6,11 +6,11 @@
                 "enableSsl": "Disabled"
             },
             "previewLimit": 50,
-            "server": "localhost",
+            "server": "15.204.226.232",
             "port": 3306,
             "driver": "MySQL",
             "name": "MedPortalDB",
-            "username": "root",
+            "username": "student",
             "database": "MedPortal",
             "askForPassword": false
         }
