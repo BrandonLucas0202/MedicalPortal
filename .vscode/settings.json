@@ -6,7 +6,7 @@
                 "enableSsl": "Disabled"
             },
             "previewLimit": 50,
-            "server": "localhost",
+            "server": "127.0.0.1",
             "port": 3306,
             "driver": "MySQL",
             "name": "MedPortalDB",
