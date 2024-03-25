@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>HCMS Admin - Create Appointment</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar, Topbar omitted for brevity -->
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <div class="container-fluid">
+                    <h1 class="h3 mb-2 text-gray-800">Create Appointment</h1>
+                    
+                    <!-- Form for appointment creation -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Appointment Details</h6>
+                        </div>
+                        <div class="card-body">
+                            <form id="appointmentForm">
+                                <div class="form-group">
+                                    <label for="patientName">Patient Name</label>
+                                    <input type="text" class="form-control" id="patientName" placeholder="Enter patient name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="appointmentDate">Date</label>
+                                    <input type="date" class="form-control" id="appointmentDate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="appointmentTime">Time</label>
+                                    <input type="time" class="form-control" id="appointmentTime">
+                                </div>
+                                <div class="form-group">
+                                    <label for="doctorSelect">Select Doctor</label>
+                                    <select class="form-control" id="doctorSelect">
+                                        <option>Dr. Smith</option>
+                                        <option>Dr. Johnson</option>
+                                        <option>Dr. Williams</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="createAppointment()">Create Appointment</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation Modal -->
+                    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Appointment</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Patient Name: <span id="confirmPatientName"></span></p>
+                                    <p>Date: <span id="confirmAppointmentDate"></span></p>
+                                    <p>Time: <span id="confirmAppointmentTime"></span></p>
+                                    <p>Doctor: <span id="confirmDoctorSelect"></span></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button>
+                                    <button type="button" class="btn btn-primary" onclick="submitAppointment()">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer omitted for brevity -->
+        </div>
+    </div>
+
+
+    <script>
+        function createAppointment() {
+            const patientName = document.getElementById('patientName').value;
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+            const doctorSelect = document.getElementById('doctorSelect').value;
+
+            document.getElementById('confirmPatientName').textContent = patientName;
+            document.getElementById('confirmAppointmentDate').textContent = appointmentDate;
+            document.getElementById('confirmAppointmentTime').textContent = appointmentTime;
+            document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
+
+            $('#confirmationModal').modal('show');
+        }
+
+        function submitAppointment() {
+            // Logic to handle the form submission
+            alert('Appointment confirmed');
+            $('#confirmationModal').modal('hide');
+        }
+    </script>
+</body>
+</html>
