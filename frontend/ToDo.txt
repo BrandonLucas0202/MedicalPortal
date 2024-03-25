@@ -1,0 +1,7 @@
+1. Make these 2 Use Cases work:
+- Admin: create user
+- Admin: Check prescription status
+- Create appointment
+
+2. 
+
