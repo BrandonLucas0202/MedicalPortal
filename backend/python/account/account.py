@@ -6,15 +6,34 @@ Medical Portal
 
 
 """
-from permission import AccountPermission
+from auth.permission import Permission
 
-class LiteAccount():
-    """
-    As the name suggests, it is a "lite" version of an account.
-    Only stores the account's ID and its permissions, since
-    that is really all we will need for querying.
-    """
 
-    def __init__(self, id: str, permissions: list[AccountPermission]) -> None:
+class Account():
+
+    def __init__(self, id: str, permissions: list[Permission]) -> None:
         self.__id = id
         self.__permissions = permissions
+
+class PatientAccount(Account):
+
+    def __init__(self, id: str) -> None:
+        Account.__init__(self, id, [
+            # All permissions would go here
+        ])
+
+
+class StaffAccount(Account):
+
+    def __init__(self, id: str) -> None:
+        Account.__init__(self, id, [
+            # All permissions would go here
+        ])
+
+
+class AdminAccount(Account):
+
+    def __init__(self, id: str) -> None:
+        Account.__init__(self, id, [
+            Permission.ADMINISTRATOR
+        ])

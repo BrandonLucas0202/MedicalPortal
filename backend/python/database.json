@@ -1,0 +1,8 @@
+{
+    "user": "student",
+    "password": "goherd",
+    "host": "15.204.226.232",
+    "port": 3306,
+    "database": "MedPortal",
+    "raise_on_warnings": true
+}
