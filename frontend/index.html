@@ -218,7 +218,7 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i>
                                 <!-- Counter - Messages -->
-                                <span class="badge badge-danger badge-counter">7</span>
+                                <span class="badge badge-danger badge-counter">1</span>
                             </a>
                             <!-- Dropdown - Messages -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -280,13 +280,12 @@
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                        <!-- Topbar Navbar -->
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                            <a class="nav-link" href="profile.html">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Mr.Test</span>
+                            <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -302,8 +301,10 @@
                                 </a>
                             </div>
                         </li>
+                </ul>
 
-                    </ul>
+                           
+
 
                 </nav>
                 <!-- End of Topbar -->
@@ -318,9 +319,7 @@
                             <a href="createAppointment.html" class="d-inline-block btn btn-sm btn-success shadow-sm mr-2">
                                 <i class="fas fa-calendar-plus fa-sm text-white-50"></i> Create Appointment
                             </a>
-                            <a href="#" class="d-inline-block btn btn-sm btn-primary shadow-sm">
-                                <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
-                            </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -365,22 +364,26 @@
             </a>
         </div>
 
-        <!-- Tasks Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <a href="myappointments.html" class="card border-left-info shadow h-100 py-2 text-decoration-none">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Appointments</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">March 29 12:00pm</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                        </div>
+       <!-- Tasks Card Example -->
+<div class="col-xl-3 col-md-6 mb-4">
+    <a href="myappointments.html" class="card border-left-info shadow h-100 py-2 text-decoration-none appointments-card">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Appointments</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <span class="date">No Appointments</span>
+                        <span class="time"></span>
                     </div>
                 </div>
-            </a>
+                <div class="col-auto">
+                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                </div>
+            </div>
         </div>
+    </a>
+</div>
+
 
         <!-- Messages Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
@@ -389,7 +392,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Messages</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">7</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">1</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -460,6 +463,33 @@
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Assuming appointment data is stored as an array of objects in localStorage
+            let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
+            if (appointments.length > 0) {
+                // Get the last appointment
+                let lastAppointment = appointments[appointments.length - 1];
+    
+                // Convert 24-hour time to 12-hour format if necessary
+                let timeParts = lastAppointment.appointmentTime.split(':');
+                let hours = timeParts[0];
+                let minutes = timeParts[1];
+                let ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                let formattedTime = hours + ':' + minutes + ' ' + ampm;
+    
+                // Update the appointments card with the date and time of the last appointment
+                $('.appointments-card .date').text(lastAppointment.appointmentDate);
+                $('.appointments-card .time').text(formattedTime);
+            }
+        });
+    </script>
+    <script>
+       // localStorage.clear();
+    </script>
+    
 
 </body>
 

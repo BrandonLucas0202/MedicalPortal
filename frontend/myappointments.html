@@ -66,13 +66,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>2023-03-25</td>
-                                                    <td>10:00 AM</td>
-                                                    <td>John Doe</td>
-                                                    <td>Dr. Smith</td>
-                                                    <td>Scheduled</td>
-                                                </tr>
+                                            
                                                 <!-- More rows can be added here -->
                                             </tbody>
                                         </table>
@@ -104,8 +98,29 @@
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <!-- Page level custom scripts -->
     <script>
+          function convertTo12Hour(time) {
+        const [hour, minute] = time.split(':');
+        const hourInt = parseInt(hour, 10);
+        const ampm = hourInt >= 12 ? 'PM' : 'AM';
+        const convertedHour = hourInt % 12 || 12;
+
+        return `${convertedHour}:${minute} ${ampm}`;
+    }
         $(document).ready(function() {
             $('#dataTable').DataTable();
+            
+            let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
+            let table = $('#dataTable').DataTable();
+
+            appointments.forEach(function(appointment) {
+            table.row.add([
+                appointment.appointmentDate,
+                convertTo12Hour(appointment.appointmentTime),
+                appointment.patientName,
+                appointment.doctorSelect,
+                'Scheduled'
+            ]).draw(false);
+            });
         });
     </script>
 </body>
