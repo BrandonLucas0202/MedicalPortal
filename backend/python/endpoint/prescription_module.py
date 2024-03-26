@@ -4,7 +4,7 @@ CS-310
 Software Engineering II 
 Medical Portal
 
-Test endpoint module that handles:
+Prescription endpoint module that handles:
 - Creation
 - Updating
 - Viewing
@@ -61,6 +61,8 @@ def prescriptions_view():
             "pharmacyID": pharmacyID,
             "patientAccountID": patientAccountID
         })
+    cursor.close()
+    connection.close()
 
     return result
 
@@ -100,6 +102,7 @@ def prescription_create():
         cursor: MySQLCursor = connection.cursor()
         cursor.execute(insert, values)
         cursor.close()
+    connection.commit()
     connection.close()
 
     return {

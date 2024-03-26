@@ -4,7 +4,7 @@ CS-310
 Software Engineering II 
 Medical Portal
 
-Test endpoint module that handles:
+Bill endpoint module that handles:
 - Creation
 - Updating
 - Viewing
@@ -13,7 +13,7 @@ from app_provider import app_instance
 from auth.permission import Permission
 from random import choices
 from string import digits, ascii_uppercase
-from UserO.AllObjects import Prescription
+from UserO.AllObjects import Bill
 from mysql.connector.cursor import MySQLCursor
 import endpoint.utility as util
 
@@ -23,8 +23,8 @@ __auth = __app.getAuthenticator() # Authenticator
 __flask = __app.getFlask() # Flask
 
 
-@__flask.route("/prescription/view", methods=["GET"])
-def prescriptions_view():
+@__flask.route("/bill/view", methods=["GET"])
+def bill_view():
     try:
         token = util.getParameter(
             "token", 
@@ -37,36 +37,37 @@ def prescriptions_view():
         }
     
     accountID = util.getParameter("accountID")
-    if accountID != __auth.getAccount(token).getID() and not __auth.hasPermission(token, Permission.VIEW_PRESCRIPTIONS):
+    if accountID != __auth.getAccount(token).getID() and not __auth.hasPermission(token, Permission.VIEW_BILL):
         return {
             "status": 401,
-            "message": "You cannot view these prescriptions!"
+            "message": "You cannot view these bills!"
         }
 
     result = {
         "status": 201,
-        "prescriptions": []
+        "bills": []
     }
 
     connection = __database.connection()
     cursor: MySQLCursor = connection.cursor()
-    cursor.execute(Prescription.select(), [accountID])
-    for (prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID) in cursor:
-        result["prescriptions"].append({
-            "prescriptionID": prescriptionID,
-            "drug": drug,
-            "dosage": dosage,
-            "frequency": frequency,
-            "date": date,
-            "pharmacyID": pharmacyID,
+    cursor.execute(Bill.select(), [accountID])
+    for (billID, description, amount, dateIssued, dueDate, patientAccountID) in cursor:
+        result["bills"].append({
+            "billID": billID,
+            "description": description,
+            "amount": amount,
+            "dateIssued": dateIssued,
+            "dueDate": dueDate,
             "patientAccountID": patientAccountID
         })
+    cursor.close()
+    connection.close()
 
     return result
 
 
-@__flask.route("/prescription/create", methods=["GET"])
-def prescription_create():
+@__flask.route("/bill/create", methods=["GET"])
+def bill_create():
     try:
         token = util.getParameter(
             "token", 
@@ -78,31 +79,31 @@ def prescription_create():
             "message": "Token is invalid!"
         }
     
-    prescriptionID = ''.join(choices(digits + ascii_uppercase, k=36))
-    drug = util.getParameter("drug")
-    dosage = util.getParameter("dosage")
-    frequency = util.getParameter("frequency")
-    date = util.getParameter("date")
-    pharmacyID = util.getParameter("pharmacyID")
+    billID = ''.join(choices(digits + ascii_uppercase, k=36))
+    description = util.getParameter("description")
+    amount = util.getParameter("amount")
+    dateIssued = util.getParameter("dateIssued")
+    dueDate = util.getParameter("dueDate")
     patientAccountID = util.getParameter("patientAccountID")
 
     # Must have permission
-    if not __auth.hasPermission(token, Permission.CREATE_PRESCRIPTION):
+    if not __auth.hasPermission(token, Permission.CREATE_BILL):
         return {
             "status": 401,
-            "message": "You cannot make prescriptions!"
+            "message": "You cannot make bills!"
         }
 
-    chart = Prescription(prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID)
+    chart = Bill(billID, description, amount, dateIssued, dueDate, patientAccountID)
 
     connection = __database.connection()
     for insert, values in chart.inserts():
         cursor: MySQLCursor = connection.cursor()
         cursor.execute(insert, values)
         cursor.close()
+    connection.commit()
     connection.close()
 
     return {
         "status": 201,
-        "prescriptionID": prescriptionID
+        "billID": billID
     }

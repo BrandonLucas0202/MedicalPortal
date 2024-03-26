@@ -4,7 +4,7 @@ CS-310
 Software Engineering II 
 Medical Portal
 
-Test endpoint module that handles:
+Reminder endpoint module that handles:
 - Creation
 - Updating
 - Viewing

@@ -4,7 +4,7 @@ CS-310
 Software Engineering II 
 Medical Portal
 
-Test endpoint module that handles:
+Lab endpoint module that handles:
 - Creation
 - Updating
 - Viewing
@@ -13,7 +13,7 @@ from app_provider import app_instance
 from auth.permission import Permission
 from random import choices
 from string import digits, ascii_uppercase
-from UserO.AllObjects import Prescription
+from UserO.AllObjects import Appointment
 from mysql.connector.cursor import MySQLCursor
 import endpoint.utility as util
 
@@ -23,8 +23,8 @@ __auth = __app.getAuthenticator() # Authenticator
 __flask = __app.getFlask() # Flask
 
 
-@__flask.route("/prescription/view", methods=["GET"])
-def prescriptions_view():
+@__flask.route("/appointment/view", methods=["GET"])
+def appointment_view():
     try:
         token = util.getParameter(
             "token", 
@@ -36,37 +36,36 @@ def prescriptions_view():
             "message": "Token is invalid!"
         }
     
-    accountID = util.getParameter("accountID")
-    if accountID != __auth.getAccount(token).getID() and not __auth.hasPermission(token, Permission.VIEW_PRESCRIPTIONS):
-        return {
-            "status": 401,
-            "message": "You cannot view these prescriptions!"
-        }
-
-    result = {
-        "status": 201,
-        "prescriptions": []
-    }
+    appointmentID = util.getParameter("appointmentID")
 
     connection = __database.connection()
     cursor: MySQLCursor = connection.cursor()
-    cursor.execute(Prescription.select(), [accountID])
-    for (prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID) in cursor:
-        result["prescriptions"].append({
-            "prescriptionID": prescriptionID,
-            "drug": drug,
-            "dosage": dosage,
-            "frequency": frequency,
+    cursor.execute(Appointment.select(), [appointmentID])
+    for (appointmentID, description, date, time, patientAccountID, doctorAccountID) in cursor:
+        result = {
+            "status": 201,
+            "appointmentID": appointmentID,
+            "description": description,
             "date": date,
-            "pharmacyID": pharmacyID,
-            "patientAccountID": patientAccountID
-        })
+            "time": time,
+            "patientAccountID": patientAccountID,
+            "doctorAccountID": doctorAccountID
+        }
+    cursor.close()
+    connection.close()
+
+    if not __auth.hasPermission(token, Permission.VIEW_APPOINTMENT):
+        return {
+            "status": 401,
+            "message": "You cannot view this appointment!"
+        }
 
     return result
 
 
-@__flask.route("/prescription/create", methods=["GET"])
-def prescription_create():
+
+@__flask.route("/appointment/create", methods=["GET"])
+def appointment_create():
     try:
         token = util.getParameter(
             "token", 
@@ -77,32 +76,32 @@ def prescription_create():
             "status": 401,
             "message": "Token is invalid!"
         }
-    
-    prescriptionID = ''.join(choices(digits + ascii_uppercase, k=36))
-    drug = util.getParameter("drug")
-    dosage = util.getParameter("dosage")
-    frequency = util.getParameter("frequency")
+
+    appointmentID = ''.join(choices(digits + ascii_uppercase, k=36))
+    description = util.getParameter("description")
     date = util.getParameter("date")
-    pharmacyID = util.getParameter("pharmacyID")
+    time = util.getParameter("time")
     patientAccountID = util.getParameter("patientAccountID")
+    doctorAccountID = util.getParameter("doctorAccountID")
 
     # Must have permission
-    if not __auth.hasPermission(token, Permission.CREATE_PRESCRIPTION):
+    if not __auth.hasPermission(token, Permission.CREATE_APPOINTMENT):
         return {
             "status": 401,
-            "message": "You cannot make prescriptions!"
+            "message": "You cannot make appointments!"
         }
 
-    chart = Prescription(prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID)
+    chart = Appointment(appointmentID, description, date, time, patientAccountID, doctorAccountID)
 
     connection = __database.connection()
     for insert, values in chart.inserts():
         cursor: MySQLCursor = connection.cursor()
         cursor.execute(insert, values)
         cursor.close()
+    connection.commit()
     connection.close()
 
     return {
         "status": 201,
-        "prescriptionID": prescriptionID
+        "appointmentID": appointmentID
     }

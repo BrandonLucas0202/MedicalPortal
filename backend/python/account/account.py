@@ -12,7 +12,7 @@ from UserO import AllObjects
 from mysql.connector.cursor import MySQLCursor
 
 
-class Account():
+class LiteAccount():
 
     def __init__(self, id: str, permissions: list[Permission]) -> None:
         self.__id = id
@@ -24,11 +24,14 @@ class Account():
     def getID(self) -> str:
         return self.__id
 
-class PatientAccount(Account):
+class LitePatientAccount(LiteAccount):
 
     def __init__(self, id: str) -> None:
-        Account.__init__(self, id, [
-            # All permissions would go here
+        LiteAccount.__init__(self, id, [
+            Permission.VIEW_PHARMACY,
+            Permission.VIEW_INSURANCE,
+            Permission.VIEW_LAB,
+            Permission.CREATE_PAYMENT
         ])
 
     def get(self, database: SQLConnection) -> AllObjects.PatientAccount:
@@ -38,8 +41,8 @@ class PatientAccount(Account):
 
         cursor.execute(AllObjects.PatientAccount.select(), self.__id)
 
-        for (accountID, email, phoneNumber, address, calendarID, inboxID, outboxID, age, ssn, chart, insurancePolicy, bills) in cursor:
-            account = AllObjects.PatientAccount(accountID, email, phoneNumber, address, calendarID, inboxID, outboxID, age, ssn, chart, insurancePolicy, bills)
+        for (accountID, email, phoneNumber, address, age, ssn, insurancePolicyID) in cursor:
+            account = AllObjects.PatientAccount(accountID, email, phoneNumber, address, age, ssn, insurancePolicyID)
             break
 
         cursor.close()
@@ -49,11 +52,25 @@ class PatientAccount(Account):
 
 
 
-class StaffAccount(Account):
+class LiteStaffAccount(LiteAccount):
 
     def __init__(self, id: str) -> None:
-        Account.__init__(self, id, [
-            # All permissions would go here
+        LiteAccount.__init__(self, id, [
+            Permission.MODIFY_PATIENTS,
+            Permission.VIEW_INSURANCE,
+            Permission.CREATE_INSURANCE,
+            Permission.VIEW_PHARMACY,
+            Permission.CREATE_PHARMACY,
+            Permission.CREATE_LAB,
+            Permission.VIEW_LAB,
+            Permission.CREATE_APPOINTMENT,
+            Permission.VIEW_APPOINTMENT,
+            Permission.CREATE_BILL,
+            Permission.VIEW_BILL,
+            Permission.CREATE_PAYMENT,
+            Permission.VIEW_PAYMENT,
+            Permission.CREATE_REMINDER,
+            Permission.VIEW_REMINDER
         ])
 
     def get(self, database: SQLConnection) -> AllObjects.StaffAccount:
@@ -63,8 +80,8 @@ class StaffAccount(Account):
 
         cursor.execute(AllObjects.StaffAccount.select(), self.__id)
 
-        for (staffAccountID, email, phoneNumber, address, calendarID, inboxID, outboxID, role, accountID) in cursor:
-            account = AllObjects.StaffAccount(staffAccountID, email, phoneNumber, address, calendarID, inboxID, outboxID, role, accountID)
+        for (staffAccountID, email, phoneNumber, address, role, accountID) in cursor:
+            account = AllObjects.StaffAccount(staffAccountID, email, phoneNumber, address, role, accountID)
             break
 
         cursor.close()
@@ -73,25 +90,44 @@ class StaffAccount(Account):
         return account
 
 
-class AdminAccount(StaffAccount):
+class LiteAdminAccount(LiteStaffAccount):
 
     def __init__(self, id: str) -> None:
-        Account.__init__(self, id, [
+        LiteAccount.__init__(self, id, [
             Permission.ADMINISTRATOR
         ])
     
 
-class NurseAccount(StaffAccount):
+class LiteNurseAccount(LiteStaffAccount):
 
     def __init__(self, id: str) -> None:
-        Account.__init__(self, id, [
-            # All permissions would go here
+        LiteAccount.__init__(self, id, [
+            Permission.VIEW_CHARTS,
+            Permission.CREATE_CHART,
+            Permission.VIEW_PRESCRIPTIONS,
+            Permission.VIEW_INSURANCE,
+            Permission.VIEW_PHARMACY,
+            Permission.VIEW_LAB,
+            Permission.CREATE_APPOINTMENT,
+            Permission.VIEW_APPOINTMENT,
+            Permission.CREATE_REMINDER,
+            Permission.VIEW_REMINDER
         ])
     
 
-class DoctorAccount(StaffAccount):
+class LiteDoctorAccount(LiteStaffAccount):
 
     def __init__(self, id: str) -> None:
-        Account.__init__(self, id, [
-            # All permissions would go here
+        LiteAccount.__init__(self, id, [
+            Permission.VIEW_CHARTS,
+            Permission.CREATE_CHART,
+            Permission.VIEW_PRESCRIPTIONS,
+            Permission.CREATE_PRESCRIPTION,
+            Permission.VIEW_INSURANCE,
+            Permission.VIEW_PHARMACY,
+            Permission.VIEW_LAB,
+            Permission.CREATE_APPOINTMENT,
+            Permission.VIEW_APPOINTMENT,
+            Permission.CREATE_REMINDER,
+            Permission.VIEW_REMINDER
         ])
