@@ -74,19 +74,20 @@
     <script src="js/sb-admin-2.min.js"></script>
 
     <!-- FullCalendar JS -->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.11/core/main.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.11/daygrid/main.min.js'></script>
+ <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.11/core/main.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.11/daygrid/main.min.js'></script> -->
+ <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.11/index.global.min.js'></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                plugins: ['dayGrid'],
-                initialView: 'dayGridMonth'
-            });
-            calendar.render();
-        });
-    </script>
+ <script>
+ document.addEventListener('DOMContentLoaded', function () {
+ var calendarEl = document.getElementById('calendar');
+ var calendar = new FullCalendar.Calendar(calendarEl, {
+ // plugins: ['dayGrid'],
+ initialView: 'dayGridMonth' 
+ });
+ calendar.render();
+ });
+ </script>
 
 </body>
 
