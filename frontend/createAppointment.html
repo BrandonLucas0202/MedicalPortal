@@ -10,6 +10,8 @@
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <!-- jQuery UI CSS -->
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
 </head>
 <body id="page-top">
     <div id="wrapper">
@@ -36,11 +38,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="appointmentDate">Date</label>
-                                <input type="date" class="form-control" id="appointmentDate">
+                                <input type="text" class="form-control" id="appointmentDate" placeholder="Select a date">
                             </div>
                             <div class="form-group">
                                 <label for="appointmentTime">Time</label>
-                                <input type="time" class="form-control" id="appointmentTime">
+                                <select class="form-control" id="appointmentTime">
+                                    <!-- Time options will be added dynamically -->
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="doctorSelect">Select Doctor</label>
@@ -86,17 +90,47 @@
     </div>
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery UI JavaScript -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-        var myAppointments = []; // Store appointments
+        $(document).ready(function() {
+    $("#appointmentDate").datepicker({
+        minDate: new Date(), // Disallows past dates
+        beforeShowDay: function(date) {
+            var day = date.getDay();
+            return [(day != 0 && day != 6)]; // Disable Sundays (0) and Saturdays (6)
+        },
+        onSelect: function(dateText, inst) {
+            populateTimes();
+        }
+    });
+    populateTimes(); // Populate times initially
+});
 
-        function convertTo12Hour(time) {
-    const [hour, minute] = time.split(':');
-    const hourInt = parseInt(hour, 10);
-    const ampm = hourInt >= 12 ? 'PM' : 'AM';
-    const convertedHour = hourInt % 12 || 12;
+function populateTimes() {
+    const startTime = 9; // Start time for appointments in hours (9 AM)
+    const endTime = 17; // End time for appointments in hours (5 PM)
+    const appointmentTime = document.getElementById('appointmentTime');
+    appointmentTime.innerHTML = '';
 
-    return `${convertedHour}:${minute} ${ampm}`;
+    for (let hour = startTime; hour <= endTime; hour++) {
+        // Example: grey out 1 PM and 2 PM
+        if (hour !== 13 && hour !== 14) {
+            const option = document.createElement('option');
+            const time = (hour < 10 ? '0' + hour : hour) + ':00';
+            option.value = time;
+            option.text = formatTime(hour);
+            appointmentTime.appendChild(option);
+        }
+    }
 }
+
+function formatTime(hour) {
+    const ampm = hour < 12 || hour === 24 ? 'AM' : 'PM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:00 ${ampm}`;
+}
+
 
         function createAppointment() {
             const patientName = document.getElementById('patientName').value;
@@ -112,7 +146,7 @@
 
             document.getElementById('confirmPatientName').textContent = patientName;
             document.getElementById('confirmAppointmentDate').textContent = appointmentDate;
-            document.getElementById('confirmAppointmentTime').textContent = convertTo12Hour(appointmentTime);
+            document.getElementById('confirmAppointmentTime').textContent = appointmentTime;
             document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
             document.getElementById('confirmVisitDescription').textContent = visitDescription;
 
