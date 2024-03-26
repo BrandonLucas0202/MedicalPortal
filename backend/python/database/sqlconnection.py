@@ -14,13 +14,13 @@ class SQLConnection():
 
     def __init__(self, config) -> None:
         # Save the configuration 
-        self.config = config
+        self.__config = config
         # Initialize the connection pool
-        self.pool = pooling.MySQLConnectionPool(pool_name = "mypool", pool_size = 5, **self.config)
+        self.__pool = pooling.MySQLConnectionPool(pool_name = "mypool", pool_size = 5, **self.__config)
         
 
     def connection(self):
         """Returns a connection from the pool"""
-        return self.pool.get_connection()
+        return self.__pool.get_connection()
     
     

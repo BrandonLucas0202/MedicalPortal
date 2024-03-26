@@ -18,6 +18,12 @@ class Account():
         self.__id = id
         self.__permissions = permissions
 
+    def getPermissions(self) -> list[Permission]:
+        return self.__permissions
+    
+    def getID(self) -> str:
+        return self.__id
+
 class PatientAccount(Account):
 
     def __init__(self, id: str) -> None:
