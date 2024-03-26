@@ -1,3 +1,11 @@
+"""
+Trevor Sharp
+CS-310
+Software Engineering II 
+Medical Portal
+
+All data objects
+"""
 class Account:
     def __init__(self, accountID, email, phoneNumber, address):
         self.accountID = accountID
@@ -12,13 +20,13 @@ class Account:
         query = "INSERT INTO Account (accountID, email, phoneNumber, address) VALUES (%s, %s, %s, %s)"
         values = (self.accountID, self.email, self.phoneNumber, self.address)
 
-        return [query.format(values)]
+        return (query,values)
 
     def updates(self) -> list[str]:
         query = "UPDATE Account SET email=%s, phoneNumber=%s, address=%s WHERE accountID=%s"
         values = (self.email, self.phoneNumber, self.address, self.accountID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
         return "SELECT accountID, email, phoneNumber, address FROM Account WHERE accountID = %s"
@@ -38,41 +46,45 @@ class InsurancePolicy:
         query = "INSERT INTO InsurancePolicy (insurancePolicyID, insuranceName, insurancePolicyNumber, copayAmount) VALUES (%s, %s, %s, %s)"
         values = (self.insurancePolicyID, self.insuranceName, self.insurancePolicyNumber, self.copayAmount)
 
-        return [query.format(values)]
+        return (query,values)
 
     def updates(self) -> list[str]:
         query = "UPDATE InsurancePolicy SET insuranceName=%s, insurancePolicyNumber=%s, copayAmount=%s WHERE insurancePolicyID=%s"
         values = (self.insuranceName, self.insurancePolicyNumber, self.copayAmount, self.insurancePolicyID)
         
-        return [query.format(values)]
+        return (query,values)
 
     def select() -> str:
         return "SELECT insurancePolicyID, insuranceName, insurancePolicyNumber, copayAmount FROM InsurancePolicy WHERE insurancePolicyID = %s"
 
 
 class PatientAccount(Account):
-    def __init__(self, patientAccountID, email, phoneNumber, address, age, ssn, insurancePolicy: InsurancePolicy):
+    def __init__(self, patientAccountID, email, phoneNumber, address, age, ssn, insurancePolicyID):
         Account.__init__(self, patientAccountID, email, phoneNumber, address)
         self.patientAccountID = patientAccountID
         self.age = age
         self.ssn = ssn
-        self.insurancePolicy = insurancePolicy
+        self.insurancePolicyID = insurancePolicyID
 
     def __str__(self) -> str:
         return self.accountID
 
     def inserts(self) -> list[str]:
         query = "INSERT INTO PatientAccount (patientAccountID, age, ssn, insurancePolicyID) VALUES (%s, %s, %s, %s)"
-        values = (self.patientAccountID, self.age, self.ssn, self.insurancePolicy)
+        values = (self.patientAccountID, self.age, self.ssn, self.insurancePolicyID)
         
-        return Account.inserts(self) + [query.format(values)]
+        otherQuery, otherValues = Account.inserts(self)
+
+        return ((otherQuery, otherValues), (query, values))
     
     def updates(self) -> list[str]:
         query = "UPDATE PatientAccount SET age=%s, ssn=%s, insurancePolicyID=%s WHERE patientAccountID=%s"
-        values = (self.age, self.ssn, self.insurancePolicy, self.patientAccountID)
+        values = (self.age, self.ssn, self.insurancePolicyID, self.patientAccountID)
 
-        return Account.inserts(self) + [query.format(values)]
-    
+        otherQuery, otherValues = Account.updates(self)
+
+        return ((otherQuery, otherValues), (query, values))
+
     def select() -> str:
         return "SELECT patientAccountID, email, phoneNumber, address, age, ssn, insurancePolicyID FROM PatientAccount INNER JOIN Account ON PatientAccount.patientAccountID = Account.accountID WHERE accountID=%s"
         
@@ -90,16 +102,20 @@ class StaffAccount(Account):
         query = "INSERT INTO StaffAccount (staffAccountID, role, accountID) VALUES (%s, %s, %s)"
         values = (self.staffAccountID, self.role, self.accountID)
 
-        return Account.inserts(self) + [query.format(values)]
+        otherQuery, otherValues = Account.inserts(self)
+
+        return ((otherQuery, otherValues), (query, values))
 
     def updates(self) -> list[str]:
         query = "UPDATE StaffAccount SET role=%s, accountID=%s WHERE staffAccountID=%s"
         values = (self.role, self.accountID, self.staffAccountID)
 
-        return Account.inserts(self) + [query.format(values)]
+        otherQuery, otherValues = Account.updates(self)
+
+        return ((otherQuery, otherValues), (query, values))
     
     def select() -> str:
-        return "SELECT staffAccountID, email, phoneNumber, address, calendarID, inboxID, outboxID, role, accountID FROM StaffAccount INNER JOIN Account ON StaffAccount.accountID = Account.accountID WHERE staffAccountID=%s"
+        return "SELECT staffAccountID, email, phoneNumber, address, role, accountID FROM StaffAccount INNER JOIN Account ON StaffAccount.accountID = Account.accountID WHERE staffAccountID=%s"
 
 
 class Chart:
@@ -121,16 +137,16 @@ class Chart:
         query = "INSERT INTO Chart (chartID, weight, height, bloodPressure, temperature, diagnoses, allergies, date, patientAccountID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         values = (self.chartID, self.weight, self.height, self.bloodPressure, self.temperature, self.diagnoses, self.allergies, self.date, self.patientAccountID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def updates(self) -> list[str]:
-        query = "UPDATE Chart SET weight=%s, height=%s, bloodPressure=%s, temperature=%s, diagnoses=%s, allergies=%s, date=%s, patientAccountID=%s WHERE chartID=%s"
+        query = "UPDATE Chart SET weight=%s, height=%s, bloodPressure=%s, temperature=%s, diagnoses=%s, allergies=%s, date=%s, patientAccountID=%s WHERE chartID=%sv"
         values = (self.weight, self.height, self.bloodPressure, self.temperature, self.diagnoses, self.allergies, self.date, self.patientAccountID, self.chartID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
-        return "SELECT chartID, weight, height, bloodPressure, temperature, diagnoses, allergies, date, patientAccountID FROM Chart WHERE chartID = %s"
+        return "SELECT chartID, weight, height, bloodPressure, temperature, diagnoses, allergies, date, patientAccountID FROM Chart WHERE patientAccountID = %s"
 
 
 class Prescription:
@@ -150,16 +166,16 @@ class Prescription:
         query = "INSERT INTO Prescription (prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         values = (self.prescriptionID, self.drug, self.dosage, self.frequency, self.date, self.pharmacyID, self.patientAccountID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def updates(self) -> list[str]:
         query = "UPDATE Prescription SET drug=%s, dosage=%s, frequency=%s, date=%s, pharmacyID=%s, patientAccountID=%s WHERE prescriptionID=%s"
         values = (self.drug, self.dosage, self.frequency, self.date, self.pharmacyID, self.patientAccountID, self.prescriptionID)
     
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
-        return "SELECT prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID FROM Prescription WHERE prescriptionID = %s"
+        return "SELECT prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID FROM Prescription WHERE patientAccountID = %s"
 
 
 class Pharmacy:
@@ -176,13 +192,13 @@ class Pharmacy:
         query = "INSERT INTO Pharmacy (pharmacyID, name, address, phoneNumber) VALUES (%s, %s, %s, %s)"
         values = (self.pharmacyID, self.name, self.address, self.phoneNumber)
 
-        return [query.format(values)]
+        return (query,values)
     
     def updates(self) -> list[str]:
         query = "UPDATE Pharmacy SET name=%s, address=%s, phoneNumber=%s WHERE pharmacyID=%s"
         values = (self.name, self.address, self.phoneNumber, self.pharmacyID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
         return "SELECT pharmacyID, name, address, phoneNumber FROM Pharmacy WHERE pharmacyID = %s"
@@ -203,13 +219,13 @@ class Test:
         query = "INSERT INTO Test (testID, description, date, labID, patientAccountID) VALUES (%s, %s, %s, %s, %s)"
         values = (self.testID, self.description, self.date, self.labID, self.patientAccountID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def updates(self) -> list[str]:
         query = "UPDATE Test SET description=%s, date=%s, labID=%s, patientAccountID=%s WHERE testID = %s"
         values = (self.description, self.date, self.labID, self.patientAccountID, self.testID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
         return "SELECT testID, description, date, labID, patientAccountID FROM Test WHERE testID = %s"
@@ -229,13 +245,13 @@ class TestResult:
         query = "INSERT INTO TestResult (testResultID, testID, date, result) VALUES (%s, %s, %s, %s)"
         values = (self.testResultID, self.testID, self.date, self.result)
 
-        return [query.format(values)]
+        return (query,values)
     
     def updates(self) -> list[str]:
         query = "UPDATE TestResult SET testID=%s, date=%s, result=%s WHERE testResultID=%s"
         values = (self.testID, self.date, self.result, self.testResultID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
         return "SELECT testResultID, testID, date, result FROM TestResult WHERE testResultID = %s"
@@ -255,13 +271,13 @@ class Laboratory:
         query = "INSERT INTO Laboratory (labID, name, address, phoneNumber) VALUES (%s, %s, %s, %s)"
         values = (self.labID, self.name, self.address, self.phoneNumber)
 
-        return [query.format(values)]
+        return (query,values)
     
     def updates(self) -> list[str]:
         query = "UPDATE Laboratory SET name=%s, address=%s, phoneNumber=%s WHERE labID=%s"
         values = (self.name, self.address, self.phoneNumber, self.labID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
         return "SELECT labID, name, address, phoneNumber FROM Laboratory WHERE labID = %s"
@@ -283,13 +299,13 @@ class Appointment:
         query = "INSERT INTO Appointment (appointmentID, description, date, time, patientAccountID, doctorAccountID) VALUES (%s, %s, %s, %s, %s, %s)"
         values = (self.appointmentID, self.description, self.date, self.time, self.patientAccountID, self.doctorAccountID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def updates(self) -> list[str]:
         query = "UPDATE Appointment SET description=%s, date=%s, time=%s, patientAccountID=%s, doctorAccountID=%s WHERE appointmentID=%s"
         values = (self.description, self.date, self.time, self.patientAccountID, self.doctorAccountID, self.appointmentID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
         return "SELECT appointmentID, description, date, time, patientAccountID, doctorAccountID FROM Appointment WHERE appointmentID = %s"
@@ -311,16 +327,16 @@ class Bill:
         query = "INSERT INTO Bill (billID, description, amount, dateIssued, dueDate, patientAccountID) VALUES (%s, %s, %s, %s, %s, %s)"
         values = (self.billID, self.description, self.amount, self.dateIssued, self.dueDate, self.patientAccountID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def updates(self) -> list[str]:
         query = "UPDATE Bill SET description=%s, amount=%s, dateIssued=%s, dueDate=%s, patientAccountID=%s WHERE billID=%s"
         values = (self.description, self.amount, self.dateIssued, self.dueDate, self.patientAccountID, self.billID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
-        return "SELECT billID, description, amount, dateIssued, dueDate, patientAccountID FROM Bill WHERE billID = %s"
+        return "SELECT billID, description, amount, dateIssued, dueDate, patientAccountID FROM Bill WHERE patientAccountID = %s"
 
 
 class Payment:
@@ -337,13 +353,13 @@ class Payment:
         query = "INSERT INTO Payment (paymentID, billID, amount, date) VALUES (%s, %s, %s, %s)"
         values = (self.paymentID, self.billID, self.amount, self.date)
 
-        return [query.format(values)]
+        return (query,values)
     
     def updates(self) -> list[str]:
         query = "UPDATE Payment SET billID=%s, amount=%s, date=%s WHERE paymentID=%s"
         values = (self.billID, self.amount, self.date, self.paymentID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
         return "SELECT paymentID, billID, amount, date FROM Payment WHERE paymentID = %s"
@@ -364,13 +380,13 @@ class Reminder:
         query = "INSERT INTO Reminder (reminderID, description, date, time, accountID) VALUES (%s, %s, %s, %s, %s)"
         values = (self.reminderID, self.description, self.date, self.time, self.accountID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def updates(self) -> list[str]:
         query = "UPDATE Reminder SET description=%s, date=%s, time=%s, accountID=%s WHERE reminderID=%s"
         values = (self.description, self.date, self.time, self.accountID, self.reminderID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
         return "SELECT reminderID, description, date, time, accountID FROM Reminder WHERE reminderID = %s"
@@ -392,13 +408,13 @@ class Message:
         query = "INSERT INTO Message (messageID, date, time, messageText, senderAccountID, recipientAccountID) VALUES (%s, %s, %s, %s, %s, %s)"
         values = (self.messageID, self.date, self.time, self.messageText, self.senderAccountID, self.recipientAccountID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def updates(self) -> list[str]:
         query = "UPDATE Message SET date=%s, time=%s, messageText=%s, senderAccountID=%s, recipientAccountID=%s WHERE messageID=%s"
         values = (self.date, self.time, self.messageText, self.senderAccountID, self.recipientAccountID, self.messageID)
 
-        return [query.format(values)]
+        return (query,values)
     
     def select() -> str:
         return "SELECT messageID, date, time, messageText, senderAccountID, recipientAccountID FROM Message WHERE messageID = %s"

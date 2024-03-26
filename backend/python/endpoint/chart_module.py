@@ -4,7 +4,7 @@ CS-310
 Software Engineering II 
 Medical Portal
 
-Test endpoint module that handles:
+Chart endpoint module that handles:
 - Creation
 - Updating
 - Viewing
@@ -13,7 +13,7 @@ from app_provider import app_instance
 from auth.permission import Permission
 from random import choices
 from string import digits, ascii_uppercase
-from UserO.AllObjects import Prescription
+from UserO.AllObjects import Chart
 from mysql.connector.cursor import MySQLCursor
 import endpoint.utility as util
 
@@ -23,8 +23,8 @@ __auth = __app.getAuthenticator() # Authenticator
 __flask = __app.getFlask() # Flask
 
 
-@__flask.route("/prescription/view", methods=["GET"])
-def prescriptions_view():
+@__flask.route("/chart/view", methods=["GET"])
+def charts_view():
     try:
         token = util.getParameter(
             "token", 
@@ -37,36 +37,40 @@ def prescriptions_view():
         }
     
     accountID = util.getParameter("accountID")
-    if accountID != __auth.getAccount(token).getID() and not __auth.hasPermission(token, Permission.VIEW_PRESCRIPTIONS):
+    if accountID != __auth.getAccount(token).getID() and not __auth.hasPermission(token, Permission.VIEW_CHARTS):
         return {
             "status": 401,
-            "message": "You cannot view these prescriptions!"
+            "message": "You cannot view these charts!"
         }
 
     result = {
         "status": 201,
-        "prescriptions": []
+        "charts": []
     }
 
     connection = __database.connection()
     cursor: MySQLCursor = connection.cursor()
-    cursor.execute(Prescription.select(), [accountID])
-    for (prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID) in cursor:
-        result["prescriptions"].append({
-            "prescriptionID": prescriptionID,
-            "drug": drug,
-            "dosage": dosage,
-            "frequency": frequency,
+    cursor.execute(Chart.select(), [accountID])
+    for (chartID, weight, height, bloodPressure, temperature, diagnoses, allergies, date, patientAccountID) in cursor:
+        result["charts"].append({
+            "chartID": chartID,
+            "weight": weight,
+            "height": height,
+            "bloodPressure": bloodPressure,
+            "temperature": temperature,
+            "diagnoses": diagnoses,
+            "allergies": allergies,
             "date": date,
-            "pharmacyID": pharmacyID,
             "patientAccountID": patientAccountID
         })
-
+    
+    cursor.close()
+    connection.close()
     return result
 
 
-@__flask.route("/prescription/create", methods=["GET"])
-def prescription_create():
+@__flask.route("/chart/create", methods=["GET"])
+def chart_create():
     try:
         token = util.getParameter(
             "token", 
@@ -78,31 +82,34 @@ def prescription_create():
             "message": "Token is invalid!"
         }
     
-    prescriptionID = ''.join(choices(digits + ascii_uppercase, k=36))
-    drug = util.getParameter("drug")
-    dosage = util.getParameter("dosage")
-    frequency = util.getParameter("frequency")
+    chartID = ''.join(choices(digits + ascii_uppercase, k=36))
+    accountID = util.getParameter("accountID")
+    weight = util.getParameter("weight")
+    height = util.getParameter("height")
+    bloodPressure = util.getParameter("bloodPressure")
+    temperature = util.getParameter("temperature")
+    diagnoses = util.getParameter("diagnoses")
+    allergies = util.getParameter("allergies")
     date = util.getParameter("date")
-    pharmacyID = util.getParameter("pharmacyID")
-    patientAccountID = util.getParameter("patientAccountID")
 
     # Must have permission
-    if not __auth.hasPermission(token, Permission.CREATE_PRESCRIPTION):
+    if not __auth.hasPermission(token, Permission.CREATE_CHART):
         return {
             "status": 401,
-            "message": "You cannot make prescriptions!"
+            "message": "You cannot make charts!"
         }
 
-    chart = Prescription(prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID)
+    chart = Chart(chartID, weight, height, bloodPressure, temperature, diagnoses, allergies, date, accountID)
 
     connection = __database.connection()
     for insert, values in chart.inserts():
         cursor: MySQLCursor = connection.cursor()
         cursor.execute(insert, values)
         cursor.close()
+    connection.commit()
     connection.close()
 
     return {
         "status": 201,
-        "prescriptionID": prescriptionID
+        "chartID": chartID
     }

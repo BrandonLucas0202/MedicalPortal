@@ -172,3 +172,7 @@ CREATE TABLE Message (
   FOREIGN KEY (senderAccountID) REFERENCES Account(accountID),
   FOREIGN KEY (recipientAccountID) REFERENCES Account(accountID)
 );
+
+
+INSERT INTO InsurancePolicy (insurancePolicyID, insuranceName, insurancePolicyNumber, copayAmount) VALUES ("NONE", "N/A", "N/A", -1);
+

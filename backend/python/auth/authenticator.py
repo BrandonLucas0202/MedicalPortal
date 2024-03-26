@@ -17,11 +17,11 @@ import hashlib
 
 
 TYPETABLE = {
-    "Patient": PatientAccount,
-    "Doctor": DoctorAccount,
-    "Nurse": NurseAccount,
-    "Staff": StaffAccount,
-    "Admin": AdminAccount
+    "Patient": LitePatientAccount,
+    "Doctor": LiteDoctorAccount,
+    "Nurse": LiteNurseAccount,
+    "Staff": LiteStaffAccount,
+    "Admin": LiteAdminAccount
 }
 
 
@@ -34,7 +34,7 @@ class Authenticator():
     def __init__(self, database: SQLConnection) -> None:
         self.__database = database
         self.__sessions = {
-            "test": AdminAccount(None)
+            "test": LiteAdminAccount(None)
         }
 
 
@@ -44,14 +44,14 @@ class Authenticator():
         """
         return token in self.__sessions.keys()
     
-    def updateToken(self, token: str, account: Account):
+    def updateToken(self, token: str, account: LiteAccount):
         """
         Updates token with an account.
         """
         self.__sessions[token] = account
     
     
-    def getAccount(self, token: str) -> Account:
+    def getAccount(self, token: str) -> LiteAccount:
         """
         Gets account wrapper from token.
         """
@@ -61,18 +61,17 @@ class Authenticator():
         """
         Checks if token has a permission.
         """
-        return permission in self.getAccount(token).getPermissions()
+        return permission in self.getAccount(token).getPermissions() or Permission.ADMINISTRATOR in self.getAccount(token).getPermissions()
     
     def emailExists(self, email: str) -> bool:
         connection = self.__database.connection()
         cursor: MySQLCursor = connection.cursor()
         cursor.execute(
             "SELECT COUNT(*) FROM HashedPassword WHERE email = %s",
-            (email)
+            [email]
         )
-
         for value in cursor:
-            count = value
+            count = value[0]
             break
 
         cursor.close()
@@ -82,7 +81,7 @@ class Authenticator():
 
     def login(self, email: str, password: str) -> str:
         # Hash and use email as salt
-        hash = hashlib.md5((password + email).encode())
+        hash = hashlib.md5((password + email).encode()).hexdigest()
 
         connection = self.__database.connection()
 
@@ -94,30 +93,30 @@ class Authenticator():
         )
 
         for accountID in cursor:
-            id = accountID
+            id = accountID[0]
             break
         else: # Did not find an account
-            return None
+            return None, None
         cursor.close()
 
         # Find account type
         cursor: MySQLCursor = connection.cursor()
         cursor.execute(
             "SELECT CASE WHEN role IS NULL THEN \"Patient\" ELSE role END as accountType FROM Account LEFT JOIN StaffAccount ON StaffAccount.accountID = Account.accountID WHERE Account.accountID = %s",
-            id
+            [id]
         )
 
         for role in cursor:
-            accountType = role
+            accountType = role[0]
             break
         cursor.close()
         connection.close()
 
         # Create account object, create session token and return
-        account = TYPETABLE[role](id)
+        account = TYPETABLE[accountType](id)
         token = secrets.token_hex(32)
 
         self.__sessions[token] = account
 
-        return token    
+        return token, id    
     
