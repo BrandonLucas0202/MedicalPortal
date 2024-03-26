@@ -93,7 +93,7 @@
                                     <label for="cvv">CVV</label>
                                     <input type="number" class="form-control" id="cvv" placeholder="CVV">
                                 </div>
-                                <button type="button" class="btn btn-primary" onclick="getBillingInfo()">Submit Info</button>
+                                <button type="button" class="btn btn-primary" onclick="createBillingInfo()">Submit Info</button>
                             </form>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Appointment</h5>
+                                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Billing Info</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -113,10 +113,16 @@
                                     <p>Date: <span id="confirmAppointmentDate"></span></p>
                                     <p>Time: <span id="confirmAppointmentTime"></span></p>
                                     <p>Doctor: <span id="confirmDoctorSelect"></span></p>
+                                    <p>Name on Card: <span id="confirmCardName"></span></p>
+                                    <p>Address of Cardholer: <span id="confirmCardAddress"></span></p>
+                                    <p>ZipCode: <span id="confirmZipCode"></span></p>
+                                    <p>Card Number: <span id="confirmCardNumber"></span></p>
+                                    <p>Expiration Date: <span id="confirmExpDate"></span></p>
+                                    <p>CVV: <span id="confirmCVV"></span></p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button>
-                                    <button type="button" class="btn btn-primary" onclick="submitAppointment()">Confirm</button>
+                                    <button type="button" class="btn btn-primary" onclick="submitBillInfo()">Confirm</button>
                                 </div>
                             </div>
                         </div>
@@ -129,14 +135,21 @@
 
 
     <script>
-        function createAppointment() {
+        function createBillingInfo() {
             const patientName = document.getElementById('patientName').value;
             const appointmentDate = document.getElementById('appointmentDate').value;
             const appointmentTime = document.getElementById('appointmentTime').value;
             const doctorSelect = document.getElementById('doctorSelect').value;
+            const cardName = document.getElementById('cardName').value;
+            const cardAddress = document.getElementById('cardAddress').value;
+            const zipCode = document.getElementById('zipCode').value;
+            const cardNumber = document.getElementById('cardNumber').value;
+            const expDate = document.getElementById('expDate').value;
+            const CVV = document.getElementById('CVV').value;
 
     // Example of form validation
-    if (!patientName || !appointmentDate || !appointmentTime || !doctorSelect) {
+    if (!patientName || !appointmentDate || !appointmentTime || !doctorSelect || !cardName
+        || !cardAddress || !zipCode || !cardNumber || !expDate || !CVV) {
         alert('Please fill out all fields.');
         return;
     }
@@ -145,7 +158,13 @@
         patientName,
         appointmentDate,
         appointmentTime,
-        doctorSelect
+        doctorSelect, 
+        cardName,
+        cardAddress,
+        zipCode,
+        cardNumber,
+        expDate,
+        CVV
     };
 
     // Show confirmation modal
@@ -153,6 +172,12 @@
     document.getElementById('confirmAppointmentDate').textContent = appointmentDate;
     document.getElementById('confirmAppointmentTime').textContent = appointmentTime;
     document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
+    document.getElementById('confirmCardName').textContent = cardName;
+    document.getElementById('confirmCardAddress').textContent = cardAddress;
+    document.getElementById('confirmZipCode').textContent = zipCode;
+    document.getElementById('confirmCardNumber').textContent = cardNumber;
+    document.getElementById('confirmExpDate').textContent = expDate;
+    document.getElementById('confirmCVV').textContent = CVV;
 
     $('#confirmationModal').modal('show');
 }
@@ -162,7 +187,13 @@ function submitAppointment() {
         patientName: document.getElementById('confirmPatientName').textContent,
         appointmentDate: document.getElementById('confirmAppointmentDate').textContent,
         appointmentTime: document.getElementById('confirmAppointmentTime').textContent,
-        doctorSelect: document.getElementById('confirmDoctorSelect').textContent
+        doctorSelect: document.getElementById('confirmDoctorSelect').textContent,
+        cardName: document.getElementById('confirmCardName').textContent,
+        cardAddress: document.getElementById('confirmCardAddress').textContent,
+        zipCode: document.getElementById('confirmZipCode').textContent,
+        cardNumber: document.getElementById('confirmCardNumber').textContent,
+        expDate: document.getElementById('confirmExpDate').textContent,
+        CVV: document.getElementById('confirmCVV').textContent,
     };
 
     fetch('/create-appointment?token=your_token_here', {
