@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>HCMS Admin - Create Chart</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar, Topbar omitted for brevity -->
+
+         <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Home Button -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" title="Home">
+                                <i class="fas fa-home fa-fw text-primary"></i>
+                            </a>
+                        </li>
+
+                        <!-- Other topbar items like messages, alerts, etc. omitted -->
+
+                        <!-- User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <!-- User dropdown menu code omitted -->
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End of Topbar -->
+                    
+                    <!-- Form for chart creation -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Chart Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <form id="chartForm">
+                                <div class="form-group">
+                                    <label for="patientName">Patient Name</label>
+                                    <input type="text" class="form-control" id="patientName" placeholder="Enter patient name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="appointmentDate">Date</label>
+                                    <input type="date" class="form-control" id="appointmentDate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="appointmentTime">Time</label>
+                                    <input type="time" class="form-control" id="appointmentTime">
+                                </div>
+                                <div class="form-group">
+                                    <label for="doctorSelect">Select Doctor</label>
+                                    <select class="form-control" id="doctorSelect">
+                                        <option>Dr. Smith</option>
+                                        <option>Dr. Johnson</option>
+                                        <option>Dr. Williams</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="chartID">Chart ID</label>
+                                    <input type="text" class="form-control" id="chartID" placeholder="Enter chart ID">
+                                </div>
+                                <div class="form-group">
+                                    <label for="weight">Weight</label>
+                                    <input type="number" class="form-control" id="weight" placeholder="Enter weight">
+                                </div>
+                                <div class="form-group">
+                                    <label for="height">Height</label>
+                                    <input type="number" class="form-control" id="height" placeholder="Enter height">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bP">Blood Pressure</label>
+                                    <input type="number" class="form-control" id="bP" placeholder="Enter blood pressure">
+                                </div>
+                                <div class="form-group">
+                                    <label for="temperature">Temperature</label>
+                                    <input type="number" class="form-control" id="temperature" placeholder="Enter temperature">
+                                </div>
+                                <div class="form-group">
+                                    <label for="prescriptions">Prescriptions</label>
+                                    <input type="text" class="form-control" id="prescriptions" placeholder="Enter prescriptions">
+                                </div>
+                                <div class="form-group">
+                                    <label for="diagnoses">Diagnoses</label>
+                                    <input type="text" class="form-control" id="diagnoses" placeholder="Enter diagnoses">
+                                </div>
+                                <div class="form-group">
+                                    <label for="allergies">Allergies</label>
+                                    <input type="text" class="form-control" id="allergies" placeholder="Enter allergies">
+                                </div>
+                                <div class="form-group">
+                                    <label for="notes">Notes</label>
+                                    <textarea id="notes" class="form-control" rows="3" placeholder="Type any notes here..."></textarea>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="createChart()">Create Chart</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation Modal -->
+                    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Chart</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Patient Name: <span id="confirmPatientName"></span></p>
+                                    <p>Date: <span id="confirmAppointmentDate"></span></p>
+                                    <p>Time: <span id="confirmAppointmentTime"></span></p>
+                                    <p>Doctor: <span id="confirmDoctorSelect"></span></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button>
+                                    <button type="button" class="btn btn-primary" onclick="submitAppointment()">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer omitted for brevity -->
+        </div>
+    </div>
+
+
+    <script>
+        function createChart() {
+            const patientName = document.getElementById('patientName').value;
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+            const doctorSelect = document.getElementById('doctorSelect').value;
+            const chartID = document.getElementById('chartID').value;
+            const weight = document.getElementById('weight').value; 
+            const height = document.getElementById('height').value;
+            const bP = document.getElementById('bloodPressure').value;
+            const temperature = document.getElementById('temperature').value;
+            const prescriptions = document.getElementById('prescriptions').value;
+            const diagnoses = document.getElementById('diagnoses').value;
+            const allergies = document.getElementById('allergies').value;
+            const notes = document.getElementById('notes').value;
+
+    // Example of form validation
+    if (!patientName || !appointmentDate || !appointmentTime || !doctorSelect || !chartID 
+        || !weight || !height || !bP || !temperature || !prescriptions || !diagnoses || !allergies) {
+        alert('Please fill out all fields.');
+        return;
+    }
+
+    const appointmentData = {
+        patientName,
+        appointmentDate,
+        appointmentTime,
+        doctorSelect,
+        chartID,
+        weight, 
+        height, 
+        bP,
+        temperature, 
+        prescriptions,
+        diagnoses,
+        allergies, 
+        notes
+    };
+
+    // Show confirmation modal
+    document.getElementById('confirmPatientName').textContent = patientName;
+    document.getElementById('confirmAppointmentDate').textContent = appointmentDate;
+    document.getElementById('confirmAppointmentTime').textContent = appointmentTime;
+    document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
+    document.getElementById('confirmChartID').textContent = chartID;
+    document.getElementById('confirmWeight').textContent = weight;
+    document.getElementById('confirmHeight').textContent = height;
+    document.getElementById('confirmBloodPressure').textContent = bP;
+    document.getElementById('confirmTemperature').textContent = temperature;
+    document.getElementById('confirmPrescriptions').textContent = prescriptions;
+    document.getElementById('confirmDiagnoses').textContent = diagnoses;
+    document.getElementById('confirmAllergies').textContent = allergies;
+    document.getElementById('notes').textContent = notes;
+
+    $('#confirmationModal').modal('show');
+}
+
+function submitAppointment() {
+    const appointmentData = {
+        patientName: document.getElementById('confirmPatientName').textContent,
+        appointmentDate: document.getElementById('confirmChartDate').textContent,
+        appointmentTime: document.getElementById('confirmChartTime').textContent,
+        doctorSelect: document.getElementById('confirmDoctorSelect').textContent,
+        chartID: document.getElementById('confirmChartID').textContent,
+        weight: document.getElementById('confirmWeight').textContent,
+        height: document.getElementById('confirmHeight').textContent,
+        bP: document.getElementById('confirmBloodPressure').textContent,
+        temperature: document.getElementById('confirmTemperature').textContent,
+        prescriptions: document.getElementById('confirmPrescriptions').textContent,
+        diagnoses: document.getElementById('confirmDiagnoses').textContent,
+        allergies: document.getElementById('confirmAllergies').textContent,
+        notes: document.getElementById('notes').textContent,
+    };
+
+    fetch('/create-chart?token=your_token_here', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(chartData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert('Chart created successfully!');
+        $('#confirmationModal').modal('hide');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while creating the chart.');
+    });
+}
+
+
+    </script>
+</body>
+</html>
