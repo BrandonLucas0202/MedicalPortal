@@ -109,19 +109,60 @@
             const appointmentTime = document.getElementById('appointmentTime').value;
             const doctorSelect = document.getElementById('doctorSelect').value;
 
-            document.getElementById('confirmPatientName').textContent = patientName;
-            document.getElementById('confirmAppointmentDate').textContent = appointmentDate;
-            document.getElementById('confirmAppointmentTime').textContent = appointmentTime;
-            document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
+    // Example of form validation
+    if (!patientName || !appointmentDate || !appointmentTime || !doctorSelect) {
+        alert('Please fill out all fields.');
+        return;
+    }
 
-            $('#confirmationModal').modal('show');
-        }
+    const appointmentData = {
+        patientName,
+        appointmentDate,
+        appointmentTime,
+        doctorSelect
+    };
 
-        function submitAppointment() {
-            // Logic to handle the form submission
-            alert('Appointment confirmed');
-            $('#confirmationModal').modal('hide');
+    // Show confirmation modal
+    document.getElementById('confirmPatientName').textContent = patientName;
+    document.getElementById('confirmAppointmentDate').textContent = appointmentDate;
+    document.getElementById('confirmAppointmentTime').textContent = appointmentTime;
+    document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
+
+    $('#confirmationModal').modal('show');
+}
+
+function submitAppointment() {
+    const appointmentData = {
+        patientName: document.getElementById('confirmPatientName').textContent,
+        appointmentDate: document.getElementById('confirmAppointmentDate').textContent,
+        appointmentTime: document.getElementById('confirmAppointmentTime').textContent,
+        doctorSelect: document.getElementById('confirmDoctorSelect').textContent
+    };
+
+    fetch('/create-appointment?token=your_token_here', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(appointmentData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        return response.json();
+    })
+    .then(data => {
+        alert('Appointment created successfully!');
+        $('#confirmationModal').modal('hide');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while creating the appointment.');
+    });
+}
+
+
     </script>
 </body>
 </html>

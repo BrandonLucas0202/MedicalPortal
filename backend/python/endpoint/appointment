@@ -1,0 +1,45 @@
+from flask import request, jsonify
+from app_provider import app_instance
+import pymysql
+import endpoint.utility as util
+
+__app = app_instance()  # BackendApplication
+__flask = __app.getFlask()  # Flask
+
+# Connect to the database
+def get_db_connection():
+    return pymysql.connect(host='15.204.226.232', user='student', password='goherd', db='MedPortal', cursorclass=pymysql.cursors.DictCursor)
+
+@__flask.route("/create-appointment", methods=["POST"])
+def create_appointment():
+    # Authentication check (simplified)
+    token = request.args.get('token')
+    if not __app.getAuthenticator().verifyToken(token):
+        abort(401)
+
+    # Get data from the request
+    data = request.json
+    patientName = data.get('patientName')
+    appointmentDate = data.get('appointmentDate')
+    appointmentTime = data.get('appointmentTime')
+    doctorSelect = data.get('doctorSelect')
+
+    # Database connection and insert
+    try:
+        connection = get_db_connection()
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO Appointment (appointmentID, type, date, time, patientAccountID, doctorAccountID) "
+                "VALUES (UUID(), %s, %s, %s, "
+                "(SELECT accountID FROM PatientAccount WHERE name = %s), "
+                "(SELECT staffAccountID FROM StaffAccount WHERE name = %s))",
+                ('Consultation', appointmentDate, appointmentTime, patientName, doctorSelect)
+            )
+            connection.commit()
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if connection:
+            connection.close()
+
+    return jsonify({"message": "Appointment created successfully"})
