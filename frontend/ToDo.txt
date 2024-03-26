@@ -7,7 +7,7 @@ Create Appt. -
 Edit Appt.
 Finish/Delete Appt. 
 Messaging - 
-Charts 
+Charts -
 Bills -
 Payments 
 Profile (Triniti)
