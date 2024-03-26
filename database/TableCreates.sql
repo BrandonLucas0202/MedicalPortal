@@ -1,4 +1,16 @@
 USE MedPortal;
+-- Account table
+CREATE TABLE Account (
+  accountID VARCHAR(36) NOT NULL,
+  email VARCHAR(255),
+  phoneNumber VARCHAR(20),
+  address TEXT,
+  calendarID VARCHAR(36),
+  inboxID VARCHAR(36),
+  outboxID VARCHAR(36),
+  PRIMARY KEY (accountID)
+);
+
 -- PatientAccount table
 CREATE TABLE PatientAccount (
   accountID VARCHAR(36) NOT NULL,
@@ -61,20 +73,16 @@ CREATE TABLE StaffAccount (
   accountID VARCHAR(36),
   PRIMARY KEY (staffAccountID),
   FOREIGN KEY (accountID) REFERENCES Account(accountID),
-  CHECK (role IN ('Nurse', 'Doctor', 'SysAdmin', 'Clinical Staff'))
+  CHECK (role IN ('Nurse', 'Doctor', 'Admin', 'Staff'))
 );
 
-
--- Account table
-CREATE TABLE Account (
-  accountID VARCHAR(36) NOT NULL,
-  email VARCHAR(255),
-  phoneNumber VARCHAR(20),
-  address TEXT,
-  calendarID VARCHAR(36),
-  inboxID VARCHAR(36),
-  outboxID VARCHAR(36),
-  PRIMARY KEY (accountID)
+-- HashedPassword table
+CREATE TABLE HashedPassword (
+  email VARCHAR(255) NOT NULL,
+  hash VARCHAR(255) NOT NULL,
+  accountID VARCHAR(36),
+  PRIMARY KEY (email, hash),
+  FOREIGN KEY (accountID) REFERENCES Account(accountID)
 );
 
 -- Inbox table
@@ -91,30 +99,6 @@ CREATE TABLE Outbox (
   PRIMARY KEY (outboxID)
 );
 
--- Nurse table
-CREATE TABLE Nurse (
-  nurseID VARCHAR(36) NOT NULL,
-  staffAccountID VARCHAR(36),
-  PRIMARY KEY (nurseID),
-  FOREIGN KEY (staffAccountID) REFERENCES StaffAccount(staffAccountID)
-);
-
--- Doctor table
-CREATE TABLE Doctor (
-  doctorID VARCHAR(36) NOT NULL,
-  staffAccountID VARCHAR(36),
-  PRIMARY KEY (doctorID),
-  FOREIGN KEY (staffAccountID) REFERENCES StaffAccount(staffAccountID)
-);
-
--- SysAdmin table
-CREATE TABLE SysAdmin (
-  sysAdminID VARCHAR(36) NOT NULL,
-  staffAccountID VARCHAR(36),
-  PRIMARY KEY (sysAdminID),
-  FOREIGN KEY (staffAccountID) REFERENCES StaffAccount(staffAccountID)
-);
-
 -- Test table
 CREATE TABLE Test (
   testID VARCHAR(36) NOT NULL,
@@ -124,7 +108,6 @@ CREATE TABLE Test (
   PRIMARY KEY (testID),
   CHECK (type IN ('BloodTest', 'XRay', 'MRI', 'Other'))
 );
-
 
 -- TestResult table
 CREATE TABLE TestResult (

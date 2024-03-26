@@ -11,6 +11,18 @@ TODO Session tokens need switched to a proper cache with TTL (Time to Live) so t
 """
 from database.sqlconnection import SQLConnection
 from account.account import *
+from mysql.connector.cursor import MySQLCursor
+import secrets
+import hashlib
+
+
+TYPETABLE = {
+    "Patient": PatientAccount,
+    "Doctor": DoctorAccount,
+    "Nurse": NurseAccount,
+    "Staff": StaffAccount,
+    "Admin": AdminAccount
+}
 
 
 class Authenticator():
@@ -35,15 +47,49 @@ class Authenticator():
     
     def getAccount(self, token: str) -> Account:
         """
-        Gets account wrapper from token/
+        Gets account wrapper from token.
         """
         return self.__sessions.get(token)
     
 
-    def createPatientAccount(self, account: PatientAccount):
-        """
-        Creates the patient account into the database.
-        """
-        
-    
+    def login(self, email: str, password: str) -> str:
+        # Hash and use email as salt
+        hash = hashlib.md5((password + email).encode())
+
+        connection = self.__database.connection()
+
+        # Execute and find account
+        cursor: MySQLCursor = connection.cursor()
+        cursor.execute(
+            "SELECT accountID FROM HashedPassword WHERE email=%s AND hash=%s",
+            (email, hash)
+        )
+
+        for accountID in cursor:
+            id = accountID
+            break
+        else: # Did not find an account
+            return None
+        cursor.close()
+
+        # Find account type
+        cursor: MySQLCursor = connection.cursor()
+        cursor.execute(
+            "SELECT CASE WHEN role IS NULL THEN \"Patient\" ELSE role END as accountType FROM Account LEFT JOIN StaffAccount ON StaffAccount.accountID = Account.accountID WHERE Account.accountID = %s",
+            id
+        )
+
+        for role in cursor:
+            accountType = role
+            break
+        cursor.close()
+        connection.close()
+
+        # Create account object, create session token and return
+        account = TYPETABLE[role](id)
+        token = secrets.token_hex(32)
+
+        self.__sessions[token] = account
+
+        return token    
     

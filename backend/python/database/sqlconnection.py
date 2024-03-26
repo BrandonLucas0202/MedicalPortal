@@ -23,3 +23,4 @@ class SQLConnection():
         """Returns a connection from the pool"""
         return self.pool.get_connection()
     
+    

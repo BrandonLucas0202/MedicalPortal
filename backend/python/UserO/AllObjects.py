@@ -1,6 +1,29 @@
-class PatientAccount:
-    def __init__(self, accountID, age, ssn, chart, insurancePolicy, bills):
+class Account:
+    def __init__(self, accountID, email, phoneNumber, address, calendarID, inboxID, outboxID):
         self.accountID = accountID
+        self.email = email
+        self.phoneNumber = phoneNumber
+        self.address = address
+        self.calendarID = calendarID
+        self.inboxID = inboxID
+        self.outboxID = outboxID
+
+    # CRUD operations for Account
+    def inserts(self) -> list[str]:
+        query = "INSERT INTO Account (accountID, email, phoneNumber, address, calendarID, inboxID, outboxID) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        values = (self.accountID, self.email, self.phoneNumber, self.address, self.calendarID, self.inboxID, self.outboxID)
+
+        return [query.format(values)]
+
+    def updates(self) -> list[str]:
+        query = "UPDATE Account SET email=%s, phoneNumber=%s, address=%s, calendarID=%s, inboxID=%s, outboxID=%s WHERE accountID=%s"
+        values = (self.email, self.phoneNumber, self.address, self.calendarID, self.inboxID, self.outboxID, self.accountID)
+
+        return [query.format(values)]
+
+class PatientAccount(Account):
+    def __init__(self, accountID, email, phoneNumber, address, calendarID, inboxID, outboxID, age, ssn, chart, insurancePolicy, bills):
+        Account.__init__(self, accountID, email, phoneNumber, address, calendarID, inboxID, outboxID)
         self.age = age
         self.ssn = ssn
         self.chart = chart
@@ -8,13 +31,42 @@ class PatientAccount:
         self.bills = bills
 
     def inserts(self) -> list[str]:
-        query = "INSERT INTO patient_accounts (accountID, age, ssn, chart, insurancePolicy, bills) VALUES (%s, %s, %s, %s, %s, %s)"
-        values = (patient.accountID, patient.age, patient.ssn, patient.chart, patient.insurancePolicy, patient.bills)
+        query = "INSERT INTO PatientAccount (accountID, age, ssn, chart, insurancePolicy, bills) VALUES (%s, %s, %s, %s, %s, %s)"
+        values = (self.accountID, self.age, self.ssn, self.chart, self.insurancePolicy, self.bills)
         
+        return [query.format(values)] + Account.inserts(self)
+    
     def updates(self) -> list[str]:
-        query = "UPDATE patient_accounts SET age=%s, ssn=%s, chart=%s, insurancePolicy=%s, bills=%s WHERE accountID=%s"
-        values = (patient.age, patient.ssn, patient.chart, patient.insurancePolicy, patient.bills, patient.accountID)
+        query = "UPDATE PatientAccount SET age=%s, ssn=%s, chart=%s, insurancePolicy=%s, bills=%s WHERE accountID=%s"
+        values = (self.age, self.ssn, self.chart, self.insurancePolicy, self.bills, self.accountID)
+
+        return [query.format(values)] + Account.updates(self)
+    
+    def select() -> str:
+        return "SELECT accountID, email, phoneNumber, address, calendarID, inboxID, outboxID, age, ssn, chart, insurancePolicy, bills FROM PatientAccount INNER JOIN Account ON PatientAccount.accountID = Account.accountID WHERE accountID=%s"
         
+
+class StaffAccount(Account):
+    def __init__(self, staffAccountID, email, phoneNumber, address, calendarID, inboxID, outboxID, role, accountID):
+        Account.__init__(self, accountID, email, phoneNumber, address, calendarID, inboxID, outboxID)
+        self.staffAccountID = staffAccountID
+        self.role = role
+
+    # CRUD operations for StaffAccount
+    def inserts(self) -> list[str]:
+        query = "INSERT INTO StaffAccount (staffAccountID, role, accountID) VALUES (%s, %s, %s)"
+        values = (self.staffAccountID, self.role, self.accountID)
+
+        return [query.format(values)] + Account.inserts(self)
+
+    def updates(self) -> list[str]:
+        query = "UPDATE StaffAccount SET role=%s, accountID=%s WHERE staffAccountID=%s"
+        values = (self.role, self.accountID, self.staffAccountID)
+
+        return [query.format(values)] + Account.updates(self)
+    
+    def select() -> str:
+        return "SELECT staffAccountID, email, phoneNumber, address, calendarID, inboxID, outboxID, role, accountID FROM StaffAccount INNER JOIN Account ON StaffAccount.accountID = Account.accountID WHERE staffAccountID=%s"
 
 class Chart:
     def __init__(self, chartID, weight, height, bloodPressure, temperature, prescriptions, diagnoses, allergies, date):
@@ -92,41 +144,6 @@ class Pharmacy:
         query = "UPDATE Pharmacy SET name=%s, address=%s, phoneNumber=%s WHERE pharmacyID=%s"
         values = (pharmacy.name, pharmacy.address, pharmacy.phoneNumber, pharmacy.pharmacyID)
 
-class StaffAccount:
-    def __init__(self, staffAccountID, role, accountID):
-        self.staffAccountID = staffAccountID
-        self.role = role
-        self.accountID = accountID
-
-    # CRUD operations for StaffAccount
-    def inserts(self) -> list[str]:
-        query = "INSERT INTO StaffAccount (staffAccountID, role, accountID) VALUES (%s, %s, %s)"
-        values = (staff_account.staffAccountID, staff_account.role, staff_account.accountID)
-
-    def updates(self) -> list[str]:
-        query = "UPDATE StaffAccount SET role=%s, accountID=%s WHERE staffAccountID=%s"
-        values = (staff_account.role, staff_account.accountID, staff_account.staffAccountID)
-
-
-class Account:
-    def __init__(self, accountID, email, phoneNumber, address, calendarID, inboxID, outboxID):
-        self.accountID = accountID
-        self.email = email
-        self.phoneNumber = phoneNumber
-        self.address = address
-        self.calendarID = calendarID
-        self.inboxID = inboxID
-        self.outboxID = outboxID
-
-    # CRUD operations for Account
-    def inserts(self) -> list[str]:
-        query = "INSERT INTO Account (accountID, email, phoneNumber, address, calendarID, inboxID, outboxID) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        values = (account.accountID, account.email, account.phoneNumber, account.address, account.calendarID, account.inboxID, account.outboxID)
-
-    def updates(self) -> list[str]:
-        query = "UPDATE Account SET email=%s, phoneNumber=%s, address=%s, calendarID=%s, inboxID=%s, outboxID=%s WHERE accountID=%s"
-        values = (account.email, account.phoneNumber, account.address, account.calendarID, account.inboxID, account.outboxID, account.accountID)
-
 
 class Inbox:
     def __init__(self, inboxID, messages):
@@ -156,41 +173,6 @@ class Outbox:
     def updates(self) -> list[str]:
         query = "UPDATE Outbox SET messages=%s WHERE outboxID=%s"
         values = (outbox.messages, outbox.outboxID)
-
-
-class Nurse:
-    def __init__(self, nurseID, staffAccountID):
-        self.nurseID = nurseID
-        self.staffAccountID = staffAccountID
-
-class Doctor:
-    def __init__(self, doctorID, staffAccountID):
-        self.doctorID = doctorID
-        self.staffAccountID = staffAccountID
-
-    # CRUD operations for Doctor
-    def inserts(self) -> list[str]:
-        query = "INSERT INTO Doctor (doctorID, staffAccountID) VALUES (%s, %s)"
-        values = (doctor.doctorID, doctor.staffAccountID)
-
-    def updates(self) -> list[str]:
-        query = "UPDATE Doctor SET staffAccountID = %s WHERE doctorID = %s"
-        values = (doctor.staffAccountID, doctor.doctorID)
-
-
-class SysAdmin:
-    def __init__(self, sysAdminID, staffAccountID):
-        self.sysAdminID = sysAdminID
-        self.staffAccountID = staffAccountID
-
-    # CRUD operations for SysAdmin
-    def inserts(self) -> list[str]:
-        query = "INSERT INTO SysAdmin (sysAdminID, staffAccountID) VALUES (%s, %s)"
-        values = (sys_admin.sysAdminID, sys_admin.staffAccountID)
-
-    def updates(self) -> list[str]:
-        query = "UPDATE SysAdmin SET staffAccountID = %s WHERE sysAdminID = %s"
-        values = (sys_admin.staffAccountID, sys_admin.sysAdminID)
 
 
 class Test:
