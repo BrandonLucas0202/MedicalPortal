@@ -51,31 +51,30 @@ class InsurancePolicy:
 
 
 class PatientAccount(Account):
-    def __init__(self, patientAccountID, email, phoneNumber, address, age, ssn, chart, insurancePolicy: InsurancePolicy):
+    def __init__(self, patientAccountID, email, phoneNumber, address, age, ssn, insurancePolicy: InsurancePolicy):
         Account.__init__(self, patientAccountID, email, phoneNumber, address)
         self.patientAccountID = patientAccountID
         self.age = age
         self.ssn = ssn
-        self.chart = chart
         self.insurancePolicy = insurancePolicy
 
     def __str__(self) -> str:
         return self.accountID
 
     def inserts(self) -> list[str]:
-        query = "INSERT INTO PatientAccount (patientAccountID, age, ssn, chart, insurancePolicyID) VALUES (%s, %s, %s, %s, %s)"
-        values = (self.patientAccountID, self.age, self.ssn, self.chart, self.insurancePolicy)
+        query = "INSERT INTO PatientAccount (patientAccountID, age, ssn, insurancePolicyID) VALUES (%s, %s, %s, %s)"
+        values = (self.patientAccountID, self.age, self.ssn, self.insurancePolicy)
         
-        return [query.format(values)] + Account.inserts(self)
+        return Account.inserts(self) + [query.format(values)]
     
     def updates(self) -> list[str]:
-        query = "UPDATE PatientAccount SET age=%s, ssn=%s, chart=%s, insurancePolicyID=%s WHERE patientAccountID=%s"
-        values = (self.age, self.ssn, self.chart, self.insurancePolicy, self.patientAccountID)
+        query = "UPDATE PatientAccount SET age=%s, ssn=%s, insurancePolicyID=%s WHERE patientAccountID=%s"
+        values = (self.age, self.ssn, self.insurancePolicy, self.patientAccountID)
 
-        return [query.format(values)] + Account.updates(self)
+        return Account.inserts(self) + [query.format(values)]
     
     def select() -> str:
-        return "SELECT accountID, patientAccountID, email, phoneNumber, address, age, ssn, chart, insurancePolicyID, insuranceName, insurancePolicyNumber, copayAmount FROM PatientAccount INNER JOIN Account ON PatientAccount.patientAccountID = Account.accountID INNER JOIN InsurancePolicy ON PatientAccount.insurancePolicyID = InsurancePolicy.insurancePolicyID WHERE accountID=%s"
+        return "SELECT patientAccountID, email, phoneNumber, address, age, ssn, insurancePolicyID FROM PatientAccount INNER JOIN Account ON PatientAccount.patientAccountID = Account.accountID WHERE accountID=%s"
         
 
 class StaffAccount(Account):
@@ -91,13 +90,13 @@ class StaffAccount(Account):
         query = "INSERT INTO StaffAccount (staffAccountID, role, accountID) VALUES (%s, %s, %s)"
         values = (self.staffAccountID, self.role, self.accountID)
 
-        return [query.format(values)] + Account.inserts(self)
+        return Account.inserts(self) + [query.format(values)]
 
     def updates(self) -> list[str]:
         query = "UPDATE StaffAccount SET role=%s, accountID=%s WHERE staffAccountID=%s"
         values = (self.role, self.accountID, self.staffAccountID)
 
-        return [query.format(values)] + Account.updates(self)
+        return Account.inserts(self) + [query.format(values)]
     
     def select() -> str:
         return "SELECT staffAccountID, email, phoneNumber, address, calendarID, inboxID, outboxID, role, accountID FROM StaffAccount INNER JOIN Account ON StaffAccount.accountID = Account.accountID WHERE staffAccountID=%s"

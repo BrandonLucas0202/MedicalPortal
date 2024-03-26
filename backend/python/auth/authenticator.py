@@ -44,6 +44,12 @@ class Authenticator():
         """
         return token in self.__sessions.keys()
     
+    def updateToken(self, token: str, account: Account):
+        """
+        Updates token with an account.
+        """
+        self.__sessions[token] = account
+    
     
     def getAccount(self, token: str) -> Account:
         """
@@ -51,6 +57,28 @@ class Authenticator():
         """
         return self.__sessions.get(token)
     
+    def hasPermission(self, token: str, permission: Permission):
+        """
+        Checks if token has a permission.
+        """
+        return permission in self.getAccount(token).getPermissions()
+    
+    def emailExists(self, email: str) -> bool:
+        connection = self.__database.connection()
+        cursor: MySQLCursor = connection.cursor()
+        cursor.execute(
+            "SELECT COUNT(*) FROM HashedPassword WHERE email = %s",
+            (email)
+        )
+
+        for value in cursor:
+            count = value
+            break
+
+        cursor.close()
+        connection.close()
+
+        return count > 0
 
     def login(self, email: str, password: str) -> str:
         # Hash and use email as salt
