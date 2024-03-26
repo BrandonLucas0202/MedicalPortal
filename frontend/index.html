@@ -373,22 +373,26 @@
             </a>
         </div>
 
-        <!-- Tasks Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <a href="myappointments.html" class="card border-left-info shadow h-100 py-2 text-decoration-none">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Appointments</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">March 29 12:00pm</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                        </div>
+       <!-- Tasks Card Example -->
+<div class="col-xl-3 col-md-6 mb-4">
+    <a href="myappointments.html" class="card border-left-info shadow h-100 py-2 text-decoration-none appointments-card">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Appointments</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <span class="date">No Appointments</span>
+                        <span class="time"></span>
                     </div>
                 </div>
-            </a>
+                <div class="col-auto">
+                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                </div>
+            </div>
         </div>
+    </a>
+</div>
+
 
         <!-- Messages Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
@@ -468,6 +472,33 @@
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Assuming appointment data is stored as an array of objects in localStorage
+            let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
+            if (appointments.length > 0) {
+                // Get the last appointment
+                let lastAppointment = appointments[appointments.length - 1];
+    
+                // Convert 24-hour time to 12-hour format if necessary
+                let timeParts = lastAppointment.appointmentTime.split(':');
+                let hours = timeParts[0];
+                let minutes = timeParts[1];
+                let ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                let formattedTime = hours + ':' + minutes + ' ' + ampm;
+    
+                // Update the appointments card with the date and time of the last appointment
+                $('.appointments-card .date').text(lastAppointment.appointmentDate);
+                $('.appointments-card .time').text(formattedTime);
+            }
+        });
+    </script>
+    <script>
+       // localStorage.clear();
+    </script>
+    
 
 </body>
 
