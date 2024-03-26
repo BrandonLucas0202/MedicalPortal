@@ -2,12 +2,13 @@ Account Creation -
 Login -
 Forgot Password -
 Patient/Doctor/Nurse/Admin account
-Simple Dashboard with CalendarAppointments
+Simple Dashboard with CalendarAppointments (Triniti)
 Create Appt. - 
 Edit Appt.
 Finish/Delete Appt. 
 Messaging - 
 Charts 
-Bills
-Payments
+Bills -
+Payments 
+Profile (Triniti)
 
