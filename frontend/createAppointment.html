@@ -13,10 +13,8 @@
 </head>
 <body id="page-top">
     <div id="wrapper">
-        <!-- Sidebar, Topbar omitted for brevity -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
@@ -52,11 +50,14 @@
                                     <option>Dr. Williams</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="visitDescription">Short Description of Visit</label>
+                                <textarea class="form-control" id="visitDescription" placeholder="Describe the purpose of the visit"></textarea>
+                            </div>
                             <button type="button" class="btn btn-primary" onclick="createAppointment()">Request Appointment</button>
                         </form>
                     </div>
                 </div>
-                <!-- Confirmation Modal -->
                 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -71,6 +72,7 @@
                                 <p>Date: <span id="confirmAppointmentDate"></span></p>
                                 <p>Time: <span id="confirmAppointmentTime"></span></p>
                                 <p>Doctor: <span id="confirmDoctorSelect"></span></p>
+                                <p>Description: <span id="confirmVisitDescription"></span></p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button>
@@ -82,57 +84,58 @@
             </div>
         </div>
     </div>
-
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
         var myAppointments = []; // Store appointments
-        
-        function convertTo12Hour(time) {
-        const [hour, minute] = time.split(':');
-        const hourInt = parseInt(hour, 10);
-        const ampm = hourInt >= 12 ? 'PM' : 'AM';
-        const convertedHour = hourInt % 12 || 12;
 
-        return `${convertedHour}:${minute} ${ampm}`;
-    }
+        function convertTo12Hour(time) {
+    const [hour, minute] = time.split(':');
+    const hourInt = parseInt(hour, 10);
+    const ampm = hourInt >= 12 ? 'PM' : 'AM';
+    const convertedHour = hourInt % 12 || 12;
+
+    return `${convertedHour}:${minute} ${ampm}`;
+}
+
         function createAppointment() {
             const patientName = document.getElementById('patientName').value;
             const appointmentDate = document.getElementById('appointmentDate').value;
             const appointmentTime = document.getElementById('appointmentTime').value;
             const doctorSelect = document.getElementById('doctorSelect').value;
+            const visitDescription = document.getElementById('visitDescription').value;
 
-            if (!patientName || !appointmentDate || !appointmentTime || !doctorSelect) {
+            if (!patientName || !appointmentDate || !appointmentTime || !doctorSelect || !visitDescription) {
                 alert('Please fill out all fields.');
                 return;
             }
 
             document.getElementById('confirmPatientName').textContent = patientName;
             document.getElementById('confirmAppointmentDate').textContent = appointmentDate;
-            document.getElementById('confirmAppointmentTime').textContent = appointmentTime;
+            document.getElementById('confirmAppointmentTime').textContent = convertTo12Hour(appointmentTime);
             document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
+            document.getElementById('confirmVisitDescription').textContent = visitDescription;
 
             $('#confirmationModal').modal('show');
         }
 
         function submitAppointment() {
             const appointmentData = {
-        patientName: document.getElementById('confirmPatientName').textContent,
-        appointmentDate: document.getElementById('confirmAppointmentDate').textContent,
-        appointmentTime: document.getElementById('confirmAppointmentTime').textContent,
-        doctorSelect: document.getElementById('confirmDoctorSelect').textContent
-    };
+                patientName: document.getElementById('confirmPatientName').textContent,
+                appointmentDate: document.getElementById('confirmAppointmentDate').textContent,
+                appointmentTime: document.getElementById('confirmAppointmentTime').textContent,
+                doctorSelect: document.getElementById('confirmDoctorSelect').textContent,
+                visitDescription: document.getElementById('confirmVisitDescription').textContent
+            };
 
-            // Add to the existing appointments array in localStorage
             let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
             appointments.push(appointmentData);
             localStorage.setItem('myAppointments', JSON.stringify(appointments));
 
             alert('Appointment created successfully!');
             $('#confirmationModal').modal('hide');
-            window.location.href = 'index.html'; // Redirect to index.html
-}
-
+            window.location.href = 'index.html';
+        }
     </script>
 </body>
 </html>
