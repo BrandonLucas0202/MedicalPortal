@@ -1,76 +1,75 @@
-USE MedPortal;
 -- Account table
 CREATE TABLE Account (
   accountID VARCHAR(36) NOT NULL,
-  email VARCHAR(255),
-  phoneNumber VARCHAR(20),
-  address TEXT,
-  calendarID VARCHAR(36),
-  inboxID VARCHAR(36),
-  outboxID VARCHAR(36),
+  email VARCHAR(255) NOT NULL,
+  phoneNumber VARCHAR(20) NOT NULL,
+  address TEXT NOT NULL,
   PRIMARY KEY (accountID)
-);
-
--- PatientAccount table
-CREATE TABLE PatientAccount (
-  accountID VARCHAR(36) NOT NULL,
-  age INT,
-  ssn VARCHAR(20),
-  chart VARCHAR(36),
-  insurancePolicy VARCHAR(36),
-  bills VARCHAR(36),
-  PRIMARY KEY (accountID)
-);
-
--- Chart table
-CREATE TABLE Chart (
-  chartID VARCHAR(36) NOT NULL,
-  weight FLOAT,
-  height FLOAT,
-  bloodPressure VARCHAR(20),
-  temperature FLOAT,
-  prescriptions TEXT,
-  diagnoses TEXT,
-  allergies TEXT,
-  date DATE,
-  PRIMARY KEY (chartID),
-  FOREIGN KEY (chartID) REFERENCES PatientAccount(accountID)
-);
-
--- Prescription table
-CREATE TABLE Prescription (
-  prescriptionID VARCHAR(36) NOT NULL,
-  drug VARCHAR(255),
-  dosage VARCHAR(255),
-  frequency VARCHAR(255),
-  date DATE,
-  pharmacyID VARCHAR(36),
-  PRIMARY KEY (prescriptionID)
 );
 
 -- InsurancePolicy table
 CREATE TABLE InsurancePolicy (
   insurancePolicyID VARCHAR(36) NOT NULL,
-  insuranceName VARCHAR(255),
-  insurancePolicyNumber VARCHAR(255),
-  copayAmount FLOAT,
+  insuranceName VARCHAR(255) NOT NULL,
+  insurancePolicyNumber VARCHAR(255) NOT NULL,
+  copayAmount FLOAT NOT NULL,
   PRIMARY KEY (insurancePolicyID)
+);
+
+-- PatientAccount table
+CREATE TABLE PatientAccount (
+  patientAccountID VARCHAR(36) NOT NULL,
+  age INT NOT NULL,
+  ssn VARCHAR(20) NOT NULL,
+  insurancePolicyID VARCHAR(36) NOT NULL,
+  PRIMARY KEY (patientAccountID),
+  FOREIGN KEY (patientAccountID) REFERENCES Account(accountID),
+  FOREIGN KEY (insurancePolicyID) REFERENCES InsurancePolicy(insurancePolicyID)
+);
+
+-- Chart table
+CREATE TABLE Chart (
+  chartID VARCHAR(36) NOT NULL,
+  weight FLOAT NOT NULL,
+  height FLOAT NOT NULL,
+  bloodPressure VARCHAR(20) NOT NULL,
+  temperature FLOAT NOT NULL,
+  diagnoses TEXT NOT NULL,
+  allergies TEXT NOT NULL,
+  date DATE NOT NULL,
+  patientAccountID VARCHAR(36) NOT NULL,
+  PRIMARY KEY (chartID),
+  FOREIGN KEY (patientAccountID) REFERENCES PatientAccount(patientAccountID)
 );
 
 -- Pharmacy table
 CREATE TABLE Pharmacy (
   pharmacyID VARCHAR(36) NOT NULL,
-  name VARCHAR(255),
-  address TEXT,
+  name VARCHAR(255) NOT NULL,
+  address TEXT NOT NULL,
   phoneNumber VARCHAR(20),
   PRIMARY KEY (pharmacyID)
+);
+
+-- Prescription table
+CREATE TABLE Prescription (
+  prescriptionID VARCHAR(36) NOT NULL,
+  drug VARCHAR(255) NOT NULL,
+  dosage VARCHAR(255) NOT NULL,
+  frequency VARCHAR(255) NOT NULL,
+  date DATE NOT NULL,
+  pharmacyID VARCHAR(36) NOT NULL,
+  patientAccountID VARCHAR(36) NOT NULL,
+  PRIMARY KEY (prescriptionID),
+  FOREIGN KEY (pharmacyID) REFERENCES Pharmacy(pharmacyID),
+  FOREIGN KEY (patientAccountID) REFERENCES PatientAccount(patientAccountID)
 );
 
 -- StaffAccount table
 CREATE TABLE StaffAccount (
   staffAccountID VARCHAR(36) NOT NULL,
   role VARCHAR(20) NOT NULL,
-  accountID VARCHAR(36),
+  accountID VARCHAR(36) NOT NULL,
   PRIMARY KEY (staffAccountID),
   FOREIGN KEY (accountID) REFERENCES Account(accountID),
   CHECK (role IN ('Nurse', 'Doctor', 'Admin', 'Staff'))
@@ -85,36 +84,23 @@ CREATE TABLE HashedPassword (
   FOREIGN KEY (accountID) REFERENCES Account(accountID)
 );
 
--- Inbox table
-CREATE TABLE Inbox (
-  inboxID VARCHAR(36) NOT NULL,
-  messages TEXT,
-  PRIMARY KEY (inboxID)
-);
-
--- Outbox table
-CREATE TABLE Outbox (
-  outboxID VARCHAR(36) NOT NULL,
-  messages TEXT,
-  PRIMARY KEY (outboxID)
-);
-
 -- Test table
 CREATE TABLE Test (
   testID VARCHAR(36) NOT NULL,
-  type VARCHAR(20) NOT NULL,
-  date DATE,
-  labID VARCHAR(36),
+  description TEXT NOT NULL,
+  date DATE NOT NULL,
+  labID VARCHAR(36) NOT NULL,
+  patientAccountID VARCHAR(36) NOT NULL,
   PRIMARY KEY (testID),
-  CHECK (type IN ('BloodTest', 'XRay', 'MRI', 'Other'))
+  FOREIGN KEY (patientAccountID) REFERENCES PatientAccount(patientAccountID)
 );
 
 -- TestResult table
 CREATE TABLE TestResult (
   testResultID VARCHAR(36) NOT NULL,
-  testID VARCHAR(36),
-  date DATE,
-  result TEXT,
+  testID VARCHAR(36) NOT NULL,
+  date DATE NOT NULL,
+  result TEXT NOT NULL,
   PRIMARY KEY (testResultID),
   FOREIGN KEY (testID) REFERENCES Test(testID)
 );
@@ -122,50 +108,43 @@ CREATE TABLE TestResult (
 -- Laboratory table
 CREATE TABLE Laboratory (
   labID VARCHAR(36) NOT NULL,
-  name VARCHAR(255),
-  address TEXT,
-  phoneNumber VARCHAR(20),
+  name VARCHAR(255) NOT NULL,
+  address TEXT NOT NULL,
+  phoneNumber VARCHAR(20) NOT NULL,
   PRIMARY KEY (labID)
-);
-
--- Calendar table
-CREATE TABLE Calendar (
-  calendarID VARCHAR(36) NOT NULL,
-  PRIMARY KEY (calendarID)
 );
 
 -- Appointment table
 CREATE TABLE Appointment (
   appointmentID VARCHAR(36) NOT NULL,
-  type VARCHAR(20) NOT NULL,
-  date DATE,
-  time TIME,
-  patientAccountID VARCHAR(36),
-  doctorAccountID VARCHAR(36),
+  description TEXT NOT NULL,
+  date DATE NOT NULL,
+  time TIME NOT NULL,
+  patientAccountID VARCHAR(36) NOT NULL,
+  doctorAccountID VARCHAR(36) NOT NULL,
   PRIMARY KEY (appointmentID),
-  FOREIGN KEY (patientAccountID) REFERENCES PatientAccount(accountID),
-  FOREIGN KEY (doctorAccountID) REFERENCES StaffAccount(staffAccountID),
-  CHECK (type IN ('Consultation', 'FollowUp', 'Emergency'))
+  FOREIGN KEY (patientAccountID) REFERENCES PatientAccount(patientAccountID),
+  FOREIGN KEY (doctorAccountID) REFERENCES StaffAccount(staffAccountID)
 );
-
 
 -- Bill table
 CREATE TABLE Bill (
   billID VARCHAR(36) NOT NULL,
-  amount FLOAT,
-  dateIssued DATE,
-  dueDate DATE,
-  patientAccountID VARCHAR(36),
+  description TEXT NOT NULL,
+  amount FLOAT NOT NULL,
+  dateIssued DATE NOT NULL,
+  dueDate DATE NOT NULL,
+  patientAccountID VARCHAR(36) NOT NULL,
   PRIMARY KEY (billID),
-  FOREIGN KEY (patientAccountID) REFERENCES PatientAccount(accountID)
+  FOREIGN KEY (patientAccountID) REFERENCES PatientAccount(patientAccountID)
 );
 
 -- Payment table
 CREATE TABLE Payment (
   paymentID VARCHAR(36) NOT NULL,
-  billID VARCHAR(36),
-  amount FLOAT,
-  date DATE,
+  billID VARCHAR(36) NOT NULL,
+  amount FLOAT NOT NULL,
+  date DATE NOT NULL,
   PRIMARY KEY (paymentID),
   FOREIGN KEY (billID) REFERENCES Bill(billID)
 );
@@ -173,45 +152,23 @@ CREATE TABLE Payment (
 -- Reminder table
 CREATE TABLE Reminder (
   reminderID VARCHAR(36) NOT NULL,
-  calendarID VARCHAR(36),
+  description TEXT NOT NULL,
+  date DATE NOT NULL,
+  time TIME NOT NULL,
+  accountID VARCHAR(36) NOT NULL,
   PRIMARY KEY (reminderID),
-  FOREIGN KEY (calendarID) REFERENCES Calendar(calendarID)
-);
-
--- AppointmentReminder table
-CREATE TABLE AppointmentReminder (
-  appointmentReminderID VARCHAR(36) NOT NULL,
-  appointmentID VARCHAR(36),
-  reminderID VARCHAR(36),
-  PRIMARY KEY (appointmentReminderID),
-  FOREIGN KEY (appointmentID) REFERENCES Appointment(appointmentID),
-  FOREIGN KEY (reminderID) REFERENCES Reminder(reminderID)
+  FOREIGN KEY (accountID) REFERENCES Account(accountID)
 );
 
 -- Message table
 CREATE TABLE Message (
   messageID VARCHAR(36) NOT NULL,
-  senderAccountID VARCHAR(36),
-  recipientAccountID VARCHAR(36),
-  messageText TEXT,
+  date DATE NOT NULL,
+  time TIME NOT NULL,
+  messageText TEXT NOT NULL,
+  senderAccountID VARCHAR(36) NOT NULL,
+  recipientAccountID VARCHAR(36) NOT NULL,
   PRIMARY KEY (messageID),
   FOREIGN KEY (senderAccountID) REFERENCES Account(accountID),
   FOREIGN KEY (recipientAccountID) REFERENCES Account(accountID)
-);
-
--- Fee table
-CREATE TABLE Fee (
-  feeID VARCHAR(36) NOT NULL,
-  reason TEXT,
-  amount FLOAT,
-  PRIMARY KEY (feeID)
-);
-
--- BillFee (association between Bill and Fee)
-CREATE TABLE BillFee (
-  billID VARCHAR(36) NOT NULL,
-  feeID VARCHAR(36) NOT NULL,
-  PRIMARY KEY (billID, feeID),
-  FOREIGN KEY (billID) REFERENCES Bill(billID),
-  FOREIGN KEY (feeID) REFERENCES Fee(feeID)
 );

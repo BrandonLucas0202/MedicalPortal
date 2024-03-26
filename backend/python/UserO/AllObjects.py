@@ -1,58 +1,92 @@
 class Account:
-    def __init__(self, accountID, email, phoneNumber, address, calendarID, inboxID, outboxID):
+    def __init__(self, accountID, email, phoneNumber, address):
         self.accountID = accountID
         self.email = email
         self.phoneNumber = phoneNumber
         self.address = address
-        self.calendarID = calendarID
-        self.inboxID = inboxID
-        self.outboxID = outboxID
 
-    # CRUD operations for Account
+    def __str__(self) -> str:
+        return self.accountID
+
     def inserts(self) -> list[str]:
-        query = "INSERT INTO Account (accountID, email, phoneNumber, address, calendarID, inboxID, outboxID) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        values = (self.accountID, self.email, self.phoneNumber, self.address, self.calendarID, self.inboxID, self.outboxID)
+        query = "INSERT INTO Account (accountID, email, phoneNumber, address) VALUES (%s, %s, %s, %s)"
+        values = (self.accountID, self.email, self.phoneNumber, self.address)
 
         return [query.format(values)]
 
     def updates(self) -> list[str]:
-        query = "UPDATE Account SET email=%s, phoneNumber=%s, address=%s, calendarID=%s, inboxID=%s, outboxID=%s WHERE accountID=%s"
-        values = (self.email, self.phoneNumber, self.address, self.calendarID, self.inboxID, self.outboxID, self.accountID)
+        query = "UPDATE Account SET email=%s, phoneNumber=%s, address=%s WHERE accountID=%s"
+        values = (self.email, self.phoneNumber, self.address, self.accountID)
+
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT accountID, email, phoneNumber, address FROM Account WHERE accountID = %s"
+
+
+class InsurancePolicy:
+    def __init__(self, insurancePolicyID, insuranceName, insurancePolicyNumber, copayAmount):
+        self.insurancePolicyID = insurancePolicyID
+        self.insuranceName = insuranceName
+        self.insurancePolicyNumber = insurancePolicyNumber
+        self.copayAmount = copayAmount
+
+    def __str__(self) -> str:
+        return self.insurancePolicyID
+
+    def inserts(self) -> list[str]:
+        query = "INSERT INTO InsurancePolicy (insurancePolicyID, insuranceName, insurancePolicyNumber, copayAmount) VALUES (%s, %s, %s, %s)"
+        values = (self.insurancePolicyID, self.insuranceName, self.insurancePolicyNumber, self.copayAmount)
 
         return [query.format(values)]
 
+    def updates(self) -> list[str]:
+        query = "UPDATE InsurancePolicy SET insuranceName=%s, insurancePolicyNumber=%s, copayAmount=%s WHERE insurancePolicyID=%s"
+        values = (self.insuranceName, self.insurancePolicyNumber, self.copayAmount, self.insurancePolicyID)
+        
+        return [query.format(values)]
+
+    def select() -> str:
+        return "SELECT insurancePolicyID, insuranceName, insurancePolicyNumber, copayAmount FROM InsurancePolicy WHERE insurancePolicyID = %s"
+
+
 class PatientAccount(Account):
-    def __init__(self, accountID, email, phoneNumber, address, calendarID, inboxID, outboxID, age, ssn, chart, insurancePolicy, bills):
-        Account.__init__(self, accountID, email, phoneNumber, address, calendarID, inboxID, outboxID)
+    def __init__(self, patientAccountID, email, phoneNumber, address, age, ssn, chart, insurancePolicy: InsurancePolicy):
+        Account.__init__(self, patientAccountID, email, phoneNumber, address)
+        self.patientAccountID = patientAccountID
         self.age = age
         self.ssn = ssn
         self.chart = chart
         self.insurancePolicy = insurancePolicy
-        self.bills = bills
+
+    def __str__(self) -> str:
+        return self.accountID
 
     def inserts(self) -> list[str]:
-        query = "INSERT INTO PatientAccount (accountID, age, ssn, chart, insurancePolicy, bills) VALUES (%s, %s, %s, %s, %s, %s)"
-        values = (self.accountID, self.age, self.ssn, self.chart, self.insurancePolicy, self.bills)
+        query = "INSERT INTO PatientAccount (patientAccountID, age, ssn, chart, insurancePolicyID) VALUES (%s, %s, %s, %s, %s)"
+        values = (self.patientAccountID, self.age, self.ssn, self.chart, self.insurancePolicy)
         
         return [query.format(values)] + Account.inserts(self)
     
     def updates(self) -> list[str]:
-        query = "UPDATE PatientAccount SET age=%s, ssn=%s, chart=%s, insurancePolicy=%s, bills=%s WHERE accountID=%s"
-        values = (self.age, self.ssn, self.chart, self.insurancePolicy, self.bills, self.accountID)
+        query = "UPDATE PatientAccount SET age=%s, ssn=%s, chart=%s, insurancePolicyID=%s WHERE patientAccountID=%s"
+        values = (self.age, self.ssn, self.chart, self.insurancePolicy, self.patientAccountID)
 
         return [query.format(values)] + Account.updates(self)
     
     def select() -> str:
-        return "SELECT accountID, email, phoneNumber, address, calendarID, inboxID, outboxID, age, ssn, chart, insurancePolicy, bills FROM PatientAccount INNER JOIN Account ON PatientAccount.accountID = Account.accountID WHERE accountID=%s"
+        return "SELECT accountID, patientAccountID, email, phoneNumber, address, age, ssn, chart, insurancePolicyID, insuranceName, insurancePolicyNumber, copayAmount FROM PatientAccount INNER JOIN Account ON PatientAccount.patientAccountID = Account.accountID INNER JOIN InsurancePolicy ON PatientAccount.insurancePolicyID = InsurancePolicy.insurancePolicyID WHERE accountID=%s"
         
 
 class StaffAccount(Account):
-    def __init__(self, staffAccountID, email, phoneNumber, address, calendarID, inboxID, outboxID, role, accountID):
-        Account.__init__(self, accountID, email, phoneNumber, address, calendarID, inboxID, outboxID)
+    def __init__(self, staffAccountID, email, phoneNumber, address, role, accountID):
+        Account.__init__(self, accountID, email, phoneNumber, address)
         self.staffAccountID = staffAccountID
         self.role = role
 
-    # CRUD operations for StaffAccount
+    def __str__(self) -> str:
+        return self.accountID
+
     def inserts(self) -> list[str]:
         query = "INSERT INTO StaffAccount (staffAccountID, role, accountID) VALUES (%s, %s, %s)"
         values = (self.staffAccountID, self.role, self.accountID)
@@ -68,64 +102,65 @@ class StaffAccount(Account):
     def select() -> str:
         return "SELECT staffAccountID, email, phoneNumber, address, calendarID, inboxID, outboxID, role, accountID FROM StaffAccount INNER JOIN Account ON StaffAccount.accountID = Account.accountID WHERE staffAccountID=%s"
 
+
 class Chart:
-    def __init__(self, chartID, weight, height, bloodPressure, temperature, prescriptions, diagnoses, allergies, date):
+    def __init__(self, chartID, weight, height, bloodPressure, temperature, diagnoses, allergies, date, patientAccountID):
         self.chartID = chartID
         self.weight = weight
         self.height = height
         self.bloodPressure = bloodPressure
         self.temperature = temperature
-        self.prescriptions = prescriptions
         self.diagnoses = diagnoses
         self.allergies = allergies
         self.date = date
+        self.patientAccountID = patientAccountID
 
-    # CRUD operations for Chart
+    def __str__(self) -> str:
+        return self.chartID
+    
     def inserts(self) -> list[str]:
-        query = "INSERT INTO Chart (chartID, weight, height, bloodPressure, temperature, prescriptions, diagnoses, allergies, date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (chart.chartID, chart.weight, chart.height, chart.bloodPressure, chart.temperature, chart.prescriptions, chart.diagnoses, chart.allergies, chart.date)
+        query = "INSERT INTO Chart (chartID, weight, height, bloodPressure, temperature, diagnoses, allergies, date, patientAccountID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (self.chartID, self.weight, self.height, self.bloodPressure, self.temperature, self.diagnoses, self.allergies, self.date, self.patientAccountID)
 
+        return [query.format(values)]
+    
     def updates(self) -> list[str]:
-        query = "UPDATE Chart SET weight=%s, height=%s, bloodPressure=%s, temperature=%s, prescriptions=%s, diagnoses=%s, allergies=%s, date=%s WHERE chartID=%s"
-        values = (chart.weight, chart.height, chart.bloodPressure, chart.temperature, chart.prescriptions, chart.diagnoses, chart.allergies, chart.date, chart.chartID)
+        query = "UPDATE Chart SET weight=%s, height=%s, bloodPressure=%s, temperature=%s, diagnoses=%s, allergies=%s, date=%s, patientAccountID=%s WHERE chartID=%s"
+        values = (self.weight, self.height, self.bloodPressure, self.temperature, self.diagnoses, self.allergies, self.date, self.patientAccountID, self.chartID)
+
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT chartID, weight, height, bloodPressure, temperature, diagnoses, allergies, date, patientAccountID FROM Chart WHERE chartID = %s"
 
 
 class Prescription:
-    def __init__(self, prescriptionID, drug, dosage, frequency, date, pharmacyID):
+    def __init__(self, prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID):
         self.prescriptionID = prescriptionID
         self.drug = drug
         self.dosage = dosage
         self.frequency = frequency
         self.date = date
         self.pharmacyID = pharmacyID
+        self.patientAccountID = patientAccountID
 
-    # CRUD operations for Prescription
+    def __str__(self) -> str:
+        return self.prescriptionID
+
     def inserts(self) -> list[str]:
-        query = "INSERT INTO Prescription (prescriptionID, drug, dosage, frequency, date, pharmacyID) VALUES (%s, %s, %s, %s, %s, %s)"
-        values = (prescription.prescriptionID, prescription.drug, prescription.dosage, prescription.frequency, prescription.date, prescription.pharmacyID)
-        self.cursor.execute(query, values)
-        self.connection.commit()
+        query = "INSERT INTO Prescription (prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        values = (self.prescriptionID, self.drug, self.dosage, self.frequency, self.date, self.pharmacyID, self.patientAccountID)
 
+        return [query.format(values)]
+    
     def updates(self) -> list[str]:
-        query = "UPDATE Prescription SET drug=%s, dosage=%s, frequency=%s, date=%s, pharmacyID=%s WHERE prescriptionID=%s"
-        values = (prescription.drug, prescription.dosage, prescription.frequency, prescription.date, prescription.pharmacyID, prescription.prescriptionID)
-
-
-class InsurancePolicy:
-    def __init__(self, insurancePolicyID, insuranceName, insurancePolicyNumber, copayAmount):
-        self.insurancePolicyID = insurancePolicyID
-        self.insuranceName = insuranceName
-        self.insurancePolicyNumber = insurancePolicyNumber
-        self.copayAmount = copayAmount
-
-    # CRUD operations for InsurancePolicy
-    def inserts(self) -> list[str]:
-        query = "INSERT INTO InsurancePolicy (insurancePolicyID, insuranceName, insurancePolicyNumber, copayAmount) VALUES (%s, %s, %s, %s)"
-        values = (insurance_policy.insurancePolicyID, insurance_policy.insuranceName, insurance_policy.insurancePolicyNumber, insurance_policy.copayAmount)
-
-    def updates(self) -> list[str]:
-        query = "UPDATE InsurancePolicy SET insuranceName=%s, insurancePolicyNumber=%s, copayAmount=%s WHERE insurancePolicyID=%s"
-        values = (insurance_policy.insuranceName, insurance_policy.insurancePolicyNumber, insurance_policy.copayAmount, insurance_policy.insurancePolicyID)
+        query = "UPDATE Prescription SET drug=%s, dosage=%s, frequency=%s, date=%s, pharmacyID=%s, patientAccountID=%s WHERE prescriptionID=%s"
+        values = (self.drug, self.dosage, self.frequency, self.date, self.pharmacyID, self.patientAccountID, self.prescriptionID)
+    
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID FROM Prescription WHERE prescriptionID = %s"
 
 
 class Pharmacy:
@@ -135,61 +170,51 @@ class Pharmacy:
         self.address = address
         self.phoneNumber = phoneNumber
 
-    # CRUD operations for Pharmacy
+    def __str__(self) -> str:
+        return self.pharmacyID
+
     def inserts(self) -> list[str]:
         query = "INSERT INTO Pharmacy (pharmacyID, name, address, phoneNumber) VALUES (%s, %s, %s, %s)"
-        values = (pharmacy.pharmacyID, pharmacy.name, pharmacy.address, pharmacy.phoneNumber)
+        values = (self.pharmacyID, self.name, self.address, self.phoneNumber)
 
+        return [query.format(values)]
+    
     def updates(self) -> list[str]:
         query = "UPDATE Pharmacy SET name=%s, address=%s, phoneNumber=%s WHERE pharmacyID=%s"
-        values = (pharmacy.name, pharmacy.address, pharmacy.phoneNumber, pharmacy.pharmacyID)
+        values = (self.name, self.address, self.phoneNumber, self.pharmacyID)
 
-
-class Inbox:
-    def __init__(self, inboxID, messages):
-        self.inboxID = inboxID
-        self.messages = messages
-
-    # CRUD operations for Inbox
-    def inserts(self) -> list[str]:
-        query = "INSERT INTO Inbox (inboxID, messages) VALUES (%s, %s)"
-        values = (inbox.inboxID, inbox.messages)
-
-    def updates(self) -> list[str]:
-        query = "UPDATE Inbox SET messages=%s WHERE inboxID=%s"
-        values = (inbox.messages, inbox.inboxID)
-
-
-class Outbox:
-    def __init__(self, outboxID, messages):
-        self.outboxID = outboxID
-        self.messages = messages
-
-    # CRUD operations for Outbox
-    def inserts(self) -> list[str]:
-        query = "INSERT INTO Outbox (outboxID, messages) VALUES (%s, %s)"
-        values = (outbox.outboxID, outbox.messages)
-
-    def updates(self) -> list[str]:
-        query = "UPDATE Outbox SET messages=%s WHERE outboxID=%s"
-        values = (outbox.messages, outbox.outboxID)
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT pharmacyID, name, address, phoneNumber FROM Pharmacy WHERE pharmacyID = %s"
 
 
 class Test:
-    def __init__(self, testID, type, date, labID):
+    def __init__(self, testID, description, date, labID, patientAccountID):
         self.testID = testID
-        self.type = type
+        self.description = description
         self.date = date
         self.labID = labID
+        self.patientAccountID = patientAccountID
 
-    # CRUD operations for Test
+    def __str__(self) -> str:
+        return self.testID
+    
     def inserts(self) -> list[str]:
-        query = "INSERT INTO Test (testID, type, date, labID) VALUES (%s, %s, %s, %s)"
-        values = (test.testID, test.type, test.date, test.labID)
+        query = "INSERT INTO Test (testID, description, date, labID, patientAccountID) VALUES (%s, %s, %s, %s, %s)"
+        values = (self.testID, self.description, self.date, self.labID, self.patientAccountID)
 
+        return [query.format(values)]
+    
     def updates(self) -> list[str]:
-        query = "UPDATE Test SET type = %s, date = %s, labID = %s WHERE testID = %s"
-        values = (test.type, test.date, test.labID, test.testID)
+        query = "UPDATE Test SET description=%s, date=%s, labID=%s, patientAccountID=%s WHERE testID = %s"
+        values = (self.description, self.date, self.labID, self.patientAccountID, self.testID)
+
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT testID, description, date, labID, patientAccountID FROM Test WHERE testID = %s"
+
 
 class TestResult:
     def __init__(self, testResultID, testID, date, result):
@@ -198,14 +223,23 @@ class TestResult:
         self.date = date
         self.result = result
 
-    # CRUD operations for TestResult
+    def __str__(self) -> str:
+        return self.testResultID
+    
     def inserts(self) -> list[str]:
         query = "INSERT INTO TestResult (testResultID, testID, date, result) VALUES (%s, %s, %s, %s)"
-        values = (test_result.testResultID, test_result.testID, test_result.date, test_result.result)
+        values = (self.testResultID, self.testID, self.date, self.result)
 
+        return [query.format(values)]
+    
     def updates(self) -> list[str]:
         query = "UPDATE TestResult SET testID=%s, date=%s, result=%s WHERE testResultID=%s"
-        values = (test_result.testID, test_result.date, test_result.result, test_result.testResultID)
+        values = (self.testID, self.date, self.result, self.testResultID)
+
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT testResultID, testID, date, result FROM TestResult WHERE testResultID = %s"
 
 
 class Laboratory:
@@ -215,65 +249,79 @@ class Laboratory:
         self.address = address
         self.phoneNumber = phoneNumber
 
-    # CRUD operations for Laboratory
+    def __str__(self) -> str:
+        return self.labID
+    
     def inserts(self) -> list[str]:
         query = "INSERT INTO Laboratory (labID, name, address, phoneNumber) VALUES (%s, %s, %s, %s)"
-        values = (laboratory.labID, laboratory.name, laboratory.address, laboratory.phoneNumber)
+        values = (self.labID, self.name, self.address, self.phoneNumber)
 
+        return [query.format(values)]
+    
     def updates(self) -> list[str]:
         query = "UPDATE Laboratory SET name=%s, address=%s, phoneNumber=%s WHERE labID=%s"
-        values = (laboratory.name, laboratory.address, laboratory.phoneNumber, laboratory.labID)
+        values = (self.name, self.address, self.phoneNumber, self.labID)
 
-
-class Calendar:
-    def __init__(self, calendarID):
-        self.calendarID = calendarID
-
-     # CRUD operations for Calendar
-    def inserts(self) -> list[str]:
-        query = "INSERT INTO Calendar (calendarID) VALUES (%s)"
-        values = (calendar.calendarID,)
-
-    def updates(self) -> list[str]:
-        query = "UPDATE Calendar SET calendarID = %s WHERE calendarID = %s"
-        values = (calendar.calendarID, calendar.calendarID)
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT labID, name, address, phoneNumber FROM Laboratory WHERE labID = %s"
 
 
 class Appointment:
-    def __init__(self, appointmentID, type, date, time, patientAccountID, doctorAccountID):
+    def __init__(self, appointmentID, description, date, time, patientAccountID, doctorAccountID):
         self.appointmentID = appointmentID
-        self.type = type
+        self.description = description
         self.date = date
         self.time = time
         self.patientAccountID = patientAccountID
         self.doctorAccountID = doctorAccountID
 
-    # CRUD operations for Appointment
+    def __str__(self) -> str:
+        return self.appointmentID
+    
     def inserts(self) -> list[str]:
-        query = "INSERT INTO Appointment (appointmentID, doctorID, patientID, date, time, status) VALUES (%s, %s, %s, %s, %s, %s)"
-        values = (appointment.appointmentID, appointment.doctorID, appointment.patientID, appointment.date, appointment.time, appointment.status)
+        query = "INSERT INTO Appointment (appointmentID, description, date, time, patientAccountID, doctorAccountID) VALUES (%s, %s, %s, %s, %s, %s)"
+        values = (self.appointmentID, self.description, self.date, self.time, self.patientAccountID, self.doctorAccountID)
 
+        return [query.format(values)]
+    
     def updates(self) -> list[str]:
-        query = "UPDATE Appointment SET doctorID=%s, patientID=%s, date=%s, time=%s, status=%s WHERE appointmentID=%s"
-        values = (appointment.doctorID, appointment.patientID, appointment.date, appointment.time, appointment.status, appointment.appointmentID)
+        query = "UPDATE Appointment SET description=%s, date=%s, time=%s, patientAccountID=%s, doctorAccountID=%s WHERE appointmentID=%s"
+        values = (self.description, self.date, self.time, self.patientAccountID, self.doctorAccountID, self.appointmentID)
+
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT appointmentID, description, date, time, patientAccountID, doctorAccountID FROM Appointment WHERE appointmentID = %s"
 
 
 class Bill:
-    def __init__(self, billID, amount, dateIssued, dueDate, patientAccountID):
+    def __init__(self, billID, description, amount, dateIssued, dueDate, patientAccountID):
         self.billID = billID
+        self.description = description
         self.amount = amount
         self.dateIssued = dateIssued
         self.dueDate = dueDate
         self.patientAccountID = patientAccountID
 
-    # CRUD operations for Bill
+    def __str__(self) -> str:
+        return self.billID
+    
     def inserts(self) -> list[str]:
-        query = "INSERT INTO Bill (billID, amount, dateIssued, dueDate, patientAccountID) VALUES (%s, %s, %s, %s, %s)"
-        values = (bill.billID, bill.amount, bill.dateIssued, bill.dueDate, bill.patientAccountID)
+        query = "INSERT INTO Bill (billID, description, amount, dateIssued, dueDate, patientAccountID) VALUES (%s, %s, %s, %s, %s, %s)"
+        values = (self.billID, self.description, self.amount, self.dateIssued, self.dueDate, self.patientAccountID)
 
+        return [query.format(values)]
+    
     def updates(self) -> list[str]:
-        query = "UPDATE Bill SET amount=%s, dateIssued=%s, dueDate=%s, patientAccountID=%s WHERE billID=%s"
-        values = (bill.amount, bill.dateIssued, bill.dueDate, bill.patientAccountID, bill.billID)
+        query = "UPDATE Bill SET description=%s, amount=%s, dateIssued=%s, dueDate=%s, patientAccountID=%s WHERE billID=%s"
+        values = (self.description, self.amount, self.dateIssued, self.dueDate, self.patientAccountID, self.billID)
+
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT billID, description, amount, dateIssued, dueDate, patientAccountID FROM Bill WHERE billID = %s"
 
 
 class Payment:
@@ -283,105 +331,76 @@ class Payment:
         self.amount = amount
         self.date = date
 
-     # CRUD operations for Payment
+    def __str__(self) -> str:
+        return self.paymentID
+    
     def inserts(self) -> list[str]:
         query = "INSERT INTO Payment (paymentID, billID, amount, date) VALUES (%s, %s, %s, %s)"
-        values = (payment.paymentID, payment.billID, payment.amount, payment.date)
+        values = (self.paymentID, self.billID, self.amount, self.date)
 
+        return [query.format(values)]
+    
     def updates(self) -> list[str]:
         query = "UPDATE Payment SET billID=%s, amount=%s, date=%s WHERE paymentID=%s"
-        values = (payment.billID, payment.amount, payment.date, payment.paymentID)
+        values = (self.billID, self.amount, self.date, self.paymentID)
+
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT paymentID, billID, amount, date FROM Payment WHERE paymentID = %s"
 
 
 class Reminder:
-    def __init__(self, reminderID, calendarID):
+    def __init__(self, reminderID, description, date, time, accountID):
         self.reminderID = reminderID
-        self.calendarID = calendarID
+        self.description = description
+        self.date = date
+        self.time = time
+        self.accountID = accountID
 
-class AppointmentReminder:
-    def __init__(self, appointmentReminderID, appointmentID, reminderID):
-        self.appointmentReminderID = appointmentReminderID
-        self.appointmentID = appointmentID
-        self.reminderID = reminderID
-
-    # CRUD operations for AppointmentReminder
+    def __str__(self) -> str:
+        return self.reminderID
+    
     def inserts(self) -> list[str]:
-        query = "INSERT INTO AppointmentReminder (appointmentReminderID, appointmentID, reminderID) VALUES (%s, %s, %s)"
-        values = (appointment_reminder.appointmentReminderID, appointment_reminder.appointmentID, appointment_reminder.reminderID)
+        query = "INSERT INTO Reminder (reminderID, description, date, time, accountID) VALUES (%s, %s, %s, %s, %s)"
+        values = (self.reminderID, self.description, self.date, self.time, self.accountID)
 
+        return [query.format(values)]
+    
     def updates(self) -> list[str]:
-        query = "UPDATE AppointmentReminder SET appointmentID=%s, reminderID=%s WHERE appointmentReminderID=%s"
-        values = (appointment_reminder.appointmentID, appointment_reminder.reminderID, appointment_reminder.appointmentReminderID)
+        query = "UPDATE Reminder SET description=%s, date=%s, time=%s, accountID=%s WHERE reminderID=%s"
+        values = (self.description, self.date, self.time, self.accountID, self.reminderID)
+
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT reminderID, description, date, time, accountID FROM Reminder WHERE reminderID = %s"
 
 
 class Message:
-    def __init__(self, messageID, senderAccountID, recipientAccountID, messageText):
+    def __init__(self, messageID, date, time, messageText, senderAccountID, recipientAccountID):
         self.messageID = messageID
+        self.date = date
+        self.time = time
+        self.messageText = messageText
         self.senderAccountID = senderAccountID
         self.recipientAccountID = recipientAccountID
-        self.messageText = messageText
 
-    # CRUD operations for Message
-    def inserts(self) -> list[str]:
-        query = "INSERT INTO Message (messageID, senderAccountID, recipientAccountID, messageText) VALUES (%s, %s, %s, %s)"
-        values = (message.messageID, message.senderAccountID, message.recipientAccountID, message.messageText)
-
-    def updates(self) -> list[str]:
-        query = "UPDATE Message SET senderAccountID=%s, recipientAccountID=%s, messageText=%s WHERE messageID=%s"
-        values = (message.senderAccountID, message.recipientAccountID, message.messageText, message.messageID)
-
-
-class Fee:
-    def __init__(self, feeID, reason, amount):
-        self.feeID = feeID
-        self.reason = reason
-        self.amount = amount
-
-    # CRUD operations for Fee
-    def inserts(self) -> list[str]:
-        query = "INSERT INTO Fee (feeID, reason, amount) VALUES (%s, %s, %s)"
-        values = (fee.feeID, fee.reason, fee.amount)
-
-    def updates(self) -> list[str]:
-        query = "UPDATE Fee SET reason=%s, amount=%s WHERE feeID=%s"
-        values = (fee.reason, fee.amount, fee.feeID)
-
-
-class BillFee:
-    def __init__(self, billID, feeID, insuranceID):
-        self.billID = billID
-        self.feeID = feeID
-        self.insuranceID = insuranceID
+    def __str__(self) -> str:
+        return self.messageID
     
-    # CRUD operations for BillFee
     def inserts(self) -> list[str]:
-        query = "INSERT INTO BillFee (billID, feeID, insuranceID) VALUES (%s, %s, %s)"
-        values = (bill_fee.billID, bill_fee.feeID, bill_fee.insuranceID)
+        query = "INSERT INTO Message (messageID, date, time, messageText, senderAccountID, recipientAccountID) VALUES (%s, %s, %s, %s, %s, %s)"
+        values = (self.messageID, self.date, self.time, self.messageText, self.senderAccountID, self.recipientAccountID)
 
+        return [query.format(values)]
+    
     def updates(self) -> list[str]:
-        query = "UPDATE BillFee SET insuranceID=%s WHERE billID=%s AND feeID=%s"
-        values = (bill_fee.insuranceID, bill_fee.billID, bill_fee.feeID)
+        query = "UPDATE Message SET date=%s, time=%s, messageText=%s, senderAccountID=%s, recipientAccountID=%s WHERE messageID=%s"
+        values = (self.date, self.time, self.messageText, self.senderAccountID, self.recipientAccountID, self.messageID)
 
-
-class AppointmentSummary:
-    def _int_(self, appointmentSummaryID, doctorAccountID, appointmentID, patientID):
-        self.appointmentSummaryID = appointmentSummaryID
-        self.doctorAccountID = doctorAccountID
-        self.appointmentID = appointmentID
-        self.patientID = patientID
-
-    # CRUD operations for AppointmentSummary
-    def inserts(self) -> list[str]:
-        query = "INSERT INTO AppointmentSummary (appointmentSummaryID, doctorAccountID, appointmentID, patientID) VALUES (%s, %s, %s, %s)"
-        values = (appointment_summary.appointmentSummaryID, appointment_summary.doctorAccountID, appointment_summary.appointmentID, appointment_summary.patientID)
-
-    def updates(self) -> list[str]:
-        query = "UPDATE AppointmentSummary SET doctorAccountID=%s, appointmentID=%s, patientID=%s WHERE appointmentSummaryID=%s"
-        values = (appointment_summary.doctorAccountID, appointment_summary.appointmentID, appointment_summary.patientID, appointment_summary.appointmentSummaryID)
-
-
-class MessageReminder:
-    def _int_(self, messageReminderID, messageID, reminderID):
-        self.messageReminderID = messageReminderID
-        self.messageID = messageID
-        self.reminderID = reminderID
+        return [query.format(values)]
+    
+    def select() -> str:
+        return "SELECT messageID, date, time, messageText, senderAccountID, recipientAccountID FROM Message WHERE messageID = %s"
+    
