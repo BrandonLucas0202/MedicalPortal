@@ -44,39 +44,41 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Invoices</h1>
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Invoices</h1>
+                        <div>
+                            <a href="bills.html" class="d-inline-block btn btn-sm btn-success shadow-sm mr-2">
+                                <i class="fas fa-dollar-sign fa-sm text-white-50"></i> My Billing
+                            </a>
+                            
+                        </div>
+                    </div>
                     <!-- Content Row -->
                     <div class="row">
                         <div class="col-lg-12">
                             <!-- Approach -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Invoice Summary</h6>
+                           <!-- Form for billing info -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-success">Invoice Summary</h6>
+                        </div>
+                        <div class="card-body">
+                            <form id="invoiceSummary">
+                                <div class="form-group">
+                                    <label for="customer">Customer</label>
+                                    <input type="text" class="form-control" id="customer" placeholder="Jane Smith">
                                 </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Invoice ID</th>
-                                                    <th>Customer</th>
-                                                    <th>Date</th>
-                                                    <th>Amount</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <!-- More rows can be added here -->
-                                                <tr>
-                                                    <td>INV-001</td>
-                                                    <td>Jane Smith</td>
-                                                    <td>2021-01-01</td>
-                                                    <td>$500.00</td>
-                                                    <td>Paid</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="appointmentDate">Date</label>
+                                    <input type="text" class="form-control" id="appointmentDate" placeholder="2021-01-02">
+                                </div>
+                                <div class="form-group">
+                                    <label for="invoiceID">Invoice ID</label>
+                                    <input type="text" class="form-control" id="invoiceID" placeholder="INV-001">
+                                </div>
+                                <div class="form-group">
+                                    <label for="invoiceAmount">Amount</label>
+                                    <input type="text" class="form-control" id="invoiceAmount" placeholder="$500.00">
                                 </div>
                             </div>
                         </div>
