@@ -11,11 +11,8 @@ Test endpoint module that handles:
 """
 from app_provider import app_instance
 from auth.permission import Permission
-from random import choices
-from string import digits, ascii_uppercase
-from UserO.AllObjects import Prescription
-from mysql.connector.cursor import MySQLCursor
-import endpoint.utility as util
+from model.test import Test, TestResult, TestWithResult
+from utility import *
 
 __app = app_instance() # BackendApplication
 __database = __app.getDatabase() # SQLConnection
@@ -23,86 +20,80 @@ __auth = __app.getAuthenticator() # Authenticator
 __flask = __app.getFlask() # Flask
 
 
-@__flask.route("/prescription/view", methods=["GET"])
-def prescriptions_view():
-    try:
-        token = util.getParameter(
-            "token", 
-            verifier = __auth.verifyToken
-        )
-    except Exception as e:
+@__flask.route("/test/view")
+def test_view():
+    params = getParameters()
+    token = params["token"]
+    if not __auth.verifyToken(token):
         return {
             "status": 401,
             "message": "Token is invalid!"
         }
-    
-    accountID = util.getParameter("accountID")
-    if accountID != __auth.getAccount(token).getID() and not __auth.hasPermission(token, Permission.VIEW_PRESCRIPTIONS):
+        
+    patientAccountID = params["patientAccountID"]
+
+    # Must own account or have permission
+    if patientAccountID != __auth.getAccount(token).getAccountID() and not __auth.hasPermission(token, Permission.VIEW_TEST):
         return {
             "status": 401,
-            "message": "You cannot view these prescriptions!"
+            "message": "You cannot view these tests!"
         }
 
-    result = {
-        "status": 201,
-        "prescriptions": []
-    }
-
-    connection = __database.connection()
-    cursor: MySQLCursor = connection.cursor()
-    cursor.execute(Prescription.select(), [accountID])
-    for (prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID) in cursor:
-        result["prescriptions"].append({
-            "prescriptionID": prescriptionID,
-            "drug": drug,
-            "dosage": dosage,
-            "frequency": frequency,
-            "date": date,
-            "pharmacyID": pharmacyID,
-            "patientAccountID": patientAccountID
-        })
-
-    return result
-
-
-@__flask.route("/prescription/create", methods=["GET"])
-def prescription_create():
-    try:
-        token = util.getParameter(
-            "token", 
-            verifier = __auth.verifyToken
-        )
-    except Exception as e:
-        return {
-            "status": 401,
-            "message": "Token is invalid!"
-        }
-    
-    prescriptionID = ''.join(choices(digits + ascii_uppercase, k=36))
-    drug = util.getParameter("drug")
-    dosage = util.getParameter("dosage")
-    frequency = util.getParameter("frequency")
-    date = util.getParameter("date")
-    pharmacyID = util.getParameter("pharmacyID")
-    patientAccountID = util.getParameter("patientAccountID")
-
-    # Must have permission
-    if not __auth.hasPermission(token, Permission.CREATE_PRESCRIPTION):
-        return {
-            "status": 401,
-            "message": "You cannot make prescriptions!"
-        }
-
-    chart = Prescription(prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID)
-
-    connection = __database.connection()
-    for insert, values in chart.inserts():
-        cursor: MySQLCursor = connection.cursor()
-        cursor.execute(insert, values)
-        cursor.close()
-    connection.close()
+    test = TestWithResult(None)
 
     return {
         "status": 201,
-        "prescriptionID": prescriptionID
+        "tests": test.getMany(__database, {"patientAccountID": patientAccountID})
     }
+
+
+@__flask.route("/test/create")
+def test_create():
+    params = getParameters()
+    token = params["token"]
+    if not __auth.verifyToken(token):
+        return {
+            "status": 401,
+            "message": "Token is invalid!"
+        }
+
+    # Must have permission
+    if not __auth.hasPermission(token, Permission.CREATE_TEST):
+        return {
+            "status": 401,
+            "message": "You cannot create tests!"
+        }
+
+    params["testID"] = id()
+
+    test = Test(params["testID"])
+    test.create(__database, params)
+
+    createReminder(__database, "Lab Test", params["date"], params["time"], params["patientAccountID"])
+
+    return { "status": 201 } | test.get(__database)
+
+
+@__flask.route("/test/result/create")
+def test_result_create():
+    params = getParameters()
+    token = params["token"]
+    if not __auth.verifyToken(token):
+        return {
+            "status": 401,
+            "message": "Token is invalid!"
+        }
+
+    # Must have permission
+    if not __auth.hasPermission(token, Permission.CREATE_RESULT):
+        return {
+            "status": 401,
+            "message": "You cannot create test results!"
+        }
+
+    params["testResultID"] = id()
+
+    result = TestResult(params["testResultID"])
+    result.create(__database, params)
+
+    return { "status": 201 } | result.get(__database)

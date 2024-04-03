@@ -11,11 +11,9 @@ Prescription endpoint module that handles:
 """
 from app_provider import app_instance
 from auth.permission import Permission
-from random import choices
-from string import digits, ascii_uppercase
-from UserO.AllObjects import Prescription
-from mysql.connector.cursor import MySQLCursor
-import endpoint.utility as util
+from model.data import Prescription
+from utility import *
+from datetime import date
 
 __app = app_instance() # BackendApplication
 __database = __app.getDatabase() # SQLConnection
@@ -23,89 +21,54 @@ __auth = __app.getAuthenticator() # Authenticator
 __flask = __app.getFlask() # Flask
 
 
-@__flask.route("/prescription/view", methods=["GET"])
-def prescriptions_view():
-    try:
-        token = util.getParameter(
-            "token", 
-            verifier = __auth.verifyToken
-        )
-    except Exception as e:
+@__flask.route("/prescription/view")
+def prescription_view():
+    params = getParameters()
+    token = params["token"]
+    if not __auth.verifyToken(token):
         return {
             "status": 401,
             "message": "Token is invalid!"
         }
     
-    accountID = util.getParameter("accountID")
-    if accountID != __auth.getAccount(token).getID() and not __auth.hasPermission(token, Permission.VIEW_PRESCRIPTIONS):
+    patientAccountID = params["patientAccountID"]
+
+    # Must own account or have permission
+    if patientAccountID != __auth.getAccount(token).getAccountID() and not __auth.hasPermission(token, Permission.VIEW_CHARTS):
         return {
             "status": 401,
             "message": "You cannot view these prescriptions!"
         }
 
-    result = {
+    prescription = Prescription(None)
+
+    return {
         "status": 201,
-        "prescriptions": []
+        "prescriptions": prescription.getMany(__database, {"patientAccountID": patientAccountID})
     }
 
-    connection = __database.connection()
-    cursor: MySQLCursor = connection.cursor()
-    cursor.execute(Prescription.select(), [accountID])
-    for (prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID) in cursor:
-        result["prescriptions"].append({
-            "prescriptionID": prescriptionID,
-            "drug": drug,
-            "dosage": dosage,
-            "frequency": frequency,
-            "date": date,
-            "pharmacyID": pharmacyID,
-            "patientAccountID": patientAccountID
-        })
-    cursor.close()
-    connection.close()
 
-    return result
-
-
-@__flask.route("/prescription/create", methods=["GET"])
+@__flask.route("/prescription/create")
 def prescription_create():
-    try:
-        token = util.getParameter(
-            "token", 
-            verifier = __auth.verifyToken
-        )
-    except Exception as e:
+    params = getParameters()
+    token = params["token"]
+    if not __auth.verifyToken(token):
         return {
             "status": 401,
             "message": "Token is invalid!"
         }
-    
-    prescriptionID = ''.join(choices(digits + ascii_uppercase, k=36))
-    drug = util.getParameter("drug")
-    dosage = util.getParameter("dosage")
-    frequency = util.getParameter("frequency")
-    date = util.getParameter("date")
-    pharmacyID = util.getParameter("pharmacyID")
-    patientAccountID = util.getParameter("patientAccountID")
 
     # Must have permission
-    if not __auth.hasPermission(token, Permission.CREATE_PRESCRIPTION):
+    if not __auth.hasPermission(token, Permission.CREATE_CHART):
         return {
             "status": 401,
-            "message": "You cannot make prescriptions!"
+            "message": "You cannot create prescriptions!"
         }
 
-    chart = Prescription(prescriptionID, drug, dosage, frequency, date, pharmacyID, patientAccountID)
+    params["prescriptionID"] = id()
+    params["date"] = date.today().strftime('%Y-%m-%d')
 
-    connection = __database.connection()
-    for insert, values in chart.inserts():
-        cursor: MySQLCursor = connection.cursor()
-        cursor.execute(insert, values)
-        cursor.close()
-    connection.commit()
-    connection.close()
+    prescription = Prescription(params["prescriptionID"])
+    prescription.create(__database, params)
 
-    return {
-        "status": 201,
-        "prescriptionID": prescriptionID
-    }
+    return { "status": 201 } | prescription.get(__database)

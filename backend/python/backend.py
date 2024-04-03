@@ -12,5 +12,12 @@ from app_provider import app_instance
 app = app_instance()
 flask = app.getFlask()
 
+@flask.errorhandler(500)
+def handle_error_501(error: Exception):
+    return {
+        "status": 500,
+        "message": str(error)
+    }
+
 # Dynamically load enpoint modules
 from endpoint import *

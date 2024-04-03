@@ -10,18 +10,18 @@ authenticate account sessions.
 TODO Session tokens need switched to a proper cache with TTL (Time to Live) so they expire
 """
 from database.sqlconnection import SQLConnection
-from account.account import *
+from model.account import *
 from mysql.connector.cursor import MySQLCursor
 import secrets
 import hashlib
 
 
 TYPETABLE = {
-    "Patient": LitePatientAccount,
-    "Doctor": LiteDoctorAccount,
-    "Nurse": LiteNurseAccount,
-    "Staff": LiteStaffAccount,
-    "Admin": LiteAdminAccount
+    "Patient": PatientAccount,
+    "Doctor": DoctorAccount,
+    "Nurse": NurseAccount,
+    "Staff": StaffAccount,
+    "Admin": AdminAccount
 }
 
 
@@ -33,90 +33,45 @@ class Authenticator():
 
     def __init__(self, database: SQLConnection) -> None:
         self.__database = database
-        self.__sessions = {
-            "test": LiteAdminAccount(None)
-        }
+        self.__sessions = {}
 
 
     def verifyToken(self, token: str) -> bool:
-        """
-        Verifies that the token is a valid session.
-        """
         return token in self.__sessions.keys()
     
-    def updateToken(self, token: str, account: LiteAccount):
-        """
-        Updates token with an account.
-        """
+    def updateToken(self, token: str, account: Account):
         self.__sessions[token] = account
     
     
-    def getAccount(self, token: str) -> LiteAccount:
-        """
-        Gets account wrapper from token.
-        """
+    def getAccount(self, token: str) -> Account:
         return self.__sessions.get(token)
     
     def hasPermission(self, token: str, permission: Permission):
-        """
-        Checks if token has a permission.
-        """
         return permission in self.getAccount(token).getPermissions() or Permission.ADMINISTRATOR in self.getAccount(token).getPermissions()
     
     def emailExists(self, email: str) -> bool:
-        connection = self.__database.connection()
-        cursor: MySQLCursor = connection.cursor()
-        cursor.execute(
-            "SELECT COUNT(*) FROM HashedPassword WHERE email = %s",
-            [email]
-        )
-        for value in cursor:
-            count = value[0]
-            break
-
-        cursor.close()
-        connection.close()
-
-        return count > 0
+        emailCount = EmailCountQuery(email).get(self.__database)
+        return emailCount["COUNT(*)"] > 0
 
     def login(self, email: str, password: str) -> str:
         # Hash and use email as salt
         hash = hashlib.md5((password + email).encode()).hexdigest()
 
-        connection = self.__database.connection()
-
-        # Execute and find account
-        cursor: MySQLCursor = connection.cursor()
-        cursor.execute(
-            "SELECT accountID FROM HashedPassword WHERE email=%s AND hash=%s",
-            (email, hash)
-        )
-
-        for accountID in cursor:
-            id = accountID[0]
-            break
-        else: # Did not find an account
-            return None, None
-        cursor.close()
+        hashedPassword = HashedPassword(None)
+        result = hashedPassword.get(self.__database, {"email": email, "hash": hash})
+        if "accountID" in result:
+            accountID = result["accountID"]
+        else:
+            return None
 
         # Find account type
-        cursor: MySQLCursor = connection.cursor()
-        cursor.execute(
-            "SELECT CASE WHEN role IS NULL THEN \"Patient\" ELSE role END as accountType FROM Account LEFT JOIN StaffAccount ON StaffAccount.accountID = Account.accountID WHERE Account.accountID = %s",
-            [id]
-        )
-
-        for role in cursor:
-            accountType = role[0]
-            break
-        cursor.close()
-        connection.close()
+        accountType = AccountTypeQuery(accountID).get(self.__database)
 
         # Create account object, create session token and return
-        account = TYPETABLE[accountType](id)
+        account = TYPETABLE[accountType](accountID)
         token = secrets.token_hex(32)
 
         self.__sessions[token] = account
 
-        return token, id    
+        return token 
     

@@ -11,11 +11,9 @@ Bill endpoint module that handles:
 """
 from app_provider import app_instance
 from auth.permission import Permission
-from random import choices
-from string import digits, ascii_uppercase
-from UserO.AllObjects import Bill
-from mysql.connector.cursor import MySQLCursor
-import endpoint.utility as util
+from utility import *
+from model.bill import Bill, Payment, BillWithPayments
+from datetime import date
 
 __app = app_instance() # BackendApplication
 __database = __app.getDatabase() # SQLConnection
@@ -23,87 +21,74 @@ __auth = __app.getAuthenticator() # Authenticator
 __flask = __app.getFlask() # Flask
 
 
-@__flask.route("/bill/view", methods=["GET"])
+@__flask.route("/bill/view")
 def bill_view():
-    try:
-        token = util.getParameter(
-            "token", 
-            verifier = __auth.verifyToken
-        )
-    except Exception as e:
+    params = getParameters()
+    token = params["token"]
+    if not __auth.verifyToken(token):
         return {
             "status": 401,
             "message": "Token is invalid!"
         }
     
-    accountID = util.getParameter("accountID")
-    if accountID != __auth.getAccount(token).getID() and not __auth.hasPermission(token, Permission.VIEW_BILL):
+    patientAccountID = params["patientAccountID"]
+
+    # Must own account or have permission
+    if patientAccountID != __auth.getAccount(token).getAccountID() and not __auth.hasPermission(token, Permission.VIEW_BILL):
         return {
             "status": 401,
             "message": "You cannot view these bills!"
         }
 
-    result = {
+    bill = BillWithPayments(None)
+
+    return {
         "status": 201,
-        "bills": []
+        "bills": bill.getMany(__database, {"patientAccountID": patientAccountID})
     }
 
-    connection = __database.connection()
-    cursor: MySQLCursor = connection.cursor()
-    cursor.execute(Bill.select(), [accountID])
-    for (billID, description, amount, dateIssued, dueDate, patientAccountID) in cursor:
-        result["bills"].append({
-            "billID": billID,
-            "description": description,
-            "amount": amount,
-            "dateIssued": dateIssued,
-            "dueDate": dueDate,
-            "patientAccountID": patientAccountID
-        })
-    cursor.close()
-    connection.close()
-
-    return result
-
-
-@__flask.route("/bill/create", methods=["GET"])
-def bill_create():
-    try:
-        token = util.getParameter(
-            "token", 
-            verifier = __auth.verifyToken
-        )
-    except Exception as e:
+@__flask.route("/bill/pay")
+def payment_create():
+    params = getParameters()
+    token = params["token"]
+    if not __auth.verifyToken(token):
         return {
             "status": 401,
             "message": "Token is invalid!"
         }
     
-    billID = ''.join(choices(digits + ascii_uppercase, k=36))
-    description = util.getParameter("description")
-    amount = util.getParameter("amount")
-    dateIssued = util.getParameter("dateIssued")
-    dueDate = util.getParameter("dueDate")
-    patientAccountID = util.getParameter("patientAccountID")
+    params["date"] = date.today().strftime('%Y-%m-%d')
+    params["paymentID"] = id()
+
+    payment = Payment(params["paymentID"])
+    payment.create(__database, params)
+
+    return { "status": 201 } | payment.get(__database)
+
+
+@__flask.route("/bill/create")
+def bill_create():
+    params = getParameters()
+    token = params["token"]
+    if not __auth.verifyToken(token):
+        return {
+            "status": 401,
+            "message": "Token is invalid!"
+        }
 
     # Must have permission
     if not __auth.hasPermission(token, Permission.CREATE_BILL):
         return {
             "status": 401,
-            "message": "You cannot make bills!"
+            "message": "You cannot create bills!"
         }
 
-    chart = Bill(billID, description, amount, dateIssued, dueDate, patientAccountID)
+    params["billID"] = id()
+    params["dateIssued"] = date.today().strftime('%Y-%m-%d')
 
-    connection = __database.connection()
-    for insert, values in chart.inserts():
-        cursor: MySQLCursor = connection.cursor()
-        cursor.execute(insert, values)
-        cursor.close()
-    connection.commit()
-    connection.close()
+    bill = Bill(params["billID"])
+    bill.create(__database, params)
 
-    return {
-        "status": 201,
-        "billID": billID
-    }
+    createReminder(__database, "Bill", params["dateDue"], "00:00:00", params["patientAccountID"])
+
+    return { "status": 201 } | bill.get(__database)

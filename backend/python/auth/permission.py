@@ -15,6 +15,8 @@ class Permission(Enum):
     # Admin permission
     ADMINISTRATOR = -1
 
+    CREATE_STAFF = 0
+
     MODIFY_PATIENTS = 1
     MODIFY_STAFF = 2
     
@@ -48,3 +50,6 @@ class Permission(Enum):
     VIEW_REMINDER = 21
     CREATE_REMINDER = 22
 
+    VIEW_TEST = 23
+    CREATE_TEST = 24
+    CREATE_RESULT = 25

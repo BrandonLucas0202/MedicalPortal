@@ -4,6 +4,10 @@ CREATE TABLE Account (
   email VARCHAR(255) NOT NULL,
   phoneNumber VARCHAR(20) NOT NULL,
   address TEXT NOT NULL,
+  firstName VARCHAR(255) NOT NULL,
+  middleName VARCHAR(255) NOT NULL,
+  lastName VARCHAR(255) NOT NULL,
+  dob DATE NOT NULL,
   PRIMARY KEY (accountID)
 );
 
@@ -19,7 +23,6 @@ CREATE TABLE InsurancePolicy (
 -- PatientAccount table
 CREATE TABLE PatientAccount (
   patientAccountID VARCHAR(36) NOT NULL,
-  age INT NOT NULL,
   ssn VARCHAR(20) NOT NULL,
   insurancePolicyID VARCHAR(36) NOT NULL,
   PRIMARY KEY (patientAccountID),
@@ -69,9 +72,8 @@ CREATE TABLE Prescription (
 CREATE TABLE StaffAccount (
   staffAccountID VARCHAR(36) NOT NULL,
   role VARCHAR(20) NOT NULL,
-  accountID VARCHAR(36) NOT NULL,
   PRIMARY KEY (staffAccountID),
-  FOREIGN KEY (accountID) REFERENCES Account(accountID),
+  FOREIGN KEY (staffAccountID) REFERENCES Account(accountID),
   CHECK (role IN ('Nurse', 'Doctor', 'Admin', 'Staff'))
 );
 
@@ -79,7 +81,7 @@ CREATE TABLE StaffAccount (
 CREATE TABLE HashedPassword (
   email VARCHAR(255) NOT NULL,
   hash VARCHAR(255) NOT NULL,
-  accountID VARCHAR(36),
+  accountID VARCHAR(36) NOT NULL,
   PRIMARY KEY (email, hash),
   FOREIGN KEY (accountID) REFERENCES Account(accountID)
 );
@@ -89,6 +91,7 @@ CREATE TABLE Test (
   testID VARCHAR(36) NOT NULL,
   description TEXT NOT NULL,
   date DATE NOT NULL,
+  time TIME NOT NULL,
   labID VARCHAR(36) NOT NULL,
   patientAccountID VARCHAR(36) NOT NULL,
   PRIMARY KEY (testID),
@@ -99,7 +102,7 @@ CREATE TABLE Test (
 CREATE TABLE TestResult (
   testResultID VARCHAR(36) NOT NULL,
   testID VARCHAR(36) NOT NULL,
-  date DATE NOT NULL,
+  resultDate DATE NOT NULL,
   result TEXT NOT NULL,
   PRIMARY KEY (testResultID),
   FOREIGN KEY (testID) REFERENCES Test(testID)
@@ -174,5 +177,7 @@ CREATE TABLE Message (
 );
 
 
+-- Default rows
 INSERT INTO InsurancePolicy (insurancePolicyID, insuranceName, insurancePolicyNumber, copayAmount) VALUES ("NONE", "N/A", "N/A", -1);
-
+INSERT INTO Laboratory (labID, name, address, phoneNumber) VALUES ("GENERIC", "Generic", "N/A", "5555555555");
+INSERT INTO Pharmacy (pharmacyID, name, address, phoneNumber) VALUES ("GENERIC", "Generic", "N/A", "5555555555");

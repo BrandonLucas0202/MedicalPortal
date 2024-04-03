@@ -7,25 +7,34 @@ Medical Portal
 An endpoint utility used for endpoint modules.
 """
 from flask import request
+from random import choices
+from string import digits, ascii_uppercase, ascii_lowercase
+from model.appointment import Reminder
 
-
-def getParameter(name: str, default = None, type = str, verifier = None):
+def getParameters():
     """
     Trys retrieving a passed request argument and verifies
     the argument with the provided function.
     """
-    param = request.args.get(name, default, type)
-
-    if param == None or (not verifier == None and not verifier(param)):
-        raise InvalidParameterException()
-    
-    return param
+    return request.args.to_dict()
 
 
+def id():
+    """
+    Generates a random 36 digit id.
+    """
+    return ''.join(choices(digits + ascii_uppercase + ascii_lowercase, k=36))
 
-class InvalidParameterException(Exception):
-    """Exception thrown if invalid parameter is provided."""
 
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)
-        
+def createReminder(database, description, date, time, accountID):
+    """
+    Creates a reminder.
+    """
+    reminder = Reminder(id())
+    reminder.create(database, {
+        "reminderID": id(),
+        "description": description,
+        "date": date,
+        "time": time,
+        "accountID": accountID
+    })

@@ -11,11 +11,9 @@ Chart endpoint module that handles:
 """
 from app_provider import app_instance
 from auth.permission import Permission
-from random import choices
-from string import digits, ascii_uppercase
-from UserO.AllObjects import Chart
-from mysql.connector.cursor import MySQLCursor
-import endpoint.utility as util
+from model.data import Chart
+from utility import *
+from datetime import date
 
 __app = app_instance() # BackendApplication
 __database = __app.getDatabase() # SQLConnection
@@ -23,93 +21,54 @@ __auth = __app.getAuthenticator() # Authenticator
 __flask = __app.getFlask() # Flask
 
 
-@__flask.route("/chart/view", methods=["GET"])
-def charts_view():
-    try:
-        token = util.getParameter(
-            "token", 
-            verifier = __auth.verifyToken
-        )
-    except Exception as e:
+@__flask.route("/chart/view")
+def chart_view():
+    params = getParameters()
+    token = params["token"]
+    if not __auth.verifyToken(token):
         return {
             "status": 401,
             "message": "Token is invalid!"
         }
     
-    accountID = util.getParameter("accountID")
-    if accountID != __auth.getAccount(token).getID() and not __auth.hasPermission(token, Permission.VIEW_CHARTS):
+    patientAccountID = params["patientAccountID"]
+
+    # Must own account or have permission
+    if patientAccountID != __auth.getAccount(token).getAccountID() and not __auth.hasPermission(token, Permission.VIEW_CHARTS):
         return {
             "status": 401,
             "message": "You cannot view these charts!"
         }
 
-    result = {
+    chart = Chart(None)
+
+    return {
         "status": 201,
-        "charts": []
+        "charts": chart.getMany(__database, {"patientAccountID": patientAccountID})
     }
 
-    connection = __database.connection()
-    cursor: MySQLCursor = connection.cursor()
-    cursor.execute(Chart.select(), [accountID])
-    for (chartID, weight, height, bloodPressure, temperature, diagnoses, allergies, date, patientAccountID) in cursor:
-        result["charts"].append({
-            "chartID": chartID,
-            "weight": weight,
-            "height": height,
-            "bloodPressure": bloodPressure,
-            "temperature": temperature,
-            "diagnoses": diagnoses,
-            "allergies": allergies,
-            "date": date,
-            "patientAccountID": patientAccountID
-        })
-    
-    cursor.close()
-    connection.close()
-    return result
 
-
-@__flask.route("/chart/create", methods=["GET"])
+@__flask.route("/chart/create")
 def chart_create():
-    try:
-        token = util.getParameter(
-            "token", 
-            verifier = __auth.verifyToken
-        )
-    except Exception as e:
+    params = getParameters()
+    token = params["token"]
+    if not __auth.verifyToken(token):
         return {
             "status": 401,
             "message": "Token is invalid!"
         }
-    
-    chartID = ''.join(choices(digits + ascii_uppercase, k=36))
-    accountID = util.getParameter("accountID")
-    weight = util.getParameter("weight")
-    height = util.getParameter("height")
-    bloodPressure = util.getParameter("bloodPressure")
-    temperature = util.getParameter("temperature")
-    diagnoses = util.getParameter("diagnoses")
-    allergies = util.getParameter("allergies")
-    date = util.getParameter("date")
 
     # Must have permission
     if not __auth.hasPermission(token, Permission.CREATE_CHART):
         return {
             "status": 401,
-            "message": "You cannot make charts!"
+            "message": "You cannot create charts!"
         }
 
-    chart = Chart(chartID, weight, height, bloodPressure, temperature, diagnoses, allergies, date, accountID)
+    params["chartID"] = id()
+    params["date"] = date.today().strftime('%Y-%m-%d')
 
-    connection = __database.connection()
-    for insert, values in chart.inserts():
-        cursor: MySQLCursor = connection.cursor()
-        cursor.execute(insert, values)
-        cursor.close()
-    connection.commit()
-    connection.close()
+    chart = Chart(params["chartID"])
+    chart.create(__database, params)
 
-    return {
-        "status": 201,
-        "chartID": chartID
-    }
+    return { "status": 201 } | chart.get(__database)

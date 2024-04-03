@@ -7,7 +7,6 @@ Medical Portal
 A MySQL database connection object that handles the connection pool
 to the database.
 """
-import mysql.connector as connector
 import mysql.connector.pooling as pooling
 
 class SQLConnection():
@@ -16,7 +15,7 @@ class SQLConnection():
         # Save the configuration 
         self.__config = config
         # Initialize the connection pool
-        self.__pool = pooling.MySQLConnectionPool(pool_name = "mypool", pool_size = 5, **self.__config)
+        self.__pool = pooling.MySQLConnectionPool(pool_name = "backend_pool", pool_size = 5, **self.__config)
         
 
     def connection(self):
