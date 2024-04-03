@@ -66,9 +66,8 @@
     <div id="collapseBilling" class="collapse" aria-labelledby="headingBilling" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Billing Options:</h6>
-            <a class="collapse-item" href="bills.html">My Billing</a>
-            <a class="collapse-item" href="billingInfo.html">My Billing Information</a>
-            <a class="collapse-item" href="invoice.html">Invoices</a>
+            <a class="collapse-item" href="bills.html">Bills</a>
+            <a class="collapse-item" href="viewBilling.html">My Billing Information</a>
         </div>
     </div>
 </li>
@@ -83,7 +82,7 @@
     <div id="collapseAppointments" class="collapse" aria-labelledby="headingAppointments" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Appointment Options:</h6>
-            <a class="collapse-item" href="createAppointment.html">Create Appointment</a>
+            <a class="collapse-item" href="createAppointment.html">Request Appointment</a>
             <a class="collapse-item" href="myAppointments.html">My Appointments</a>
         </div>
     </div>
@@ -283,8 +282,8 @@
     <div class="row">
 
         <!-- Calendar Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <a href="testCalendar.html" class="card border-left-primary shadow h-100 py-2 text-decoration-none">
+        <div class="col-xl-6 col-md-8 mb-5">
+            <a href="testCalendar.html" class="card border-left-primary shadow h-100 py-2 text-decoration-none calendar-card">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
@@ -296,7 +295,27 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            <i class="fas fa-calendar fa-3x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!--Reminders Card Example -->
+        <div class="col-xl-6 col-md-8 mb-5">
+            <a href="reminders.html" class="card border-left-primary shadow h-100 py-2 text-decoration-none reminders-card">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Reminders</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                You have 5 reminders
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation fa-3x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -305,7 +324,7 @@
 
         <!-- Billing Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <a href="bills.html" class="card border-left-success shadow h-100 py-2 text-decoration-none">
+            <a href="bills.html" class="card border-left-success shadow h-100 py-2 text-decoration-none billing-card">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
@@ -321,30 +340,30 @@
             </a>
         </div>
 
-       <!-- Tasks Card Example -->
-<div class="col-xl-3 col-md-6 mb-4">
-    <a href="myappointments.html" class="card border-left-info shadow h-100 py-2 text-decoration-none appointments-card">
-        <div class="card-body">
-            <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Appointments</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        <span class="date">No Appointments</span>
-                        <span class="time"></span>
+       <!-- Appointments Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <a href="myappointments.html" class="card border-left-info shadow h-100 py-2 text-decoration-none appointments-card">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Appointments</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <span class="date">No Appointments</span>
+                            <span class="time"></span>
+                    </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
                     </div>
                 </div>
-                <div class="col-auto">
-                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                </div>
             </div>
-        </div>
-    </a>
-</div>
+        </a>
+    </div>
 
 
         <!-- Messages Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <a href="messages.html" class="card border-left-warning shadow h-100 py-2 text-decoration-none">
+            <a href="messages.html" class="card border-left-warning shadow h-100 py-2 text-decoration-none messages-card">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
@@ -358,7 +377,26 @@
                 </div>
             </a>
         </div>
+
+    <!-- Labs Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <a href="labs.html" class="card border-left-danger shadow h-100 py-2 text-decoration-none labs-card">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            Lab Results</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">No labs</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-file-alt fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </a>
     </div>
+
+    
 
 </div>
 <!-- /.container-fluid -->

@@ -58,9 +58,9 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Bills</h1>
                         <div>
-                            <a href="createBillingInfo.html" class="d-inline-block btn btn-sm btn-success shadow-sm mr-2">
+                            <a href="viewBilling.html" class="d-inline-block btn btn-sm btn-success shadow-sm mr-2">
                                 <i class="fas fa-dollar-sign fa-sm text-white-50"></i> My Billing Info
                             </a>
                             
@@ -71,15 +71,14 @@
                     <!-- DataTables Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 hrefclass="m-0 font-weight-bold text-success">Invoices</h6>
+                            <h6 class="m-0 font-weight-bold text-success"></h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Invoice ID</th> 
-                                            <th>Customer</th>
+                                            <th><a class="m-0 font-weight-bold text-success" href="invoice.html" a>Invoice ID</th> 
                                             <th>Date</th>
                                             <th>Amount</th>
                                             <th>Status</th>
@@ -89,14 +88,12 @@
                                         <!-- Dummy data -->
                                         <tr>
                                             <td>INV-001</td>
-                                            <td>Jane Smith</td>
                                             <td>2021-01-01</td>
                                             <td>$500.00</td>
                                             <td>Paid</td>
                                         </tr>
                                         <tr>
                                             <td>INV-002</td>
-                                            <td>Jane Smith</td>
                                             <td>2021-01-02</td>
                                             <td>$300.00</td>
                                             <td>Unpaid</td>

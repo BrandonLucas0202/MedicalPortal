@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>HCMS Admin - Prescription Request</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <!-- jQuery UI CSS -->
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
+</head>
+<body id="page-top">
+    <div id="wrapper">
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" title="Home">
+                                <i class="fas fa-home fa-fw text-primary"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-info">Appointment Details</h6>
+                    </div>
+                    <div class="card-body">
+                        <form id="appointmentForm">
+                            <div class="form-group">
+                                <label for="patientName">Patient Name</label>
+                                <input type="text" class="form-control" id="patientName" placeholder="Enter patient name">
+                            </div>
+                            <div class="form-group">
+                                <label for="appointmentDate">Date</label>
+                                <input type="text" class="form-control" id="appointmentDate" placeholder="Select a date">
+                            </div>
+                            <div class="form-group">
+                                <label for="appointmentTime">Time</label>
+                                <select class="form-control" id="appointmentTime">
+                                    <!-- Time options will be added dynamically -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="doctorSelect">Select Doctor</label>
+                                <select class="form-control" id="doctorSelect">
+                                    <option>Dr. Smith</option>
+                                    <option>Dr. Johnson</option>
+                                    <option>Dr. Williams</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="visitDescription">Short Description of Visit</label>
+                                <textarea class="form-control" id="visitDescription" placeholder="Describe the purpose of the visit"></textarea>
+                            </div>
+                            <button type="button" class="btn btn-info" onclick="createAppointment()">Request Appointment</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmationModalLabel">Confirm Appointment</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Patient Name: <span id="confirmPatientName"></span></p>
+                                <p>Date: <span id="confirmAppointmentDate"></span></p>
+                                <p>Time: <span id="confirmAppointmentTime"></span></p>
+                                <p>Doctor: <span id="confirmDoctorSelect"></span></p>
+                                <p>Description: <span id="confirmVisitDescription"></span></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button>
+                                <button type="button" class="btn btn-info" onclick="submitAppointment()">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery UI JavaScript -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function() {
+    $("#appointmentDate").datepicker({
+        minDate: new Date(), // Disallows past dates
+        beforeShowDay: function(date) {
+            var day = date.getDay();
+            return [(day != 0 && day != 6)]; // Disable Sundays (0) and Saturdays (6)
+        },
+        onSelect: function(dateText, inst) {
+            populateTimes();
+        }
+    });
+    populateTimes(); // Populate times initially
+});
+
+function populateTimes() {
+    const startTime = 9; // Start time for appointments in hours (9 AM)
+    const endTime = 17; // End time for appointments in hours (5 PM)
+    const appointmentTime = document.getElementById('appointmentTime');
+    appointmentTime.innerHTML = '';
+
+    for (let hour = startTime; hour <= endTime; hour++) {
+        // Example: grey out 1 PM and 2 PM
+        if (hour !== 13 && hour !== 14) {
+            const option = document.createElement('option');
+            const time = (hour < 10 ? '0' + hour : hour) + ':00';
+            option.value = time;
+            option.text = formatTime(hour);
+            appointmentTime.appendChild(option);
+        }
+    }
+}
+
+function formatTime(hour) {
+    const ampm = hour < 12 || hour === 24 ? 'AM' : 'PM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:00 ${ampm}`;
+}
+
+
+        function createAppointment() {
+            const patientName = document.getElementById('patientName').value;
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+            const doctorSelect = document.getElementById('doctorSelect').value;
+            const visitDescription = document.getElementById('visitDescription').value;
+
+
+            if (!patientName || !appointmentDate || !appointmentTime || !doctorSelect || !visitDescription) {
+                alert('Please fill out all fields.');
+                return;
+            }
+
+            document.getElementById('confirmPatientName').textContent = patientName;
+            document.getElementById('confirmAppointmentDate').textContent = appointmentDate;
+            document.getElementById('confirmAppointmentTime').textContent = appointmentTime;
+            document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
+            document.getElementById('confirmVisitDescription').textContent = visitDescription;
+
+            $('#confirmationModal').modal('show');
+        }
+
+        function submitAppointment() {
+            const appointmentData = {
+                patientName: document.getElementById('confirmPatientName').textContent,
+                appointmentDate: document.getElementById('confirmAppointmentDate').textContent,
+                appointmentTime: document.getElementById('confirmAppointmentTime').textContent,
+                doctorSelect: document.getElementById('confirmDoctorSelect').textContent,
+                visitDescription: document.getElementById('confirmVisitDescription').textContent
+            };
+
+            let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
+            appointments.push(appointmentData);
+            localStorage.setItem('myAppointments', JSON.stringify(appointments));
+
+            alert('Appointment created successfully!');
+            $('#confirmationModal').modal('hide');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
