@@ -12,9 +12,6 @@ Reminders Page:
 - Upcoming Appt.
 Message & Alert Center
 Notification Page
-View Bill
-View Billing Information
-View Payments Made
 View Insurance Info
 Make Payment
 Pre-Screening by Nurse
