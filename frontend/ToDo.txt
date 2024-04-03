@@ -31,7 +31,6 @@ Fixes:
 **general: move home buttons to left corner instead of right, maybe include a back button within the webpages, 
 have addresses, card numbers, and emails be checked to be in the right format**
 Signup Page: doesn't require an email address specifically, doesn't check the password fields match, proceeds to Welcome page with choice between Patient & Doctor (should just be patient option if at all) 
-Message Center: connect to Message page
 Alert Center: shows reminders/ notifications
 Prescriptions -> Refill Request: make page 
 Profile: have cards for different info = profile info (place to make updates), billingInfo, Lab Results, Patient History, Payments Made  
