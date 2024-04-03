@@ -28,23 +28,25 @@
                 </nav>
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-info">Appointment Details</h6>
+                        <h6 class="m-0 font-weight-bold text-dark">Refill Request</h6>
                     </div>
                     <div class="card-body">
-                        <form id="appointmentForm">
+                        <form id="requestPForm">
                             <div class="form-group">
                                 <label for="patientName">Patient Name</label>
                                 <input type="text" class="form-control" id="patientName" placeholder="Enter patient name">
                             </div>
                             <div class="form-group">
-                                <label for="appointmentDate">Date</label>
-                                <input type="text" class="form-control" id="appointmentDate" placeholder="Select a date">
+                                <label for="prescriptionName">Prescription Name</label>
+                                <input type="text" class="form-control" id="prescriptionName" placeholder="Enter prescription name">
                             </div>
                             <div class="form-group">
-                                <label for="appointmentTime">Time</label>
-                                <select class="form-control" id="appointmentTime">
-                                    <!-- Time options will be added dynamically -->
-                                </select>
+                                <label for="Rx#">Rx#</label>
+                                <input type="text" class="form-control" id="Rx#" placeholder="Enter Rx# that is on the prescription label">
+                            </div>
+                            <div class="form-group">
+                                <label for="healthProvider">Healthcare Provider</label>
+                                <input type="text" class="form-control" id="healthProvider" placeholder="Enter your healthcare provider">
                             </div>
                             <div class="form-group">
                                 <label for="doctorSelect">Select Doctor</label>
@@ -55,10 +57,10 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="visitDescription">Short Description of Visit</label>
-                                <textarea class="form-control" id="visitDescription" placeholder="Describe the purpose of the visit"></textarea>
+                                <label for="fillDate">Date Filled</label>
+                                <input type="text" class="form-control" id="fillDate" placeholder="Date the current prescription was filled">
                             </div>
-                            <button type="button" class="btn btn-info" onclick="createAppointment()">Request Appointment</button>
+                            <button type="button" class="btn btn-dark" onclick="createRequest()">Request Refill</button>
                         </form>
                     </div>
                 </div>
@@ -80,7 +82,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button>
-                                <button type="button" class="btn btn-info" onclick="submitAppointment()">Confirm</button>
+                                <button type="button" class="btn btn-dark" onclick="submitAppointment()">Confirm</button>
                             </div>
                         </div>
                     </div>
