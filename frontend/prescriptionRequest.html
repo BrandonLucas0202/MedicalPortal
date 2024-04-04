@@ -41,8 +41,8 @@
                                 <input type="text" class="form-control" id="prescriptionName" placeholder="Enter prescription name">
                             </div>
                             <div class="form-group">
-                                <label for="Rx#">Rx#</label>
-                                <input type="text" class="form-control" id="Rx#" placeholder="Enter Rx# that is on the prescription label">
+                                <label for="RxNum">Rx#</label>
+                                <input type="text" class="form-control" id="RxNum" placeholder="Enter Rx# that is on the prescription label">
                             </div>
                             <div class="form-group">
                                 <label for="healthProvider">Healthcare Provider</label>
@@ -58,33 +58,10 @@
                             </div>
                             <div class="form-group">
                                 <label for="fillDate">Date Filled</label>
-                                <input type="text" class="form-control" id="fillDate" placeholder="Date the current prescription was filled">
+                                <input type="date" class="form-control" id="dateFilled">
                             </div>
                             <button type="button" class="btn btn-dark" onclick="createRequest()">Request Refill</button>
                         </form>
-                    </div>
-                </div>
-                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmationModalLabel">Confirm Appointment</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Patient Name: <span id="confirmPatientName"></span></p>
-                                <p>Date: <span id="confirmAppointmentDate"></span></p>
-                                <p>Time: <span id="confirmAppointmentTime"></span></p>
-                                <p>Doctor: <span id="confirmDoctorSelect"></span></p>
-                                <p>Description: <span id="confirmVisitDescription"></span></p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button>
-                                <button type="button" class="btn btn-dark" onclick="submitAppointment()">Confirm</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -95,81 +72,47 @@
     <!-- jQuery UI JavaScript -->
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-        $(document).ready(function() {
-    $("#appointmentDate").datepicker({
-        minDate: new Date(), // Disallows past dates
-        beforeShowDay: function(date) {
-            var day = date.getDay();
-            return [(day != 0 && day != 6)]; // Disable Sundays (0) and Saturdays (6)
-        },
-        onSelect: function(dateText, inst) {
-            populateTimes();
-        }
-    });
-    populateTimes(); // Populate times initially
-});
-
-function populateTimes() {
-    const startTime = 9; // Start time for appointments in hours (9 AM)
-    const endTime = 17; // End time for appointments in hours (5 PM)
-    const appointmentTime = document.getElementById('appointmentTime');
-    appointmentTime.innerHTML = '';
-
-    for (let hour = startTime; hour <= endTime; hour++) {
-        // Example: grey out 1 PM and 2 PM
-        if (hour !== 13 && hour !== 14) {
-            const option = document.createElement('option');
-            const time = (hour < 10 ? '0' + hour : hour) + ':00';
-            option.value = time;
-            option.text = formatTime(hour);
-            appointmentTime.appendChild(option);
-        }
-    }
-}
-
-function formatTime(hour) {
-    const ampm = hour < 12 || hour === 24 ? 'AM' : 'PM';
-    const hour12 = hour % 12 || 12;
-    return `${hour12}:00 ${ampm}`;
-}
 
 
         function createAppointment() {
             const patientName = document.getElementById('patientName').value;
-            const appointmentDate = document.getElementById('appointmentDate').value;
-            const appointmentTime = document.getElementById('appointmentTime').value;
+            const prescriptionName = document.getElementById('prescriptionName').value;
+            const RxNum = document.getElementById('Rx#').value;
+            const healthProvider = document.getElementById('healthProvider').value;
             const doctorSelect = document.getElementById('doctorSelect').value;
-            const visitDescription = document.getElementById('visitDescription').value;
+            const fillDate = document.getElementById('fillDate').value;
 
 
-            if (!patientName || !appointmentDate || !appointmentTime || !doctorSelect || !visitDescription) {
+            if (!patientName || !prescriptionName || !RxNum || !healthProvider ||!doctorSelect || !fillDate) {
                 alert('Please fill out all fields.');
                 return;
             }
 
             document.getElementById('confirmPatientName').textContent = patientName;
-            document.getElementById('confirmAppointmentDate').textContent = appointmentDate;
-            document.getElementById('confirmAppointmentTime').textContent = appointmentTime;
+            document.getElementById('confirmPrescriptionName').textContent = prescriptionName;
+            document.getElementById('confirmRxNum').textContent = RxNum;
+            document.getElementById('confirmHealthProvider').textContent = healthProvider;
             document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
-            document.getElementById('confirmVisitDescription').textContent = visitDescription;
+            document.getElementById('confirmFillDate').textContent = fillDate;
 
             $('#confirmationModal').modal('show');
         }
 
-        function submitAppointment() {
+        function createRequest() {
             const appointmentData = {
                 patientName: document.getElementById('confirmPatientName').textContent,
-                appointmentDate: document.getElementById('confirmAppointmentDate').textContent,
-                appointmentTime: document.getElementById('confirmAppointmentTime').textContent,
+                prescriptionName: document.getElementById('confirmPrescriptionName').textContent,
+                RxNum: document.getElementById('confirmRxNum').textContent,
+                healthProvider: document.getElementById('confirmHealthProvider').textContent,
                 doctorSelect: document.getElementById('confirmDoctorSelect').textContent,
-                visitDescription: document.getElementById('confirmVisitDescription').textContent
+                fillDate: document.getElementById('confirmFillDate').textContent
             };
 
-            let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
+            let refill = JSON.parse(localStorage.getItem('myAppointments')) || [];
             appointments.push(appointmentData);
             localStorage.setItem('myAppointments', JSON.stringify(appointments));
 
-            alert('Appointment created successfully!');
+            alert('Request created successfully!');
             $('#confirmationModal').modal('hide');
             window.location.href = 'index.html';
         }
