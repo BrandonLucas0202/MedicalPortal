@@ -71,7 +71,7 @@
     <script src="vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <script>
-        // 声明一个全局变量来保存当前编辑的行的索引
+        // Declares a global variable to hold the index of the currently edited row
         let editingRowIndex;
 
         $(document).ready(function() {
@@ -91,7 +91,7 @@
                 ]).draw(false);
             });
 
-            // 监听编辑按钮的点击事件
+            // for edit button clicks
             $('#dataTable').on('click', '.edit-btn', function() {
                 editingRowIndex = $(this).data('index');
 
@@ -103,22 +103,22 @@
                 $('#editDescription').val(appointment.visitDescription);
             });
 
-            // 监听删除按钮的点击事件
+            // for delete
             $('#dataTable').on('click', '.delete-btn', function() {
                 const rowIndex = $(this).data('index');
                 const appointment = appointments[rowIndex];
 
-                if (confirm("Are you sure you want to delete this entry?")) {
-                    // 从数据源中删除对应的数据
+                if (confirm("Are you sure you want to cancel this appointment?")) {
+                    // Deletes the corresponding data from the data source
                     appointments.splice(rowIndex, 1);
                     localStorage.setItem('myAppointments', JSON.stringify(appointments));
 
-                    // 从表格中删除对应的行
+                    // Delete the corresponding row from the table
                     table.row($(this).closest('tr')).remove().draw();
                 }
             });
 
-            // 监听模态框的保存按钮的点击事件
+            // for save
             $('#saveBtn').click(function() {
                 const newDate = $('#editDate').val();
                 const newTime = $('#editTime').val();
@@ -126,7 +126,7 @@
                 const newDoctor = $('#editDoctor').val();
                 const newDescription = $('#editDescription').val();
 
-                // 更新对应行的数据
+                // update data
                 appointments[editingRowIndex].appointmentDate = newDate;
                 appointments[editingRowIndex].appointmentTime = newTime;
                 appointments[editingRowIndex].patientName = newPatient;
@@ -136,7 +136,7 @@
                 localStorage.setItem('myAppointments', JSON.stringify(appointments));
                 $('#editModal').modal('hide');
 
-                // 更新表格中对应行的值
+                // update table
                 table.cell(editingRowIndex, 0).data(newDate).draw();
                 table.cell(editingRowIndex, 1).data(newTime).draw();
                 table.cell(editingRowIndex, 2).data(newPatient).draw();
@@ -154,7 +154,7 @@
         }
     </script>
 
-    <!-- 添加的模态框 -->
+    <!-- Added modal box -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
