@@ -13,7 +13,7 @@ app = app_instance()
 flask = app.getFlask()
 
 @flask.errorhandler(500)
-def handle_error_501(error: Exception):
+def handle_error_500(error: Exception):
     return {
         "status": 500,
         "message": str(error)

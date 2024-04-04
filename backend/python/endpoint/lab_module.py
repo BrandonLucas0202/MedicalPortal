@@ -12,7 +12,7 @@ Lab endpoint module that handles:
 from app_provider import app_instance
 from auth.permission import Permission
 from model.data import Laboratory
-from utility import *
+from endpoint.utility import *
 
 __app = app_instance() # BackendApplication
 __database = __app.getDatabase() # SQLConnection

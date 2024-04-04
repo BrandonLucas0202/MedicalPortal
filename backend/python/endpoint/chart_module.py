@@ -12,7 +12,7 @@ Chart endpoint module that handles:
 from app_provider import app_instance
 from auth.permission import Permission
 from model.data import Chart
-from utility import *
+from endpoint.utility import *
 from datetime import date
 
 __app = app_instance() # BackendApplication

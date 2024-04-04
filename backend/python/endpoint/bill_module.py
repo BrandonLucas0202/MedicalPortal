@@ -11,7 +11,7 @@ Bill endpoint module that handles:
 """
 from app_provider import app_instance
 from auth.permission import Permission
-from utility import *
+from endpoint.utility import *
 from model.bill import Bill, Payment, BillWithPayments
 from datetime import date
 
