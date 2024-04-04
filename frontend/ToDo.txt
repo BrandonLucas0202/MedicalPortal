@@ -2,8 +2,6 @@ List of pages we still need to do, I'm putting what I think we need and then som
 
 Staff Registration (Nurse, Receptionist, Doctor)
 Dashboard Views for each Staff User
-Cancel/ Make Changes to Appt
-View Scheduled Appt
 Reminders Page:
 - Messages
 - Upcoming Bills
@@ -15,10 +13,9 @@ Notification Page
 View Insurance Info
 Make Payment
 Pre-Screening by Nurse
-Lab Result 
 
 
-ONLY DOCTOR: Charts page (list of current & button/ page to create/import), Billing page change to view patients billing invoices (no billingInfo button, still have link through invoice ID#), Lab forms, Prescriptions order forms, appointment forms/ notes, health insurance, view patient history
+ONLY DOCTOR: Billing page change to view patients billing invoices (no billingInfo button, still have link through invoice ID#), Lab forms, Prescriptions order forms, appointment forms/ notes, health insurance, view patient history
 
 ONLY NURSE: pre-Screening, appointments, prescriptions, lab forms 
 
@@ -32,7 +29,6 @@ Alert Center: shows reminders/ notifications
 Prescriptions -> Refill Request: make page 
 Profile: have cards for different info = profile info (place to make updates), billingInfo, Lab Results, Patient History, Payments Made  
 Calendar: be able to click on days & see availability, remove the "Free Calendar Widget" at the bottom?
-Billing: link the billing invoice receipt to the invoice ID#
 CreateBillingInfo: CVV is 3 digit only, when it is submitted go back to dashboard
 View Messsage: show profile of messengers, include time delivered under message bubble?
 Request Appointment: fix military time for the edit/ confirm popup
