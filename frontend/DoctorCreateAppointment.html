@@ -20,7 +20,7 @@
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html" title="Home">
+                            <a class="nav-link" href="DoctorIndex.html" title="Home">
                                 <i class="fas fa-home fa-fw text-primary"></i>
                             </a>
                         </li>
@@ -28,7 +28,7 @@
                 </nav>
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Appointment Details</h6>
+                        <h6 class="m-0 font-weight-bold text-info">Appointment Details</h6>
                     </div>
                     <div class="card-body">
                         <form id="appointmentForm">
@@ -47,18 +47,10 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="doctorSelect">Select Doctor</label>
-                                <select class="form-control" id="doctorSelect">
-                                    <option>Dr. Smith</option>
-                                    <option>Dr. Johnson</option>
-                                    <option>Dr. Williams</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
                                 <label for="visitDescription">Short Description of Visit</label>
                                 <textarea class="form-control" id="visitDescription" placeholder="Describe the purpose of the visit"></textarea>
                             </div>
-                            <button type="button" class="btn btn-primary" onclick="createAppointment()">Create Appointment</button>
+                            <button type="button" class="btn btn-info" onclick="createAppointment()">Create Appointment</button>
                         </form>
                     </div>
                 </div>
@@ -75,12 +67,11 @@
                                 <p>Patient Name: <span id="confirmPatientName"></span></p>
                                 <p>Date: <span id="confirmAppointmentDate"></span></p>
                                 <p>Time: <span id="confirmAppointmentTime"></span></p>
-                                <p>Doctor: <span id="confirmDoctorSelect"></span></p>
                                 <p>Description: <span id="confirmVisitDescription"></span></p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button>
-                                <button type="button" class="btn btn-primary" onclick="submitAppointment()">Confirm</button>
+                                <button type="button" class="btn btn-info" onclick="submitAppointment()">Confirm</button>
                             </div>
                         </div>
                     </div>
@@ -136,7 +127,6 @@ function formatTime(hour) {
             const patientName = document.getElementById('patientName').value;
             const appointmentDate = document.getElementById('appointmentDate').value;
             const appointmentTime = document.getElementById('appointmentTime').value;
-            const doctorSelect = document.getElementById('doctorSelect').value;
             const visitDescription = document.getElementById('visitDescription').value;
 
             if (!patientName || !appointmentDate || !appointmentTime || !doctorSelect || !visitDescription) {
@@ -147,7 +137,6 @@ function formatTime(hour) {
             document.getElementById('confirmPatientName').textContent = patientName;
             document.getElementById('confirmAppointmentDate').textContent = appointmentDate;
             document.getElementById('confirmAppointmentTime').textContent = appointmentTime;
-            document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
             document.getElementById('confirmVisitDescription').textContent = visitDescription;
 
             $('#confirmationModal').modal('show');
@@ -158,7 +147,6 @@ function formatTime(hour) {
                 patientName: document.getElementById('confirmPatientName').textContent,
                 appointmentDate: document.getElementById('confirmAppointmentDate').textContent,
                 appointmentTime: document.getElementById('confirmAppointmentTime').textContent,
-                doctorSelect: document.getElementById('confirmDoctorSelect').textContent,
                 visitDescription: document.getElementById('confirmVisitDescription').textContent
             };
 
@@ -168,7 +156,7 @@ function formatTime(hour) {
 
             alert('Appointment created successfully!');
             $('#confirmationModal').modal('hide');
-            window.location.href = 'https://www.commoninja.com/calendar/editor/content/134c11d7-6db0-4b95-8096-9f092a108b9c';
+            window.location.href = 'DoctorIndex.html';
         }
     </script>
 </body>

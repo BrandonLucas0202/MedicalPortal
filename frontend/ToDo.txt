@@ -18,7 +18,7 @@ Pre-Screening by Nurse
 Lab Result 
 
 
-ONLY DOCTOR: Charts page (list of current & button/ page to create/import), Billing page change to view patients billing invoices (no billingInfo button, still have link through invoice ID#), Appointments change request to create & take doctor option off, Lab forms, Prescriptions order forms, appointment forms/ notes, health insurance, view patient history, excuses?
+ONLY DOCTOR: Charts page (list of current & button/ page to create/import), Billing page change to view patients billing invoices (no billingInfo button, still have link through invoice ID#), Lab forms, Prescriptions order forms, appointment forms/ notes, health insurance, view patient history
 
 ONLY NURSE: pre-Screening, appointments, prescriptions, lab forms 
 

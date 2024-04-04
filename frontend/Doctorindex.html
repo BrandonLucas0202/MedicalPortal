@@ -58,33 +58,87 @@
 
            <!-- Nav Item - Billing Collapse Menu -->
 <li class="nav-item">
-    <a class="nav-link" href="blank.html">
+    <a class="nav-link" href="DoctorBilling.html">
         <i class="fas fa-fw fa-file-invoice-dollar"></i>
         <span>Billing</span>
     </a>
 </li>
 
-       <!-- Nav Item - Appointments Collapse Menu -->
 <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAppointments"
-        aria-expanded="true" aria-controls="collapseAppointments">
-        <i class="fas fa-fw fa-calendar-check"></i>
-        <span>Appointments</span>
+    <a class="nav-link" href="DoctorInsurance.html">
+        <i class="fas fa-fw fa-file"></i>
+        <span>Insurance</span>
     </a>
-    <div id="collapseAppointments" class="collapse" aria-labelledby="headingAppointments" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Appointment Options:</h6>
-            <a class="collapse-item" href="DoctorCreateAppointment.html">Create Appointment</a>
-            <a class="collapse-item" href="myAppointments.html">My Appointments</a>
-        </div>
-    </div>
 </li>
+
+
 <li class="nav-item">
-    <a class="nav-link" href="messages.html">
+    <a class="nav-link" href="DoctorMessages.html">
         <i class="fas fa-fw fa-envelope"></i>
         <span>Messages</span>
     </a>
 </li>
+
+<!-- Divider -->
+<hr class="sidebar-divider">
+
+<!-- Heading -->
+<div class="sidebar-heading">
+    Health
+</div>
+
+       <!-- Nav Item - Appointments Collapse Menu -->
+       <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAppointments"
+            aria-expanded="true" aria-controls="collapseAppointments">
+            <i class="fas fa-fw fa-calendar-check"></i>
+            <span>Appointments</span>
+        </a>
+        <div id="collapseAppointments" class="collapse" aria-labelledby="headingAppointments" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Appointment Options:</h6>
+                <a class="collapse-item" href="DoctorCreateAppointment.html">Create Appointment</a>
+                <a class="collapse-item" href="DoctorAppointments.html">My Appointments</a>
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseChart"
+            aria-expanded="true" aria-controls="collapseChart">
+            <i class="fas fa-fw fa-chart-area"></i>
+            <span>Charts</span>
+        </a>
+        <div id="collapseChart" class="collapse" aria-labelledby="headingCharts" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Appointment Options:</h6>
+                <a class="collapse-item" href="createChart.html">Create Chart</a>
+                <a class="collapse-item" href="DoctorChartList.html">Chart List</a>
+            </div>
+        </div>
+    </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLabs"
+                aria-expanded="true" aria-controls="collapseLabs">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Labs</span>
+            </a>
+            <div id="collapseLabs" class="collapse" aria-labelledby="headingLabs" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Appointment Options:</h6>
+                    <a class="collapse-item" href="LabOrder.html">Lab Order</a>
+                    <a class="collapse-item" href="DoctorLabs.html">Labs</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="Patients.html">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>List of Patients</span>
+            </a>
+        </li>
 
 
             <!-- Sidebar Toggler (Sidebar) -->
@@ -221,7 +275,7 @@
                                 </a>
                                 
                                 
-                                <a class="dropdown-item text-center small text-gray-500" href="messages.html">Read More Messages</a>
+                                <a class="dropdown-item text-center small text-gray-500" href="DoctorMessages.html">Read More Messages</a>
                             </div>
                         </li>
 
@@ -237,7 +291,7 @@
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="userProfile.html">
+                                <a class="dropdown-item" href="DoctorProfile.html">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
@@ -296,7 +350,7 @@
 
         <!-- Billing Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <a href="#" class="card border-left-success shadow h-100 py-2 text-decoration-none">
+            <a href="DoctorBilling.html" class="card border-left-success shadow h-100 py-2 text-decoration-none">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
@@ -305,7 +359,7 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">View Billing</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-file fa-2x text-gray-300"></i>
+                            <i class="fas fa-fw fa-file-invoice-dollar fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -314,7 +368,7 @@
 
        <!-- Tasks Card Example -->
 <div class="col-xl-3 col-md-6 mb-4">
-    <a href="myappointments.html" class="card border-left-info shadow h-100 py-2 text-decoration-none appointments-card">
+    <a href="DoctorAppointments.html" class="card border-left-info shadow h-100 py-2 text-decoration-none appointments-card">
         <div class="card-body">
             <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
@@ -325,7 +379,7 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
                 </div>
             </div>
         </div>
@@ -335,7 +389,7 @@
 
         <!-- Messages Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <a href="messages.html" class="card border-left-warning shadow h-100 py-2 text-decoration-none">
+            <a href="DoctorMessages.html" class="card border-left-warning shadow h-100 py-2 text-decoration-none">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
