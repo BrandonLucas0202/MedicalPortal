@@ -137,18 +137,17 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" id="searchInput">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
+                                <button class="btn btn-primary" type="button" id="searchButton">
                                     <i class="fas fa-search fa-sm"></i>
                                 </button>
                             </div>
                         </div>
-                    </form>
+                        <div id="searchSuggestions" class="list-group" style="position: absolute; z-index: 1000; width: 100%;"></div>
+                    </div>
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -498,10 +497,58 @@
             }
         });
     </script>
-    <script>
-       // localStorage.clear();
+     <script>
+$(document).ready(function() {
+    const pages = [
+        { name: "Dashboard", url: "index.html" },
+        { name: "Bills", url: "bills.html" },
+        { name: "My Billing Information", url: "viewBilling.html" },
+        { name: "Request Appointment", url: "createAppointment.html" },
+        { name: "My Appointments", url: "myAppointments.html" },
+        { name: "Messages", url: "messages.html" },
+        { name: "Labs", url: "labs.html" },
+        { name: "Prescriptions", url: "prescriptions.html" },
+        { name: "Insurance", url: "insurance.html" }
+    ];
+
+    $('#searchInput').on('input', function() {
+        const input = $(this).val().toLowerCase();
+        const suggestions = pages.filter(page => page.name.toLowerCase().includes(input));
+        $('#searchSuggestions').empty();
+
+        suggestions.forEach(page => {
+            $('#searchSuggestions').append(
+                `<a href="${page.url}" class="list-group-item list-group-item-action">${page.name}</a>`
+            );
+        });
+
+        if (input) {
+            $('#searchSuggestions').show();
+        } else {
+            $('#searchSuggestions').hide();
+        }
+    });
+
+    $(document).on('click', function(event) {
+        const isClickInside = $('#searchInput').is(event.target) || $('#searchSuggestions').is(event.target) || $('#searchSuggestions').has(event.target).length > 0;
+
+        if (!isClickInside) {
+            $('#searchSuggestions').hide();
+        }
+    });
+
+    $('#searchButton').click(function() {
+        const searchQuery = $('#searchInput').val().toLowerCase();
+        const page = pages.find(p => p.name.toLowerCase() === searchQuery);
+        if (page) {
+            window.location.href = page.url;
+        } else {
+            alert('Page not found!');
+        }
+    });
+});
+           
     </script>
-    
 
 </body>
 
