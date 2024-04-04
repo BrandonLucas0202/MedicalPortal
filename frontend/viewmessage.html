@@ -66,19 +66,48 @@
     </div>
 
     <script>
-        function sendMessage() {
-            const messageArea = document.getElementById('messageArea');
-            const messageInput = document.getElementById('messageInput');
+       function sendMessage() {
+    const messageArea = document.getElementById('messageArea');
+    const messageInput = document.getElementById('messageInput');
 
-            if (messageInput.value.trim() !== '') {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message-box', 'sender');
-                messageDiv.textContent = messageInput.value;
-                messageArea.appendChild(messageDiv);
+    if (messageInput.value.trim() !== '') {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message-box', 'sender');
+        messageDiv.textContent = messageInput.value;
+        messageArea.appendChild(messageDiv);
 
-                messageInput.value = ''; // Clear input after sending
-            }
-        }
+        // Send the message to the server to email it
+        const data = {
+            message: messageInput.value,
+            doctorEmail: 'lucas356@marshall.edu' // Replace with actual doctor's email
+        };
+
+        fetch('sendEmail.php', { // Replace 'sendEmail.php' with the path to server-side script
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+
+        messageInput.value = ''; // Clear input after sending
+    }
+}
+
+document.getElementById('messageInput').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+    }
+});
+
 
         document.getElementById('messageInput').addEventListener('keypress', function(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
