@@ -546,6 +546,17 @@ $(document).ready(function() {
             alert('Page not found!');
         }
     });
+    $(document).ready(function() {
+    // Collapse the sidebar
+    $("body").addClass("sidebar-toggled");
+    $(".sidebar").addClass("toggled");
+
+    // If there is a local storage setting for the sidebar, remove it so it starts collapsed
+    if (localStorage.getItem("sidebarToggle") !== null) {
+        localStorage.removeItem("sidebarToggle");
+    }
+});
+
 });
            
     </script>
