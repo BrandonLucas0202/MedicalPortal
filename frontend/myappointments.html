@@ -181,7 +181,7 @@
 
         $(document).ready(function () {
             let table = $('#dataTable').DataTable();
-
+           
             let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
             appointments.forEach(function (appointment, index) {
                 table.row.add([
@@ -260,10 +260,13 @@
                 table.cell(editingRowIndex, 4).data(newDescription).draw();
             });
         });
+    
         function populateTimes() {
+            
             const startTime = 9; // Start time for appointments in hours (9 AM)
             const endTime = 17; // End time for appointments in hours (5 PM)
-            const appointmentTime = document.getElementById('editDate');
+            const appointmentTime = document.getElementById('editTime');
+            console.log(appointmentTime);
             appointmentTime.innerHTML = '';
 
             for (let hour = startTime; hour <= endTime; hour++) {
@@ -320,7 +323,9 @@
                     </div>
                     <div class="form-group">
                         <label for="editTime">Time</label>
-                        <input type="text" class="form-control" id="editTime">
+                        <select class="form-control" id="editTime">
+                            <!-- Time options will be added dynamically -->
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="editPatient">Patient</label>
