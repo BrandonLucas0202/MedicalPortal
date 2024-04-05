@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,15 +9,19 @@
     <meta name="author" content="">
     <title>HCMS Admin - My Appointments</title>
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <!-- DataTables CSS -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
 </head>
+
 <body id="page-top">
     <div id="wrapper">
-         <!-- Sidebar      / / / / / / / -->
-         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <!-- Sidebar      / / / / / / / -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -44,60 +49,63 @@
                 Actions
             </div>
 
-           <!-- Nav Item - Billing Collapse Menu -->
-<li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBilling"
-        aria-expanded="true" aria-controls="collapseBilling">
-        <i class="fas fa-fw fa-file-invoice-dollar"></i>
-        <span>Billing</span>
-    </a>
-    <div id="collapseBilling" class="collapse" aria-labelledby="headingBilling" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Billing Options:</h6>
-            <a class="collapse-item" href="bills.html">Bills</a>
-            <a class="collapse-item" href="viewBilling.html">My Billing Information</a>
-        </div>
-    </div>
-</li>
-
-       <!-- Nav Item - Appointments Collapse Menu -->
-<li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAppointments"
-        aria-expanded="true" aria-controls="collapseAppointments">
-        <i class="fas fa-fw fa-calendar-check"></i>
-        <span>Appointments</span>
-    </a>
-    <div id="collapseAppointments" class="collapse" aria-labelledby="headingAppointments" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Appointment Options:</h6>
-            <a class="collapse-item" href="createAppointment.html">Request Appointment</a>
-            <a class="collapse-item" href="myAppointments.html">My Appointments</a>
-        </div>
-    </div>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="messages.html">
-        <i class="fas fa-fw fa-envelope"></i>
-        <span>Messages</span>
-    </a>
-</li>
-
-           <!-- Nav Item - HealthCollapse Menu -->
-           <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHealth"
-                aria-expanded="true" aria-controls="collapseHealth">
-                <i class="fas fa-fw fa-chart-area"></i>
-                <span>Health</span>
-            </a>
-            <div id="collapseHealth" class="collapse" aria-labelledby="headingHealth" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Health Options:</h6>
-                    <a class="collapse-item" href="labs.html">Labs</a>
-                    <a class="collapse-item" href="prescriptions.html">Prescriptions</a>
-                    <a class="collapse-item" href="insurance.html">Insurance</a>
+            <!-- Nav Item - Billing Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBilling"
+                    aria-expanded="true" aria-controls="collapseBilling">
+                    <i class="fas fa-fw fa-file-invoice-dollar"></i>
+                    <span>Billing</span>
+                </a>
+                <div id="collapseBilling" class="collapse" aria-labelledby="headingBilling"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Billing Options:</h6>
+                        <a class="collapse-item" href="bills.html">Bills</a>
+                        <a class="collapse-item" href="viewBilling.html">My Billing Information</a>
+                    </div>
                 </div>
-            </div>
-        </li>
+            </li>
+
+            <!-- Nav Item - Appointments Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAppointments"
+                    aria-expanded="true" aria-controls="collapseAppointments">
+                    <i class="fas fa-fw fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <div id="collapseAppointments" class="collapse" aria-labelledby="headingAppointments"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Appointment Options:</h6>
+                        <a class="collapse-item" href="createAppointment.html">Request Appointment</a>
+                        <a class="collapse-item" href="myAppointments.html">My Appointments</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="messages.html">
+                    <i class="fas fa-fw fa-envelope"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - HealthCollapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHealth"
+                    aria-expanded="true" aria-controls="collapseHealth">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Health</span>
+                </a>
+                <div id="collapseHealth" class="collapse" aria-labelledby="headingHealth"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Health Options:</h6>
+                        <a class="collapse-item" href="labs.html">Labs</a>
+                        <a class="collapse-item" href="prescriptions.html">Prescriptions</a>
+                        <a class="collapse-item" href="insurance.html">Insurance</a>
+                    </div>
+                </div>
+            </li>
 
 
             <!-- Sidebar Toggler (Sidebar) -->
@@ -105,7 +113,7 @@
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
 
-           
+
 
         </ul>
         <!-- End of Sidebar    / / / / /  / / / -->
@@ -165,15 +173,17 @@
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+       <!-- jQuery UI JavaScript -->
+       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
         // Declares a global variable to hold the index of the currently edited row
         let editingRowIndex;
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             let table = $('#dataTable').DataTable();
 
             let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
-            appointments.forEach(function(appointment, index) {
+            appointments.forEach(function (appointment, index) {
                 table.row.add([
                     appointment.appointmentDate,
                     convertTo12Hour(appointment.appointmentTime),
@@ -185,9 +195,19 @@
                     '<button class="btn btn-sm btn-danger delete-btn" data-index="' + index + '">Delete</button>'
                 ]).draw(false);
             });
-
+            $("#editDate").datepicker({
+                minDate: new Date(), // Disallows past dates
+                beforeShowDay: function (date) {
+                    var day = date.getDay();
+                    return [(day != 0 && day != 6)]; // Disable Sundays (0) and Saturdays (6)
+                },
+                onSelect: function (dateText, inst) {
+                    populateTimes();
+                }
+            });
+            populateTimes(); // Populate times initially
             // for edit button clicks
-            $('#dataTable').on('click', '.edit-btn', function() {
+            $('#dataTable').on('click', '.edit-btn', function () {
                 editingRowIndex = $(this).data('index');
 
                 const appointment = appointments[editingRowIndex];
@@ -196,10 +216,11 @@
                 $('#editPatient').val(appointment.patientName);
                 $('#editDoctor').val(appointment.doctorSelect);
                 $('#editDescription').val(appointment.visitDescription);
+               
             });
 
             // for delete
-            $('#dataTable').on('click', '.delete-btn', function() {
+            $('#dataTable').on('click', '.delete-btn', function () {
                 const rowIndex = $(this).data('index');
                 const appointment = appointments[rowIndex];
 
@@ -214,7 +235,7 @@
             });
 
             // for save
-            $('#saveBtn').click(function() {
+            $('#saveBtn').click(function () {
                 const newDate = $('#editDate').val();
                 const newTime = $('#editTime').val();
                 const newPatient = $('#editPatient').val();
@@ -239,6 +260,28 @@
                 table.cell(editingRowIndex, 4).data(newDescription).draw();
             });
         });
+        function populateTimes() {
+            const startTime = 9; // Start time for appointments in hours (9 AM)
+            const endTime = 17; // End time for appointments in hours (5 PM)
+            const appointmentTime = document.getElementById('editDate');
+            appointmentTime.innerHTML = '';
+
+            for (let hour = startTime; hour <= endTime; hour++) {
+                // Example: grey out 1 PM and 2 PM
+                if (hour !== 13 && hour !== 14) {
+                    const option = document.createElement('option');
+                    const time = (hour < 10 ? '0' + hour : hour) + ':00';
+                    option.value = time;
+                    option.text = formatTime(hour);
+                    appointmentTime.appendChild(option);
+                }
+            }
+        }
+        function formatTime(hour) {
+            const ampm = hour < 12 || hour === 24 ? 'AM' : 'PM';
+            const hour12 = hour % 12 || 12;
+            return `${hour12}:00 ${ampm}`;
+        }
 
         function convertTo12Hour(time) {
             const [hour, minute] = time.split(':');
@@ -247,20 +290,21 @@
             const convertedHour = hourInt % 12 || 12;
             return `${convertedHour}:${minute} ${ampm}`;
         }
-        $(document).ready(function() {
-    // Collapse the sidebar
-    $("body").addClass("sidebar-toggled");
-    $(".sidebar").addClass("toggled");
+        $(document).ready(function () {
+            // Collapse the sidebar
+            $("body").addClass("sidebar-toggled");
+            $(".sidebar").addClass("toggled");
 
-    // If there is a local storage setting for the sidebar, remove it so it starts collapsed
-    if (localStorage.getItem("sidebarToggle") !== null) {
-        localStorage.removeItem("sidebarToggle");
-    }
-});
+            // If there is a local storage setting for the sidebar, remove it so it starts collapsed
+            if (localStorage.getItem("sidebarToggle") !== null) {
+                localStorage.removeItem("sidebarToggle");
+            }
+        });
     </script>
 
     <!-- Added modal box -->
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -299,4 +343,5 @@
         </div>
     </div>
 </body>
+
 </html>
