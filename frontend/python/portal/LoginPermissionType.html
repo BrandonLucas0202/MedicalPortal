@@ -26,17 +26,17 @@
                                         <div>
                                             <!--Need to work on receptionist and nurse page routing-->
                                             <a href="ReceptionistLogin.html">
-                                                <i> <button type="button" class="btn btn-primary" onclick="createAppointment()">Receptionist</button></i> 
+                                                <i> <button type="button" class="btn btn-primary" onclick="validateLogin()">Receptionist</button></i> 
                                             </a>
                                             <a href="NurseLogin.html">
-                                                <i> <button type="button" class="btn btn-primary" onclick="createAppointment()">Nurse</button></i> 
+                                                <i> <button type="button" class="btn btn-primary" onclick="validateLogin()">Nurse</button></i> 
                                             </a>
                                             
                                             <a href="DoctorLogin.html">
-                                                <i> <button type="button" class="btn btn-primary" onclick="createAppointment()">Doctor</button></i> 
+                                                <i> <button type="button" class="btn btn-primary" onclick="validateLogin()">Doctor</button></i> 
                                             </a>
                                             <a href="PatientLogin.html">
-                                                <i> <button type="button" class="btn btn-primary" onclick="createAppointment()">Patient</button></i> 
+                                                <i> <button type="button" class="btn btn-primary" onclick="validateLogin()">Patient</button></i> 
                                             </a>
                                             
                                         </div>
@@ -54,6 +54,56 @@
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
     <script src="js/sb-admin-2.min.js"></script>
+    <script>
+        token = getCookie("token");
+        if (token != "")
+            backend("account/view", { token: token }).then((out) => {
+                if ("role" in out) {
+                    role = out.role
+                    if (role == "Doctor")
+                        window.location.href = 'DoctorIndex.html?token=' + token;
+                    else if (role == "Nurse")
+                        window.location.href = 'NurseIndex.html?token=' + token;
+                    else if (role == "Staff")
+                        window.location.href = 'ReceptionistIndex.html?token=' + token;
+                    else if (role == "Admin")
+                        window.location.href = 'ReceptionistIndex.html?token=' + token;
+                } else {
+                    window.location.href = 'index.html?token=' + token;
+                }
+            })
+
+        function validateLogin() {
+
+            params = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            }
+
+            backend("account/login", params).then((out) => {
+                if (out.status == 201) {
+                    token = out.token;
+                    setToken(token);
+                    if ("role" in out) {
+                        role = out.role
+                        if (role == "Doctor")
+                            window.location.href = 'DoctorIndex.html?token=' + token;
+                        else if (role == "Nurse")
+                            window.location.href = 'NurseIndex.html?token=' + token;
+                        else if (role == "Staff")
+                            window.location.href = 'ReceptionistIndex.html?token=' + token;
+                        else if (role == "Admin")
+                            window.location.href = 'ReceptionistIndex.html?token=' + token;
+                    } else {
+                        window.location.href = 'index.html?token=' + token;
+                    }
+                } else
+                    alert("Invalid credentials provided!");
+            })
+
+            return false;
+        }
+    </script>
     
 </body>
 </html>
