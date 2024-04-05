@@ -24,25 +24,16 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome! Select Login Type</h1>
                                         <div>
-                                            <!--Need to work on receptionist and nurse page routing-->
-                                            <a href="ReceptionistLogin.html">
-                                                <i> <button type="button" class="btn btn-primary" onclick="validateLogin()">Receptionist</button></i> 
-                                            </a>
-                                            <a href="NurseLogin.html">
-                                                <i> <button type="button" class="btn btn-primary" onclick="validateLogin()">Nurse</button></i> 
-                                            </a>
-                                            
-                                            <a href="DoctorLogin.html">
-                                                <i> <button type="button" class="btn btn-primary" onclick="validateLogin()">Doctor</button></i> 
-                                            </a>
-                                            <a href="PatientLogin.html">
-                                                <i> <button type="button" class="btn btn-primary" onclick="validateLogin()">Patient</button></i> 
-                                            </a>
-                                            
+                                            <!-- Add onclick event handlers to trigger login validation -->
+                                            <button type="button" class="btn btn-primary" onclick="validateLogin('Receptionist')">Receptionist</button>
+                                            <button type="button" class="btn btn-primary" onclick="validateLogin('Nurse')">Nurse</button>
+                                            <button type="button" class="btn btn-primary" onclick="validateLogin('Doctor')">Doctor</button>
+                                            <button type="button" class="btn btn-primary" onclick="validateLogin('Patient')">Patient</button>
                                         </div>
                                     </div>
-                                    
                                 </div>
+                                    
+                                
                             </div>
                         </div>
                     </div>

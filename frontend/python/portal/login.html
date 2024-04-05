@@ -94,16 +94,11 @@
             })
 
         function validateLogin() {
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
-            if (username === 'test' && password === 'test') {
-                window.location.href = 'index.html'; // Redirect to the dashboard or home page
-                return false; // Prevent form submission
-            } else {
-                alert('Invalid username or password!');
-                return false; // Prevent form submission
+            params = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
             }
-            
+
             backend("account/login", params).then((out) => {
                 if (out.status == 201) {
                     token = out.token;
