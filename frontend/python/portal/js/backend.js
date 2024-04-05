@@ -1,5 +1,5 @@
 function backend(endpoint, params) {
-    return fetch("http://127.0.0.1:5000/" + endpoint + "?" + serialize(params)).then((response) => response.json());
+    return fetch("http://15.204.226.232:5000/" + endpoint + "?" + serialize(params)).then((response) => response.json());
 }
 
 function serialize(params) {
