@@ -8,6 +8,7 @@ A provider for the BackendApplication instance.
 Global instance with singleton pattern.
 """
 from flask import Flask
+from flask_cors import CORS
 from auth.authenticator import Authenticator
 from database.sqlconnection import SQLConnection
 import json
@@ -17,6 +18,7 @@ class __BackendApplication():
 
     def __init__(self) -> None:
         self.__flask = Flask(__name__)
+        CORS(self.__flask)
         self.__database = SQLConnection(json.load(open("database.json")))
         self.__authenticator = Authenticator(self.__database)
 

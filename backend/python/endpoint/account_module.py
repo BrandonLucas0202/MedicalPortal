@@ -37,6 +37,18 @@ def account_login():
             "status": 201,
             "token": token
         } | account.get(__database)
+    
+@__flask.route("/account/view")
+def account_view():
+    params = getParameters()
+    token = params["token"]
+    if not __auth.verifyToken(token):
+        return {
+            "status": 401,
+            "message": "Token is invalid!"
+        }
+    
+    return {"status": 201} | __auth.getAccount(token).get(__database)
 
 @__flask.route("/account/patient/view")
 def patient_account_view():
