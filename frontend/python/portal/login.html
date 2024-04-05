@@ -94,10 +94,21 @@
             })
 
         function validateLogin() {
+<<<<<<< HEAD:frontend/PatientLogin.html
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            if (username === 'test' && password === 'test') {
+                window.location.href = 'index.html'; // Redirect to the dashboard or home page
+                return false; // Prevent form submission
+            } else {
+                alert('Invalid username or password!');
+                return false; // Prevent form submission
+=======
 
             params = {
                 email: document.getElementById('email').value,
                 password: document.getElementById('password').value
+>>>>>>> 47dfea4b3e081975205140942b8bfb15e4569383:frontend/python/portal/login.html
             }
 
             backend("account/login", params).then((out) => {
