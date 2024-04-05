@@ -19,17 +19,13 @@ class Model():
             return
 
         # Get connection and cursor
-        connection = database.connection()
-        cursor: MySQLCursor = connection.cursor()
-        cursor.execute(
-            f"INSERT INTO {self.__table.split(' ')[0]} ({', '.join(keys)}) VALUES ({', '.join(['%s' for _ in values])})",
-            values
-        )
-
-        # Commit and close
-        cursor.close()
-        connection.commit()
-        connection.close()
+        with database.connection() as connection:
+            with connection.cursor(dictionary=True) as cursor:
+                cursor.execute(
+                    f"INSERT INTO {self.__table.split(' ')[0]} ({', '.join(keys)}) VALUES ({', '.join(['%s' for _ in values])})",
+                    values
+                )
+            connection.commit()
 
     def update(self, database: SQLConnection, data: dict):
         """
@@ -45,17 +41,13 @@ class Model():
         primaryValues = [self.__primaries.get(key) for key in primaryKeys]
 
         # Get connection and cursor
-        connection = database.connection()
-        cursor: MySQLCursor = connection.cursor()
-        cursor.execute(
-            f"UPDATE {self.__table.split(' ')[0]} SET {', '.join(key + '=%s' for key in keys)} WHERE {' AND '.join(key + '=%s' for key in primaryKeys)}",
-            values + primaryValues
-        )
-
-        # Commit and close
-        cursor.close()
-        connection.commit()
-        connection.close()
+        with database.connection() as connection:
+            with connection.cursor(dictionary=True) as cursor:
+                cursor.execute(
+                    f"UPDATE {self.__table.split(' ')[0]} SET {', '.join(key + '=%s' for key in keys)} WHERE {' AND '.join(key + '=%s' for key in primaryKeys)}",
+                    values + primaryValues
+                )
+            connection.commit()
 
     def get(self, database: SQLConnection, filter: dict = None, groupBy:list = None, orderBy: list = None) -> dict:
         """
@@ -69,30 +61,26 @@ class Model():
             primaryValues = [self.__primaries.get(key) for key in primaryKeys]
 
         # Get connection and cursor
-        connection = database.connection()
-        cursor: MySQLCursor = connection.cursor(dictionary=True)
-        query = f"SELECT {', '.join(self.__fields)} FROM {self.__table} WHERE {' AND '.join(key + '=%s' for key in primaryKeys)}"
-        if groupBy:
-            query+=f" GROUP BY {','.join(groupBy)}"
-        if orderBy:
-            query+=f" ORDER BY {','.join(orderBy)}"
-        cursor.execute(
-            query,
-            primaryValues
-        )
+        with database.connection() as connection:
+            with connection.cursor(dictionary=True) as cursor:
+                query = f"SELECT {', '.join(self.__fields)} FROM {self.__table} WHERE {' AND '.join(key + '=%s' for key in primaryKeys)}"
+                if groupBy:
+                    query+=f" GROUP BY {','.join(groupBy)}"
+                if orderBy:
+                    query+=f" ORDER BY {','.join(orderBy)}"
+                cursor.execute(
+                    query,
+                    primaryValues
+                )
 
-        row = cursor.fetchone()
-        if not row:
-            return {}
-        
-        if len(self.__fields) == 1:
-            result = list(row.values())[0]
-        else:
-            result = row
-
-        # Commit and close
-        cursor.close()
-        connection.close()
+                row = cursor.fetchone()
+                if not row:
+                    return {}
+                
+                if len(self.__fields) == 1:
+                    result = list(row.values())[0]
+                else:
+                    result = row
 
         return result
     
@@ -108,28 +96,24 @@ class Model():
             primaryValues = [self.__primaries.get(key) for key in primaryKeys]
 
         # Get connection and cursor
-        connection = database.connection()
-        cursor: MySQLCursor = connection.cursor(dictionary=True)
-        query = f"SELECT {', '.join(self.__fields)} FROM {self.__table} WHERE {' AND '.join(key + '=%s' for key in primaryKeys)}"
-        if groupBy:
-            query+=f" GROUP BY {','.join(groupBy)}"
-        if orderBy:
-            query+=f" ORDER BY {','.join(orderBy)}"
-        cursor.execute(
-            query,
-            primaryValues
-        )
-        
-        result = []
-        for row in cursor:
-            if len(self.__fields) == 1:
-                result.append(list(row.values())[0])
-            else:
-                result.append(row)
-
-        # Commit and close
-        cursor.close()
-        connection.close()
+        with database.connection() as connection:
+            with connection.cursor(dictionary=True) as cursor:
+                query = f"SELECT {', '.join(self.__fields)} FROM {self.__table} WHERE {' AND '.join(key + '=%s' for key in primaryKeys)}"
+                if groupBy:
+                    query+=f" GROUP BY {','.join(groupBy)}"
+                if orderBy:
+                    query+=f" ORDER BY {','.join(orderBy)}"
+                cursor.execute(
+                    query,
+                    primaryValues
+                )
+                
+                result = []
+                for row in cursor:
+                    if len(self.__fields) == 1:
+                        result.append(list(row.values())[0])
+                    else:
+                        result.append(row)
 
         return result
 
@@ -141,17 +125,13 @@ class Model():
         primaryValues = [self.__primaries.get(key) for key in primaryKeys]
 
         # Get connection and cursor
-        connection = database.connection()
-        cursor: MySQLCursor = connection.cursor()
-        cursor.execute(
-            f"DELETE FROM {self.__table.split(' ')[0]} WHERE {' AND '.join(key + '=%s' for key in primaryKeys)}",
-            primaryValues
-        )
-
-        # Commit and close
-        cursor.close()
-        connection.commit()
-        connection.close()
+        with database.connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"DELETE FROM {self.__table.split(' ')[0]} WHERE {' AND '.join(key + '=%s' for key in primaryKeys)}",
+                    primaryValues
+                )
+            connection.commit()
 
 class Searchable():
 
@@ -163,23 +143,20 @@ class Searchable():
         primaryValues = [filter.get(key) for key in primaryKeys if key in self.__fields]
 
         # Get connection and cursor
-        connection = database.connection()
-        cursor: MySQLCursor = connection.cursor(dictionary=True)
-        cursor.execute(
-            f"SELECT {', '.join(self.__fields)} FROM {self.__table} WHERE {' AND '.join(key + 'LIKE %s' for key in primaryKeys)}",
-            primaryValues
-        )
-        
-        result = []
-        for row in cursor:
-            entry = {}
-            for field in self.__fields:
-                entry[field] = row[field]
-            result.append(entry)
+        with database.connection() as connection:
+            with connection.cursor(dictionary=True) as cursor:
+                cursor.execute(
+                    f"SELECT {', '.join(self.__fields)} FROM {self.__table} WHERE {' AND '.join(key + 'LIKE %s' for key in primaryKeys)}",
+                    primaryValues
+                )
+                
+                result = []
+                for row in cursor:
+                    entry = {}
+                    for field in self.__fields:
+                        entry[field] = row[field]
+                    result.append(entry)
 
-        # Commit and close
-        cursor.close()
-        connection.close()
 
         return result
 
