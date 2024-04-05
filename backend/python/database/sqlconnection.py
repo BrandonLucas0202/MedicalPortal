@@ -15,7 +15,7 @@ class SQLConnection():
         # Save the configuration 
         self.__config = config
         # Initialize the connection pool
-        self.__pool = pooling.MySQLConnectionPool(pool_name = "backend_pool", pool_size = 5, **self.__config)
+        self.__pool = pooling.MySQLConnectionPool(pool_name = "backend_pool", pool_size = 10, **self.__config)
         
 
     def connection(self):

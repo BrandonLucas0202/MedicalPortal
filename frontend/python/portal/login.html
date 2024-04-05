@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,12 @@
     <meta name="author" content="">
     <title>HCMS Admin - Login</title>
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-gradient-primary">
     <div class="container">
         <div class="row justify-content-center">
@@ -21,41 +25,31 @@
                             <!-- img-->
                             <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
                             <!--<img src="frontend\img\volodymyr-hryshchenko-7JAyy7jLTAk-unsplash.jpg" alt="Med_bear">-->
-                            <div class="col-lg-6"> <!--break-->  <!-- change from 12 to 6 for img insertion-->
-                                
+                            <div class="col-lg-6"> <!--break--> <!-- change from 12 to 6 for img insertion-->
+
                                 <div class="p-5">
-                                    <div class="row justify-content-center">
-                                        
-                                        
-                                        <a href="ReceptionistLogin.html">
-                                            <i> <button type="button" class="btn btn-primary" onclick="createAppointment()">Receptionist</button></i> 
-                                        </a>
-                                        <a href="NurseLogin.html">
-                                            <i> <button type="button" class="btn btn-primary" onclick="createAppointment()">Nurse</button></i> 
-                                        </a>
-                                        <a href="DoctorLogin.html">
-                                            <i> <button type="button" class="btn btn-primary" onclick="createAppointment()">Doctor</button></i> 
-                                        </a>
-                                    </div>
                                     <div>
                                         <h1>
-                                            
+
                                         </h1>
                                     </div>
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Welcome Valued Patient!</h1>
+                                        <h1 class="h4 text-gray-900 mb-4">Welcome!</h1>
                                     </div>
                                     <form class="user" onsubmit="return validateLogin()">
                                         <div class="form-group">
-                                            <input type="text" class="form-control form-control-user" id="username" placeholder="Enter Username">
+                                            <input type="text" class="form-control form-control-user" id="email"
+                                                placeholder="Email">
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" class="form-control form-control-user" id="password" placeholder="Password">
+                                            <input type="password" class="form-control form-control-user" id="password"
+                                                placeholder="Password">
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
                                                 <input type="checkbox" class="custom-control-input" id="customCheck">
-                                                <label class="custom-control-label" for="customCheck">Remember Me</label>
+                                                <label class="custom-control-label" for="customCheck">Remember
+                                                    Me</label>
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-user btn-block">Login</button>
@@ -79,8 +73,28 @@
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
     <script src="js/sb-admin-2.min.js"></script>
+    <script src="js/backend.js"></script>
     <script>
+        token = getCookie("token");
+        if (token != "")
+            backend("account/view", { token: token }).then((out) => {
+                if ("role" in out) {
+                    role = out.role
+                    if (role == "Doctor")
+                        window.location.href = 'DoctorIndex.html?token=' + token;
+                    else if (role == "Nurse")
+                        window.location.href = 'NurseIndex.html?token=' + token;
+                    else if (role == "Staff")
+                        window.location.href = 'ReceptionistIndex.html?token=' + token;
+                    else if (role == "Admin")
+                        window.location.href = 'ReceptionistIndex.html?token=' + token;
+                } else {
+                    window.location.href = 'index.html?token=' + token;
+                }
+            })
+
         function validateLogin() {
+<<<<<<< HEAD:frontend/PatientLogin.html
             var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
             if (username === 'test' && password === 'test') {
@@ -89,8 +103,38 @@
             } else {
                 alert('Invalid username or password!');
                 return false; // Prevent form submission
+=======
+
+            params = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+>>>>>>> 47dfea4b3e081975205140942b8bfb15e4569383:frontend/python/portal/login.html
             }
+
+            backend("account/login", params).then((out) => {
+                if (out.status == 201) {
+                    token = out.token;
+                    setToken(token);
+                    if ("role" in out) {
+                        role = out.role
+                        if (role == "Doctor")
+                            window.location.href = 'DoctorIndex.html?token=' + token;
+                        else if (role == "Nurse")
+                            window.location.href = 'NurseIndex.html?token=' + token;
+                        else if (role == "Staff")
+                            window.location.href = 'ReceptionistIndex.html?token=' + token;
+                        else if (role == "Admin")
+                            window.location.href = 'ReceptionistIndex.html?token=' + token;
+                    } else {
+                        window.location.href = 'index.html?token=' + token;
+                    }
+                } else
+                    alert("Invalid credentials provided!");
+            })
+
+            return false;
         }
     </script>
 </body>
+
 </html>

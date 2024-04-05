@@ -7,6 +7,7 @@ The backend for the MedicalPortal system.
 ### Libraries / Packages
 ```
 pip install flask
+pip install flask-cors
 pip install mysql-connector-python
 ```
 

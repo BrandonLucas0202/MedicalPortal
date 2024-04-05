@@ -21,9 +21,101 @@
 
     <div id="wrapper">
 
-        <!-- Sidebar -->
-        <!-- Sidebar omitted for brevity -->
-        
+         <!-- Sidebar      / / / / / / / -->
+         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i> <!-- FACE IMG-->
+                </div>
+                <div class="sidebar-brand-text mx-3">Med Portal <sup><!-- was 2 --></sup></div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Actions
+            </div>
+
+           <!-- Nav Item - Billing Collapse Menu -->
+<li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBilling"
+        aria-expanded="true" aria-controls="collapseBilling">
+        <i class="fas fa-fw fa-file-invoice-dollar"></i>
+        <span>Billing</span>
+    </a>
+    <div id="collapseBilling" class="collapse" aria-labelledby="headingBilling" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Billing Options:</h6>
+            <a class="collapse-item" href="bills.html">Bills</a>
+            <a class="collapse-item" href="viewBilling.html">My Billing Information</a>
+        </div>
+    </div>
+</li>
+
+       <!-- Nav Item - Appointments Collapse Menu -->
+<li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAppointments"
+        aria-expanded="true" aria-controls="collapseAppointments">
+        <i class="fas fa-fw fa-calendar-check"></i>
+        <span>Appointments</span>
+    </a>
+    <div id="collapseAppointments" class="collapse" aria-labelledby="headingAppointments" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Appointment Options:</h6>
+            <a class="collapse-item" href="createAppointment.html">Request Appointment</a>
+            <a class="collapse-item" href="myAppointments.html">My Appointments</a>
+        </div>
+    </div>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="messages.html">
+        <i class="fas fa-fw fa-envelope"></i>
+        <span>Messages</span>
+    </a>
+</li>
+
+           <!-- Nav Item - HealthCollapse Menu -->
+           <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHealth"
+                aria-expanded="true" aria-controls="collapseHealth">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Health</span>
+            </a>
+            <div id="collapseHealth" class="collapse" aria-labelledby="headingHealth" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Health Options:</h6>
+                    <a class="collapse-item" href="labs.html">Labs</a>
+                    <a class="collapse-item" href="prescriptions.html">Prescriptions</a>
+                    <a class="collapse-item" href="insurance.html">Insurance</a>
+                </div>
+            </div>
+        </li>
+
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+           
+
+        </ul>
+        <!-- End of Sidebar    / / / / /  / / / -->
+
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
@@ -142,6 +234,16 @@
         $(document).ready(function() {
             $('#dataTable').DataTable();
         });
+        $(document).ready(function() {
+    // Collapse the sidebar
+    $("body").addClass("sidebar-toggled");
+    $(".sidebar").addClass("toggled");
+
+    // If there is a local storage setting for the sidebar, remove it so it starts collapsed
+    if (localStorage.getItem("sidebarToggle") !== null) {
+        localStorage.removeItem("sidebarToggle");
+    }
+});
     </script>
 
 </body>

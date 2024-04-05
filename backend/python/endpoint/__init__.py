@@ -13,4 +13,4 @@ import glob
 
 modules = glob.glob(join(dirname(__file__), "*_module.py"))
 
-__all__ = [ basename(f)[:-3] for f in modules if isfile(f) and "account_module" in f]
+__all__ = [ basename(f)[:-3] for f in modules if isfile(f)]

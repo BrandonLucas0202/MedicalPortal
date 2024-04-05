@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>HCMS Admin - Messaging</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+<body id="page-top">
+    <div id="wrapper">
+ <!-- Sidebar      / / / / / / / -->
+ <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-laugh-wink"></i> <!-- FACE IMG-->
+        </div>
+        <div class="sidebar-brand-text mx-3">Med Portal <sup><!-- was 2 --></sup></div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item active">
+        <a class="nav-link" href="index.html">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Actions
+    </div>
+
+   <!-- Nav Item - Billing Collapse Menu -->
+<li class="nav-item">
+<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBilling"
+aria-expanded="true" aria-controls="collapseBilling">
+<i class="fas fa-fw fa-file-invoice-dollar"></i>
+<span>Billing</span>
+</a>
+<div id="collapseBilling" class="collapse" aria-labelledby="headingBilling" data-parent="#accordionSidebar">
+<div class="bg-white py-2 collapse-inner rounded">
+    <h6 class="collapse-header">Billing Options:</h6>
+    <a class="collapse-item" href="bills.html">Bills</a>
+    <a class="collapse-item" href="viewBilling.html">My Billing Information</a>
+</div>
+</div>
+</li>
+
+<!-- Nav Item - Appointments Collapse Menu -->
+<li class="nav-item">
+<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAppointments"
+aria-expanded="true" aria-controls="collapseAppointments">
+<i class="fas fa-fw fa-calendar-check"></i>
+<span>Appointments</span>
+</a>
+<div id="collapseAppointments" class="collapse" aria-labelledby="headingAppointments" data-parent="#accordionSidebar">
+<div class="bg-white py-2 collapse-inner rounded">
+    <h6 class="collapse-header">Appointment Options:</h6>
+    <a class="collapse-item" href="createAppointment.html">Request Appointment</a>
+    <a class="collapse-item" href="myAppointments.html">My Appointments</a>
+</div>
+</div>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="messages.html">
+<i class="fas fa-fw fa-envelope"></i>
+<span>Messages</span>
+</a>
+</li>
+
+   <!-- Nav Item - HealthCollapse Menu -->
+   <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHealth"
+        aria-expanded="true" aria-controls="collapseHealth">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Health</span>
+    </a>
+    <div id="collapseHealth" class="collapse" aria-labelledby="headingHealth" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Health Options:</h6>
+            <a class="collapse-item" href="labs.html">Labs</a>
+            <a class="collapse-item" href="prescriptions.html">Prescriptions</a>
+            <a class="collapse-item" href="insurance.html">Insurance</a>
+        </div>
+    </div>
+</li>
+
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+   
+
+</ul>
+<!-- End of Sidebar    / / / / /  / / / -->
+<div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" id="searchInput">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" id="searchButton">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="searchSuggestions" class="list-group" style="position: absolute; z-index: 1000; width: 100%;"></div>
+                    </div>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Alerts Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 12, 2019</div>
+                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-donate text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 7, 2019</div>
+                                        $290.29 has been deposited into your account!
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Messages -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw"></i>
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter">1</span>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="messagesDropdown">
+                                <h6 class="dropdown-header">
+                                    Message Center
+                                </h6>
+                                
+                                <a class="dropdown-item d-flex align-items-center" href="viewmessage.html">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_2.svg"
+                                            alt="...">
+                                        <div class="status-indicator"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Following our recent appointment, I wanted to provide you with
+                                             a summary of our discussion and the next steps to take in your treatment plan.</div>
+                                        <div class="small text-gray-500">Dr. Smith · 1d</div>
+                                    </div>
+                                </a>
+                                
+                                
+                                <a class="dropdown-item text-center small text-gray-500" href="messages.html">Read More Messages</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Topbar Navbar -->
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                            <a class="nav-link" href="profile.html">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Mr.Test</span>
+                            <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="userProfile.html">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+                </ul>
+
+                           
+
+
+                </nav>
+                <!-- End of Topbar -->
+                <div class="container-fluid">
+                    <!-- New Message Card -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Send New Message</h6>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="doctorSelect">Select Doctor</label>
+                                    <select class="form-control" id="doctorSelect">
+                                        <option>Dr. Smith</option>
+                                        <option>Dr. Jones</option>
+                                        <option>Dr. Williams</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="messageContent">Message Content</label>
+                                    <textarea class="form-control" id="messageContent" rows="3"></textarea>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="sendMessage()">Send Message</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Existing Messages Card Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Inbox</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                <!-- List of messages; in a real app, these would be dynamically generated -->
+                                <a href="viewmessage.html" class="list-group-item list-group-item-action">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <img class="rounded-circle" src="img/undraw_profile.svg" alt="user image" style="width: 50px; height: 50px;">
+                                        </div>
+                                        <div class="col ml--2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h4 class="mb-0 text-gray-800">Dr. Smith</h4>
+                                                    <p class="text-sm text-gray-500 mb-0">Following our recent appointment, I wanted to provide you with a summary of our discussion and the next steps to take in your treatment plan.</p>
+                                                </div>
+                                                <div class="text-right text-muted">
+                                                    <small>3 hrs ago</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <!-- More messages can be added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer omitted for brevity -->
+        </div>
+    </div>
+
+    <!-- core JavaScript, Bootstrap, and other necessary scripts omitted for brevity -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin-2.min.js"></script>
+    <script>
+        function sendMessage() {
+            const doctorName = $('#doctorSelect').val();
+            const messageContent = $('#messageContent').val();
+
+            if (!messageContent.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+
+            // Here you would typically send the message to the server
+            console.log(`Message sent to ${doctorName}: ${messageContent}`);
+            alert('Message sent successfully!');
+
+            // Clear the message content after sending
+            $('#messageContent').val('');
+        }
+    </script>
+     <script>
+        $(document).ready(function() {
+            const pages = [
+                { name: "Dashboard", url: "index.html" },
+                { name: "Bills", url: "bills.html" },
+                { name: "My Billing Information", url: "viewBilling.html" },
+                { name: "Request Appointment", url: "createAppointment.html" },
+                { name: "My Appointments", url: "myAppointments.html" },
+                { name: "Messages", url: "messages.html" },
+                { name: "Labs", url: "labs.html" },
+                { name: "Prescriptions", url: "prescriptions.html" },
+                { name: "Insurance", url: "insurance.html" }
+            ];
+        
+            $('#searchInput').on('input', function() {
+                const input = $(this).val().toLowerCase();
+                const suggestions = pages.filter(page => page.name.toLowerCase().includes(input));
+                $('#searchSuggestions').empty();
+        
+                suggestions.forEach(page => {
+                    $('#searchSuggestions').append(
+                        `<a href="${page.url}" class="list-group-item list-group-item-action">${page.name}</a>`
+                    );
+                });
+        
+                if (input) {
+                    $('#searchSuggestions').show();
+                } else {
+                    $('#searchSuggestions').hide();
+                }
+            });
+        
+            $(document).on('click', function(event) {
+                const isClickInside = $('#searchInput').is(event.target) || $('#searchSuggestions').is(event.target) || $('#searchSuggestions').has(event.target).length > 0;
+        
+                if (!isClickInside) {
+                    $('#searchSuggestions').hide();
+                }
+            });
+        
+            $('#searchButton').click(function() {
+                const searchQuery = $('#searchInput').val().toLowerCase();
+                const page = pages.find(p => p.name.toLowerCase() === searchQuery);
+                if (page) {
+                    window.location.href = page.url;
+                } else {
+                    alert('Page not found!');
+                }
+            });
+            $(document).ready(function() {
+    // Collapse the sidebar
+    $("body").addClass("sidebar-toggled");
+    $(".sidebar").addClass("toggled");
+
+    // If there is a local storage setting for the sidebar, remove it so it starts collapsed
+    if (localStorage.getItem("sidebarToggle") !== null) {
+        localStorage.removeItem("sidebarToggle");
+    }
+});
+        });
+                   
+            </script>
+</body>
+</html>
