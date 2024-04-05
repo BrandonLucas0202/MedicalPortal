@@ -64,36 +64,28 @@
                 }
             })
 
-        function validateLogin() {
 
-            params = {
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value
-            }
-
-            backend("account/login", params).then((out) => {
-                if (out.status == 201) {
-                    token = out.token;
-                    setToken(token);
-                    if ("role" in out) {
-                        role = out.role
-                        if (role == "Doctor")
-                            window.location.href = 'DoctorIndex.html?token=' + token;
-                        else if (role == "Nurse")
-                            window.location.href = 'NurseIndex.html?token=' + token;
-                        else if (role == "Staff")
-                            window.location.href = 'ReceptionistIndex.html?token=' + token;
-                        else if (role == "Admin")
-                            window.location.href = 'ReceptionistIndex.html?token=' + token;
-                    } else {
-                        window.location.href = 'index.html?token=' + token;
-                    }
-                } else
-                    alert("Invalid credentials provided!");
-            })
-
-            return false;
+            function validateLogin(role) {
+        // You can customize this function according to your backend logic
+        // Here, I'm assuming you'll navigate to different login pages based on the selected role
+        switch (role) {
+            case 'Receptionist':
+                window.location.href = 'login.html';
+                break;
+            case 'Nurse':
+                window.location.href = 'login.html';
+                break;
+            case 'Doctor':
+                window.location.href = 'login.html';
+                break;
+            case 'Patient':
+                window.location.href = 'login.html';
+                break;
+            default:
+                // Handle any unexpected cases
+                console.error('Invalid role selected');
         }
+    }
     </script>
     
 </body>
