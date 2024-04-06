@@ -63,57 +63,62 @@
         <!-- Bootstrap JS -->
         <script src="vendor/jquery/jquery.min.js"></script>
         <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <!-- Client-side validation -->
         <script>
-            function registerAccount() {
-                // Retrieve form data
-                const firstName = document.getElementById('FirstName').value;
-                const lastName = document.getElementById('LastName').value;
-                const email = document.getElementById('InputEmail').value;
-                const password = document.getElementById('InputPassword').value;
-                const repeatPassword = document.getElementById('RepeatPassword').value;
-    
-                // Client-side validation
-                if (password !== repeatPassword) {
-                    alert("Passwords do not match.");
-                    return false;
-                }
-    
-                // Prepare data to send to the backend
-                const params = {
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    password: password
-                };
-    
-                // Send data to backend endpoint using Fetch API
-                fetch('/account/patient/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(params)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Handle response from the backend
-                    if (data.status === 201) {
-                        alert("Account created successfully!");
-                        // Redirect to login page or any other page as needed
-                        window.location.href = 'index.html';
-                    } else {
-                        // Handle errors or display error messages
-                        alert("Error: " + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-    
-                // Prevent default form submission
+        <!-- Client-side validation -->
+        function registerAccount() {
+            // Retrieve form data
+            const firstName = document.getElementById('FirstName').value;
+            const lastName = document.getElementById('LastName').value;
+            const email = document.getElementById('InputEmail').value;
+            const password = document.getElementById('InputPassword').value;
+            const repeatPassword = document.getElementById('RepeatPassword').value;
+        
+            // Client-side validation
+            if (password !== repeatPassword) {
+                alert("Passwords do not match.");
                 return false;
             }
+        
+            // Prepare data to send to the backend
+            const params = {
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password
+            };
+        
+            // Get token from cookie
+            const token = getCookie("token");
+        
+            // Send data to backend endpoint along with token
+            fetch('/account/patient/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token // Include token in the request headers
+                },
+                body: JSON.stringify(params)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle response from the backend
+                if (data.status === 201) {
+                    alert("Account created successfully!");
+                    // Redirect to login page or any other page as needed
+                    window.location.href = 'index.html';
+                } else {
+                    // Handle errors or display error messages
+                    alert("Error: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        
+            // Prevent default form submission
+            return false;
+        }
+        
         </script>
     </body>
     
