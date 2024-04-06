@@ -12,6 +12,7 @@ Account endpoint module that handles:
 """
 from app_provider import app_instance
 from auth.permission import Permission
+from backend.python.auth.authenticator import TYPETABLE
 from model.account import PatientAccount, StaffAccount, HashedPassword
 from endpoint.utility import *
 import hashlib
@@ -184,39 +185,47 @@ def patient_account_create():
 @__flask.route("/account/staff/create")
 def staff_account_create():   
     params = getParameters()
-    token = params["token"]
-    if not __auth.verifyToken(token):
+    admin_token = params.get("admin_token")
+
+    # Verify if the provided token is valid and belongs to an admin
+    if not __auth.verifyToken(admin_token) or not __auth.getAccount(admin_token).isAdmin():
         return {
             "status": 401,
-            "message": "Token is invalid!"
+            "message": "Only admins can create staff accounts!"
         }
-    
-    # Must own account
-    if not __auth.hasPermission(token, Permission.CREATE_STAFF):
+
+    # Extract necessary information from request parameters
+    email = params.get("email")
+    password = params.get("password")
+    account_type = params.get("account_type")  # This could be "Doctor", "Nurse", etc.
+
+    # Additional checks, validations, and error handling can be performed here
+
+    # Check if the email already exists
+    if __auth.emailExists(email):
         return {
-            "status": 401,
-            "message": "You cannot create Staff accounts!"
+            "status": 400,
+            "message": "Email already exists!"
         }
-    
-    if __auth.emailExists(params["email"]):
-        return {
-        "status": 400,
-        "message": "Email is invalid!"
-    }
 
-    params["accountID"] = id()
-    params["staffAccountID"] = params["accountID"]
+    # Create the staff account
+    account_id = params["accountID"]  # Assuming accountID is provided
+    staff_account = TYPETABLE[account_type](account_id)
+    staff_account.create(__database, params)
 
-    account = StaffAccount(params["accountID"])
-    account.create(__database, params)
-    
-    params["hash"] = hashlib.md5((params["password"] + params["email"]).encode()).hexdigest()
-    hashedPassword = HashedPassword(params["accountID"])
-    hashedPassword.create(__database, params)
+    # Create hashed password
+    hashed_password = hashlib.md5((password + email).encode()).hexdigest()
+    hashed_password_obj = HashedPassword(account_id)
+    hashed_password_obj.create(__database, {"email": email, "hash": hashed_password})
 
-    token = __auth.login(params["email"], params["password"])
+    # Generate token for the new staff account
+    token = __auth.login(email, password)
 
     return {
         "status": 201,
-        "token": token
-    } | account.get(__database)
+        "token": token,
+        "message": "Staff account created successfully!",
+        "account": staff_account.get(__database)
+    }
+
+
