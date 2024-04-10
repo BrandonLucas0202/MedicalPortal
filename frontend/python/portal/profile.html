@@ -10,6 +10,28 @@
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <style>
+        .profile-pic-option {
+            width: 80px;  /* Adjust the width as needed */
+            height: 80px; /* Adjust the height as needed */
+            cursor: pointer;
+            margin-right: 10px;
+            object-fit: cover; /* Ensures the images maintain aspect ratio without stretching */
+        }
+        .profile-pic-option.selected {
+            border: 2px solid blue;
+        }
+        .img-profile {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+        .d-flex {
+            overflow-x: auto; /* Allows horizontal scrolling if there are many images */
+            white-space: nowrap; /* Ensures images are in a single line */
+        }
+    </style>
 </head>
 <body id="page-top">
     <div id="wrapper">
@@ -38,15 +60,47 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Your Profile</h6>
                                 </div>
                                 <div class="card-body">
-                                    <div class="text-center">
-                                        <img class="img-profile rounded-circle mb-4" src="img/undraw_profile.svg" alt="User Image" style="width: 150px; height: 150px;">
+                                    <div id="profileView">
+                                        <div class="text-center">
+                                            <img class="img-profile rounded-circle mb-4" src="img/undraw_profile.svg" alt="User Image" style="width: 150px; height: 150px;">
+                                        </div>
+                                    
+                                        <h4 class="text-center mb-2">Mr.Test</h4>
+                                        <p class="text-center">Email: mrtest@gmail.com</p>
+                                        <p class="text-center">Role: Patient</p>
+                                        <!-- Additional profile details here -->
                                     </div>
+                                    
+                                    <div id="profileEdit" style="display: none;">
+                                        <!-- other elements -->
+                                        <form id="editProfileForm">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <input type="text" class="form-control" id="editName">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Email</label>
+                                                <input type="email" class="form-control" id="editEmail">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Profile Picture</label>
+                                                <div class="d-flex">
+                                                    <img src="img/undraw_profile.svg" alt="Profile 1" class="img-thumbnail profile-pic-option" data-img="undraw_profile.svg">
+                                                    <img src="img/undraw_profile_1.svg" alt="Profile 2" class="img-thumbnail profile-pic-option" data-img="undraw_profile_1.svg">
+                                                    <img src="img/undraw_profile_2.svg" alt="Profile 3" class="img-thumbnail profile-pic-option" data-img="undraw_profile_2.svg">
+                                                    <img src="img/undraw_profile_3.svg" alt="Profile 4" class="img-thumbnail profile-pic-option" data-img="undraw_profile_3.svg">
+                                                </div>
+                                            </div>
+                                            <!-- Add more fields as needed for editing -->
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                            <button type="button" class="btn btn-secondary" onclick="toggleEdit(false)">Cancel</button>
+                                        </form>
+                                    </div>
+                                    
                                 
-                                    <h4 class="text-center mb-2">Mr.Test</h4>
-                                    <p class="text-center">Email: mrtest@gmail.com</p>
-                                    <p class="text-center">Role: Patient</p>
-                                    <!-- Additional profile details here -->
+                                    <button id="editButton" type="button" class="btn btn-info" onclick="toggleEdit(true)">Edit Profile</button>
                                 </div>
+                                
                             </div>
                         </div>
                         
@@ -118,6 +172,72 @@
             // Redirect to the login page
             window.location.href = 'login.html';
         }
+        document.addEventListener('DOMContentLoaded', function() {
+    displayProfile();
+    document.querySelectorAll('.profile-pic-option').forEach(element => {
+        element.onclick = function() {
+            document.querySelectorAll('.profile-pic-option').forEach(img => img.classList.remove('selected'));
+            this.classList.add('selected');
+        };
+    });
+});
+
+function displayProfile() {
+    const profile = getProfile();
+    document.querySelector('#profileView h4').textContent = profile.name;
+    document.querySelector('#profileView p').textContent = `Email: ${profile.email}`;
+    const imgSrc = `img/${profile.image}`;
+    document.querySelector('#profileView .img-profile').src = imgSrc;
+    
+    // Ensure the selected class is applied to the chosen profile picture in edit mode
+    document.querySelectorAll('.profile-pic-option').forEach(img => {
+        if (img.getAttribute('data-img') === profile.image) {
+            img.classList.add('selected');
+        } else {
+            img.classList.remove('selected');
+        }
+    });
+}
+
+
+function toggleEdit(edit) {
+    const viewMode = document.getElementById('profileView');
+    const editMode = document.getElementById('profileEdit');
+    const editButton = document.getElementById('editButton');
+
+    if (edit) {
+        const profile = getProfile();
+        document.getElementById('editName').value = profile.name;
+        document.getElementById('editEmail').value = profile.email;
+
+        viewMode.style.display = 'none';
+        editMode.style.display = 'block';
+        editButton.style.display = 'none';
+    } else {
+        viewMode.style.display = 'block';
+        editMode.style.display = 'none';
+        editButton.style.display = 'block';
+    }
+}
+
+function getProfile() {
+    return JSON.parse(localStorage.getItem('profile')) || { name: 'Mr. Test', email: 'mrtest@gmail.com', image: 'undraw_profile.svg' };
+}
+
+document.getElementById('editProfileForm').onsubmit = function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById('editName').value;
+    const email = document.getElementById('editEmail').value;
+    const selectedImage = document.querySelector('.profile-pic-option.selected')?.getAttribute('data-img') || getProfile().image;
+
+    localStorage.setItem('profile', JSON.stringify({ name, email, image: selectedImage }));
+
+    displayProfile();
+    toggleEdit(false);
+};
+
+
     </script>
     
 </body>
