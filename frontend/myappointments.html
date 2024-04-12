@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>HCMS Admin - My Appointments</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+<body id="page-top">
+    <div id="wrapper">
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" title="Home">
+                                <i class="fas fa-home fa-fw text-primary"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">My Appointments</h1>
+                        <a href="createAppointment.html" class="d-inline-block btn btn-sm btn-info shadow-sm mr-2">
+                            <i class="fas fa-calendar-plus fa-sm text-white-50"></i> Request Appointment
+                        </a>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-info">Appointment List</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Patient</th>
+                                                    <th>Doctor</th>
+                                                    <th>Description</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Data will be added dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        // Declares a global variable to hold the index of the currently edited row
+        let editingRowIndex;
+
+        $(document).ready(function() {
+            let table = $('#dataTable').DataTable();
+
+            let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
+            appointments.forEach(function(appointment, index) {
+                table.row.add([
+                    appointment.appointmentDate,
+                    convertTo12Hour(appointment.appointmentTime),
+                    appointment.patientName,
+                    appointment.doctorSelect,
+                    appointment.visitDescription || 'No description',
+                    'Scheduled',
+                    '<button class="btn btn-sm btn-primary edit-btn" data-toggle="modal" data-target="#editModal" data-index="' + index + '">Edit</button>' +
+                    '<button class="btn btn-sm btn-danger delete-btn" data-index="' + index + '">Delete</button>'
+                ]).draw(false);
+            });
+
+            // for edit button clicks
+            $('#dataTable').on('click', '.edit-btn', function() {
+                editingRowIndex = $(this).data('index');
+
+                const appointment = appointments[editingRowIndex];
+                $('#editDate').val(appointment.appointmentDate);
+                $('#editTime').val(appointment.appointmentTime);
+                $('#editPatient').val(appointment.patientName);
+                $('#editDoctor').val(appointment.doctorSelect);
+                $('#editDescription').val(appointment.visitDescription);
+            });
+
+            // for delete
+            $('#dataTable').on('click', '.delete-btn', function() {
+                const rowIndex = $(this).data('index');
+                const appointment = appointments[rowIndex];
+
+                if (confirm("Are you sure you want to cancel this appointment?")) {
+                    // Deletes the corresponding data from the data source
+                    appointments.splice(rowIndex, 1);
+                    localStorage.setItem('myAppointments', JSON.stringify(appointments));
+
+                    // Delete the corresponding row from the table
+                    table.row($(this).closest('tr')).remove().draw();
+                }
+            });
+
+            // for save
+            $('#saveBtn').click(function() {
+                const newDate = $('#editDate').val();
+                const newTime = $('#editTime').val();
+                const newPatient = $('#editPatient').val();
+                const newDoctor = $('#editDoctor').val();
+                const newDescription = $('#editDescription').val();
+
+                // update data
+                appointments[editingRowIndex].appointmentDate = newDate;
+                appointments[editingRowIndex].appointmentTime = newTime;
+                appointments[editingRowIndex].patientName = newPatient;
+                appointments[editingRowIndex].doctorSelect = newDoctor;
+                appointments[editingRowIndex].visitDescription = newDescription;
+
+                localStorage.setItem('myAppointments', JSON.stringify(appointments));
+                $('#editModal').modal('hide');
+
+                // update table
+                table.cell(editingRowIndex, 0).data(newDate).draw();
+                table.cell(editingRowIndex, 1).data(newTime).draw();
+                table.cell(editingRowIndex, 2).data(newPatient).draw();
+                table.cell(editingRowIndex, 3).data(newDoctor).draw();
+                table.cell(editingRowIndex, 4).data(newDescription).draw();
+            });
+        });
+
+        function convertTo12Hour(time) {
+            const [hour, minute] = time.split(':');
+            const hourInt = parseInt(hour, 10);
+            const ampm = hourInt >= 12 ? 'PM' : 'AM';
+            const convertedHour = hourInt % 12 || 12;
+            return `${convertedHour}:${minute} ${ampm}`;
+        }
+    </script>
+
+    <!-- Added modal box -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Appointment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editDate">Date</label>
+                        <input type="text" class="form-control" id="editDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="editTime">Time</label>
+                        <input type="text" class="form-control" id="editTime">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPatient">Patient</label>
+                        <input type="text" class="form-control" id="editPatient">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDoctor">Doctor</label>
+                        <input type="text" class="form-control" id="editDoctor">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescription">Description</label>
+                        <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

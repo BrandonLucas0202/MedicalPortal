@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>HCMS Admin - Prescriptions</title>
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <!-- Sidebar omitted for brevity -->
+        
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Home Button -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" title="Home">
+                                <i class="fas fa-home fa-fw text-primary"></i>
+                            </a>
+                        </li>
+                        
+                            
+                        
+                        <!-- Other topbar items like messages, alerts, etc. omitted -->
+
+                        <!-- User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <!-- User dropdown menu code omitted -->
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                        <div>
+                            <a href="prescriptionRequest.html" class="d-inline-block btn btn-sm btn-danger shadow-sm mr-2">
+                                <i class="fas fa fa-sm text-white-50"></i> Refill Request
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- DataTables Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-danger">Prescriptions</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Rx #</th>
+                                            <th>Prescription Name</th>
+                                            <th>Dosage</th>
+                                            <th>Filled</th>
+                                            <th>Expiration</th>
+                                            <th>Instructions</th>
+                                            <th>QTY</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Dummy data -->
+                                        <tr>
+                                            <td>0019018827</td>
+                                            <td>Adderall</td>
+                                            <td>20 mg</td>
+                                            <td>2021-01-01</td>
+                                            <td>2023-01-01</td>
+                                            <td>Take 1 capsule a day</td>
+                                            <td>60</td>
+                                        </tr>
+                                        <!-- More rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <!-- Footer omitted for brevity -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable();
+        });
+    </script>
+
+</body>
+
+</html>
