@@ -155,7 +155,7 @@ def staff_account_update():
 
 
 
-@__flask.route("/account/patient/create")
+@__flask.route("/account/patient/create", methods=['POST'])
 def patient_account_create():   
     params = getParameters()
     

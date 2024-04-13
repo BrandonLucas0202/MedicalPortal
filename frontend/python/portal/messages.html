@@ -328,21 +328,43 @@ aria-expanded="true" aria-controls="collapseAppointments">
     <script src="js/sb-admin-2.min.js"></script>
     <script>
         function sendMessage() {
-            const doctorName = $('#doctorSelect').val();
-            const messageContent = $('#messageContent').val();
+    const doctorName = $('#doctorSelect').val();
+    const messageContent = $('#messageContent').val();
 
-            if (!messageContent.trim()) {
-                alert('Please enter a message.');
-                return;
-            }
+    if (!messageContent.trim()) {
+        alert('Please enter a message.');
+        return;
+    }
 
-            // Here you would typically send the message to the server
-            console.log(`Message sent to ${doctorName}: ${messageContent}`);
-            alert('Message sent successfully!');
+    const messageData = {
+        doctor: doctorName,
+        content: messageContent
+    };
 
-            // Clear the message content after sending
-            $('#messageContent').val('');
+    // Send the message data to the server for emailing
+    fetch('/api/sendEmail', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(messageData)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Email sent successfully!');
+            $('#messageContent').val(''); // Clear the message content after sending
+        } else {
+            response.json().then(data => {
+                alert('Failed to send email: ' + data.message);
+            });
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to send the email.');
+    });
+}
+
     </script>
      <script>
         $(document).ready(function() {

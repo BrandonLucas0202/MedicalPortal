@@ -118,7 +118,15 @@
             // Prevent default form submission
             return false;
         }
-        
+        function getCookie(name) {
+    let cookieArray = document.cookie.split('; ');
+    let cookieObject = cookieArray.map(cookie => {
+        let [key, value] = cookie.split('=');
+        return { key, value };
+    }).find(cookie => cookie.key === name);
+    return cookieObject ? cookieObject.value : "";
+}
+
         </script>
     </body>
     
