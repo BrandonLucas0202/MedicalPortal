@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>HCMS Admin - View Message</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+        .message-box {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 20px;
+        }
+
+        .sender {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .receiver {
+            background-color: #cce5ff;
+            color: #004085;
+            text-align: right;
+        }
+    </style>
+</head>
+<body id="page-top">
+    <div id="wrapper">
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link" href="index.html" title="Home">
+                                <i class="fas fa-home fa-fw text-primary"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="container-fluid">
+                    <h1 class="h3 mb-2 text-gray-800">View Message</h1>
+                    
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div id="messageArea" class="mb-3">
+                                <!-- Existing message -->
+                                <div class="message-box receiver">
+                                    Following our recent appointment, I wanted to provide you with a summary of our discussion and the next steps to take in your treatment plan.
+
+
+                                </div>
+                            </div>
+                            
+                            <textarea id="messageInput" class="form-control" rows="3" placeholder="Type your message here..."></textarea>
+                            <button class="btn btn-primary mt-3" onclick="sendMessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       function sendMessage() {
+    const messageArea = document.getElementById('messageArea');
+    const messageInput = document.getElementById('messageInput');
+
+    if (messageInput.value.trim() !== '') {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message-box', 'sender');
+        messageDiv.textContent = messageInput.value;
+        messageArea.appendChild(messageDiv);
+
+        // Send the message to the server to email it
+        const data = {
+            message: messageInput.value,
+            doctorEmail: 'lucas356@marshall.edu' // Replace with actual doctor's email
+        };
+
+        fetch('sendEmail.php', { // Replace 'sendEmail.php' with the path to server-side script
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+
+        messageInput.value = ''; // Clear input after sending
+    }
+}
+
+document.getElementById('messageInput').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+    }
+});
+
+
+        document.getElementById('messageInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin-2.min.js"></script>
+</body>
+</html>
