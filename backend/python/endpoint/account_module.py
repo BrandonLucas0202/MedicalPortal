@@ -16,6 +16,8 @@ from backend.python.auth.authenticator import TYPETABLE
 from model.account import PatientAccount, StaffAccount, HashedPassword
 from endpoint.utility import *
 import hashlib
+from auth.authenticator import TYPETABLE
+
 
 __app = app_instance() # BackendApplication
 __database = __app.getDatabase() # SQLConnection
