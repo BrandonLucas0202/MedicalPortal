@@ -36,45 +36,98 @@
                     <div class="card-body">
                         <form id="billingInfoForm">
                             <h5 class="m-0 font-weight-bold text-secondary">Billing Information</h5>
-                           
                             <div class="form-group">
                                 <label for="cardName">Name on Card</label>
-                                
+                                <div id="cardName"></div>
                             </div>
                             <div class="form-group">
                                 <label for="cardAddress">Address of Cardholder</label>
-                                
+                                <div id="cardAddress"></div>
                             </div>
                             <div class="form-group">
                                 <label for="zipCode">Zipcode</label>
-                                
+                                <div id="zipCode"></div>
                             </div>
                             <div class="form-group">
                                 <label for="CardNumber">Card Number</label>
-                                
+                                <div id="CardNumber"></div>
                             </div>
                             <div class="form-group">
                                 <label for="expDate">Expiration Date</label>
-                                
+                                <div id="expDate"></div>
                             </div>
                             <div class="form-group">
                                 <label for="cvv">CVV</label>
-                                
+                                <div id="cvv"></div>
                             </div>
                             <div class="form-group">
                                 <label for="billingAddress">Billing Address</label>
-                                
-                                <div class="custom-control custom-checkbox small">
-                                    
-                                    <label class="custom-control-label" for="customCheck">Same as Cardholder's Address</label>
-                                </div>
+                                <div id="billingAddress"></div>
                             </div>
                         </form>
                     </div>
-                </div>
+                    
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- jQuery UI JavaScript -->
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-   
+        $(document).ready(function() {
+            //localStorage.removeItem('billingInfo');  // Clear specific billing information
+    loadBillingInfo();
+});
+
+function loadBillingInfo() {
+    const billingInfo = JSON.parse(localStorage.getItem('billingInfo'));
+    if (billingInfo) {
+        document.getElementById('cardName').textContent = billingInfo.cardName;
+        document.getElementById('cardAddress').textContent = billingInfo.cardAddress;
+        document.getElementById('zipCode').textContent = billingInfo.zipCode;
+        document.getElementById('CardNumber').textContent = billingInfo.cardNumber;
+        document.getElementById('expDate').textContent = billingInfo.expDate;
+        document.getElementById('cvv').textContent = billingInfo.cvv;
+        document.getElementById('billingAddress').textContent = billingInfo.billingAddress;
+    } else {
+        console.log('No billing information found.');
+    }
+}
+
+</script>
+<style>
+    .form-group label {
+        font-weight: bold;
+        color: #4e73df;
+        margin-bottom: 0.3rem;
+        font-size: 0.85rem;
+    }
+
+    .form-group div {
+        background-color: #f8f9fc;
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid #e3e6f0;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .custom-control-label {
+        font-weight: normal;
+        color: #5a5c69;
+        font-size: 0.8rem;
+    }
+
+    #billingInfoForm {
+        /* Remove the max-width and auto margin to allow the form to use the full card width */
+    }
+
+    /* Align the form contents to the left */
+    .card-body {
+        padding-left: 0;
+    }
+
+    /* Remove unnecessary padding and margin from the form */
+    #billingInfoForm {
+        padding: 0;
+        margin: 0;
+    }
+</style>

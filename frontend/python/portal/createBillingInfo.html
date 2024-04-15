@@ -61,9 +61,10 @@
                                 <label for="billingAddress">Billing Address</label>
                                 <input type="text" class="form-control" id="billingAddress" placeholder="Billing Address">
                                 <div class="custom-control custom-checkbox small">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck">
+                                    <input type="checkbox" class="custom-control-input" id="customCheck" onchange="copyAddress()">
                                     <label class="custom-control-label" for="customCheck">Same as Cardholder's Address</label>
                                 </div>
+                                
                             </div>
                             <button type="button" class="btn btn-success" onclick="createBillingInfo()">Submit Info</button>
                         </form>
@@ -79,11 +80,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <p>Patient Name: <span id="confirmPatientName"></span></p>
-                                <p>Date: <span id="confirmAppointmentDate"></span></p>
-                                <p>Time: <span id="confirmAppointmentTime"></span></p>
-                                <p>Doctor: <span id="confirmDoctorSelect"></span></p>
-                                <p>Description: <span id="confirmVisitDescription"></span></p>
+
                                 <p>Name on Card: <span id="confirmCardName"></span></p>
                                 <p>Address of Cardholder: <span id="confirmCardAddress"></span></p>
                                 <p>Zip Code: <span id="confirmZipCode"></span></p>
@@ -144,68 +141,73 @@ function formatTime(hour) {
     const hour12 = hour % 12 || 12;
     return `${hour12}:00 ${ampm}`;
 }
+function copyAddress() {
+    var billingAddressInput = document.getElementById('billingAddress');
+    if (document.getElementById('customCheck').checked) {
+        billingAddressInput.value = document.getElementById('cardAddress').value;
+    } else {
+        billingAddressInput.value = '';
+    }
+    // Trigger an 'input' event
+    billingAddressInput.dispatchEvent(new Event('input'));
+}
 
 
-        function createBillingInfo() {
-            const patientName = document.getElementById('patientName').value;
-            const appointmentDate = document.getElementById('appointmentDate').value;
-            const appointmentTime = document.getElementById('appointmentTime').value;
-            const doctorSelect = document.getElementById('doctorSelect').value;
-            const cardName = document.getElementById('cardName').value;
-            const cardAddress = document.getElementById('cardAddress').value;
-            const zipCode = document.getElementById('zipCode').value;
-            const cardNumber = document.getElementById('cardNumber').value;
-            const expDate = document.getElementById('expDate').value;
-            const CVV = document.getElementById('CVV').value;
-            const billingAddress = document.getElementById('billingAddress').value;
-            
-            
+function createBillingInfo() {
+    const cardName = document.getElementById('cardName').value;
+    const cardAddress = document.getElementById('cardAddress').value;
+    const zipCode = document.getElementById('zipCode').value;
+    const cardNumber = document.getElementById('CardNumber').value; // Ensure ID is correct in HTML
+    const expDate = document.getElementById('expDate').value;
+    const cvv = document.getElementById('cvv').value; // Make sure ID is lowercase in HTML and here
+    let billingAddress = document.getElementById('billingAddress').value;
 
+    // Check if the 'Same as Cardholder's Address' checkbox is checked and adjust billingAddress accordingly
+    if (document.getElementById('customCheck').checked) {
+        billingAddress = cardAddress;
+    }
 
-            if (!patientName || !appointmentDate || !appointmentTime || !doctorSelect || !cardName 
-            || !cardAddress || !zipCode || !cardNumber || !expDate || !CVV) {
-                alert('Please fill out all fields.');
-                return;
-            }
+    if (!cardName || !cardAddress || !zipCode || !cardNumber || !expDate || !cvv || !billingAddress) {
+        alert('Please fill out all fields.');
+        return;
+    }
 
-            document.getElementById('confirmPatientName').textContent = patientName;
-            document.getElementById('confirmAppointmentDate').textContent = appointmentDate;
-            document.getElementById('confirmAppointmentTime').textContent = appointmentTime;
-            document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
-            document.getElementById('confirmCardName').textContent = cardName;
-            document.getElementById('confirmCardAddress').textContent = cardAddress;
-            document.getElementById('confirmZipCode').textContent = zipCode;
-            document.getElementById('confirmCardNumber').textContent = cardNumber;
-            document.getElementById('confirmExpDate').textContent = expDate;
-            document.getElementById('confirmCVV').textContent = CVV;
-            document.getElementById('confirmBillingAddress').textContent = billingAddress;
+    // Update confirmation modal data
+    document.getElementById('confirmCardName').textContent = cardName;
+    document.getElementById('confirmCardAddress').textContent = cardAddress;
+    document.getElementById('confirmZipCode').textContent = zipCode;
+    document.getElementById('confirmCardNumber').textContent = cardNumber;
+    document.getElementById('confirmExpDate').textContent = expDate;
+    document.getElementById('confirmCVV').textContent = cvv;
+    document.getElementById('confirmBillingAddress').textContent = billingAddress;
 
-            $('#confirmationModal').modal('show');
-        }
+    $('#confirmationModal').modal('show');
+}
+
 
         function confirmInfo() {
-            const billingInfoData = {
-                patientName: document.getElementById('confirmPatientName').textContent,
-                appointmentDate: document.getElementById('confirmAppointmentDate').textContent,
-                appointmentTime: document.getElementById('confirmAppointmentTime').textContent,
-                doctorSelect: document.getElementById('confirmDoctorSelect').textContent,
-                cardName: document.getElementById('confirmCardName').textContent,
-                cardAddress: document.getElementById('confirmCardAddress').textContent,
-                zipCode: document.getElementById('confirmZipCode').textContent,
-                cardNumber: document.getElementById('confirmCardNumber').textContent,
-                expDate: document.getElementById('confirmExpDate').textContent,
-                CVV: document.getElementById('confirmCVV').textContent,
-                billingAddress: document.getElementById('confirmBillingAddress').textContent,
-            };
+    // Collect data from the confirmation modal
+    const billingInfoData = {
+        cardName: document.getElementById('confirmCardName').textContent,
+        cardAddress: document.getElementById('confirmCardAddress').textContent,
+        zipCode: document.getElementById('confirmZipCode').textContent,
+        cardNumber: document.getElementById('confirmCardNumber').textContent,
+        expDate: document.getElementById('confirmExpDate').textContent,
+        cvv: document.getElementById('confirmCVV').textContent,
+        billingAddress: document.getElementById('confirmBillingAddress').textContent
+    };
 
-            let billingIn = JSON.parse(localStorage.getItem('createBillingInfo')) || [];
-            billingIn.push(billingInfoData);
-            localStorage.setItem('createBillingInfo', JSON.stringify(billingIn));
 
-            alert('Billing Info submitted successfully!');
-            $('#confirmationModal').modal('hide');
-            window.location.href = 'index.html';
-        }
+    // Store data in local storage
+    localStorage.setItem('billingInfo', JSON.stringify(billingInfoData));
+
+    // Hide modal and redirect if needed
+    $('#confirmationModal').modal('hide');
+    alert('Billing Info submitted successfully!');
+    // Optional: Redirect to view page
+    window.location.href = 'viewBilling.html';
+}
+
     </script>
 </body>
 </html>
