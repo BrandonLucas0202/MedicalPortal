@@ -64,6 +64,32 @@
                         </form>
                     </div>
                 </div>
+                <!-- Confirmation Modal -->
+                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmationModalLabel">Confirm Refill Request</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Patient Name: <span id="confirmPatientName"></span></p>
+                                <p>Prescription Name: <span id="confirmPrescriptionName"></span></p>
+                                <p>Rx#: <span id="confirmRxNum"></span></p>
+                                <p>Healthcare Provider: <span id="confirmHealthProvider"></span></p>
+                                <p>Selected Doctor: <span id="confirmDoctorSelect"></span></p>
+                                <p>Date Filled: <span id="confirmFillDate"></span></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-danger" onclick="confirmRefill()">Confirm Refill</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Confirmation Modal -->
             </div>
         </div>
     </div>
@@ -85,23 +111,23 @@
                 return;
             }
     
-            const appointmentData = {
-                patientName: patientName,
-                prescriptionName: prescriptionName,
-                RxNum: RxNum,
-                healthProvider: healthProvider,
-                doctorSelect: doctorSelect,
-                fillDate: fillDate
-            };
+            // Display confirmation modal
+            document.getElementById('confirmPatientName').textContent = patientName;
+            document.getElementById('confirmPrescriptionName').textContent = prescriptionName;
+            document.getElementById('confirmRxNum').textContent = RxNum;
+            document.getElementById('confirmHealthProvider').textContent = healthProvider;
+            document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
+            document.getElementById('confirmFillDate').textContent = fillDate;
     
-            let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
-            appointments.push(appointmentData);
-            localStorage.setItem('myAppointments', JSON.stringify(appointments));
+            $('#confirmationModal').modal('show');
+        }
     
-            alert('Request created successfully!');
-            window.location.href = 'prescriptions.html'; // Redirect to prescriptions.html after successful request
+        function confirmRefill() {
+            // Save refill request data here or perform any other action
+            alert('Refill request confirmed!');
+            // Redirect to index.html
+            window.location.href = 'index.html';
         }
     </script>
-    
 </body>
 </html>
