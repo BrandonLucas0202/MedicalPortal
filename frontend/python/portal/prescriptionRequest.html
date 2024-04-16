@@ -72,50 +72,36 @@
     <!-- jQuery UI JavaScript -->
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-
-
-        function createAppointment() {
+        function createRequest() {
             const patientName = document.getElementById('patientName').value;
             const prescriptionName = document.getElementById('prescriptionName').value;
-            const RxNum = document.getElementById('Rx#').value;
+            const RxNum = document.getElementById('RxNum').value;
             const healthProvider = document.getElementById('healthProvider').value;
             const doctorSelect = document.getElementById('doctorSelect').value;
-            const fillDate = document.getElementById('fillDate').value;
-
-
-            if (!patientName || !prescriptionName || !RxNum || !healthProvider ||!doctorSelect || !fillDate) {
+            const fillDate = document.getElementById('dateFilled').value;
+    
+            if (!patientName || !prescriptionName || !RxNum || !healthProvider || !doctorSelect || !fillDate) {
                 alert('Please fill out all fields.');
                 return;
             }
-
-            document.getElementById('confirmPatientName').textContent = patientName;
-            document.getElementById('confirmPrescriptionName').textContent = prescriptionName;
-            document.getElementById('confirmRxNum').textContent = RxNum;
-            document.getElementById('confirmHealthProvider').textContent = healthProvider;
-            document.getElementById('confirmDoctorSelect').textContent = doctorSelect;
-            document.getElementById('confirmFillDate').textContent = fillDate;
-
-            $('#confirmationModal').modal('show');
-        }
-
-        function createRequest() {
+    
             const appointmentData = {
-                patientName: document.getElementById('confirmPatientName').textContent,
-                prescriptionName: document.getElementById('confirmPrescriptionName').textContent,
-                RxNum: document.getElementById('confirmRxNum').textContent,
-                healthProvider: document.getElementById('confirmHealthProvider').textContent,
-                doctorSelect: document.getElementById('confirmDoctorSelect').textContent,
-                fillDate: document.getElementById('confirmFillDate').textContent
+                patientName: patientName,
+                prescriptionName: prescriptionName,
+                RxNum: RxNum,
+                healthProvider: healthProvider,
+                doctorSelect: doctorSelect,
+                fillDate: fillDate
             };
-
-            let refill = JSON.parse(localStorage.getItem('myAppointments')) || [];
+    
+            let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
             appointments.push(appointmentData);
             localStorage.setItem('myAppointments', JSON.stringify(appointments));
-
+    
             alert('Request created successfully!');
-            $('#confirmationModal').modal('hide');
-            window.location.href = 'index.html';
+            window.location.href = 'prescriptions.html'; // Redirect to prescriptions.html after successful request
         }
     </script>
+    
 </body>
 </html>
