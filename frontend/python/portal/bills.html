@@ -171,7 +171,7 @@
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item dropdown no-arrow">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small" id="navbarUsername">Default User</span>
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small" id="navbarUsername">Mr. Test</span>
                                     <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                                 </a>
                             <!-- Dropdown - User Information -->
@@ -280,7 +280,7 @@
         $(document).ready(function() {
             function loadProfile() {
             // Retrieve the profile from local storage or set default if none exists
-            const profile = JSON.parse(localStorage.getItem('profile')) || { name: 'Default User', email: 'email@example.com', image: 'undraw_profile.svg' };
+            const profile = JSON.parse(localStorage.getItem('profile')) || { name: 'Mr. Test', email: 'mrtest@example.com', image: 'undraw_profile.svg' };
             $('.navbar-nav .nav-item a #navbarUsername').text(profile.name);
             $('.navbar-nav .nav-item a img.img-profile').attr('src', 'img/' + profile.image);
         }
