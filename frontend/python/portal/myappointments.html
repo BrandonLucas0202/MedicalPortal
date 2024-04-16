@@ -252,7 +252,7 @@
         $(document).ready(function () {
             function loadProfile() {
             // Retrieve the profile from local storage or set default if none exists
-            const profile = JSON.parse(localStorage.getItem('profile')) || { name: 'Default User', email: 'email@example.com', image: 'undraw_profile.svg' };
+            const profile = JSON.parse(localStorage.getItem('profile')) || { name: 'Mr. Test', email: 'mrtest@gmail.com', image: 'undraw_profile.svg' };
             $('.navbar-nav .nav-item a #navbarUsername').text(profile.name);
             $('.navbar-nav .nav-item a img.img-profile').attr('src', 'img/' + profile.image);
         }
