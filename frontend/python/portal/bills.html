@@ -115,32 +115,84 @@
         </ul>
         <!-- End of Sidebar    / / / / /  / / / -->
 
-        <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
             <div id="content">
-
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" id="searchInput">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" id="searchButton">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="searchSuggestions" class="list-group" style="position: absolute; z-index: 1000; width: 100%;"></div>
+                    </div>
+
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-                        <!-- Home Button -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html" title="Home">
-                                <i class="fas fa-home fa-fw text-primary"></i>
-                            </a>
-                        </li>
-                        
-                            
-                        
-                        <!-- Other topbar items like messages, alerts, etc. omitted -->
 
-                        <!-- User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <!-- User dropdown menu code omitted -->
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </li>
-                    </ul>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Topbar Navbar -->
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                            <a class="nav-link" href="profile.html">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Mr.Test</span>
+                            <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="userProfile.html">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+                </ul>
+
+                           
+
+
                 </nav>
                 <!-- End of Topbar -->
 
@@ -160,41 +212,36 @@
                 </div>
 
                     <!-- DataTables Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-success"></h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th><a class="m-0 font-weight-bold text-success" href="invoice.html" a>Invoice ID</th> 
-                                            <th>Date</th>
-                                            <th>Amount</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Dummy data -->
-                                        <tr>
-                                            <td>INV-001</td>
-                                            <td>2021-01-01</td>
-                                            <td>$500.00</td>
-                                            <td>Paid</td>
-                                        </tr>
-                                        <tr>
-                                            <td>INV-002</td>
-                                            <td>2021-01-02</td>
-                                            <td>$300.00</td>
-                                            <td>Unpaid</td>
-                                        </tr>
-                                        <!-- More rows -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-success">Invoices</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Invoice ID</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Replace dummy data with dynamic data -->
+                    <tr>
+                        <td><a href="invoice.html?id=INV-001" class="text-success">INV-001</a></td>
+                        <td>2021-01-01</td>
+                        <td>$500.00</td>
+                        <td>Paid</td>
+                    </tr>
+                    <!-- More rows -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 
                 </div>
                 <!-- /.container-fluid -->

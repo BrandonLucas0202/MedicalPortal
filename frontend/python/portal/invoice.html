@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>HCMS Admin - Invoices</title>
+    <title>Invoice Details</title>
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <!-- DataTables CSS -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 </head>
+
 <body id="page-top">
+
     <div id="wrapper">
+
         <!-- Sidebar, Topbar, Footer, etc. omitted for brevity -->
 
         <!-- Content Wrapper -->
@@ -45,71 +49,65 @@
                 <div class="container-fluid">
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Invoice</h1>
-                        <div>
-                            <a href="bills.html" class="d-inline-block btn btn-sm btn-success shadow-sm mr-2">
-                                <i class="fas fa-dollar-sign fa-sm text-white-50"></i> My Billing
-                            </a>
-                        </div>
+                        <h1 class="h3 mb-0 text-gray-800">Invoice Details</h1>
                     </div>
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h4 class="h4 mb-0 text-gray-700">ID# </h4>
-                    </div>
-                    
-                    <!-- Content Row -->
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <!-- Approach -->
-                           <!-- Form for billing info -->
+
+                    <!-- Invoice Details -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-success">Invoice Summary</h6>
                         </div>
                         <div class="card-body">
-                            <form id="invoiceSummary">
-                                <div class="form-group">
-                                    <label for="customer">Customer: </label>
-                                    
+                            <div class="row mb-4">
+                                <div class="col-sm-6">
+                                    <h5 class="font-weight-bold">Invoice ID:</h5>
+                                    <p>INV-001</p>
+                                    <h5 class="font-weight-bold">Date:</h5>
+                                    <p>2021-01-01</p>
                                 </div>
-                                <div class="form-group">
-                                    <label for="appointmentDate"> Appointment Date: Jan. 10, 2021</label>
-                                    
+                                <div class="col-sm-6">
+                                    <h5 class="font-weight-bold">Amount:</h5>
+                                    <p>$500.00</p>
+                                    <h5 class="font-weight-bold">Status:</h5>
+                                    <p>Paid</p>
                                 </div>
-                                <div class="form-group">
-                                    <label for="invoiceID">Invoice ID: </label>
-                                    
-                                </div>
-                                <div class="form-group">
-                                    <label for="invoiceAmount">Amount:</label>
-                                    
-                                </div>
-                                <div class="form-group">
-                                    <label for="Card">Last 4 digits of card used: </label>
-                                    
-                                </div>
-                                <div class="form-group">
-                                    <label for="itemizedList">Itemized List: </label>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="2">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Item</th>
-                                                        <th>Description</th>
-                                                        <th>Cost</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <!-- Data will be added dynamically -->
-                                                    <tr>
-                                                        <td>Appointment</td>
-                                                        <td>Resources and time the doctor and other hospital staff used</td>
-                                                        <td>$50.00</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                </div>
+                            </div>
+
+                            <!-- Itemized Bill -->
+                            <h6 class="font-weight-bold">Itemized Bill</h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="itemizedTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Description</th>
+                                            <th>Cost</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Appointment</td>
+                                            <td>Resources and time the doctor and other hospital staff used</td>
+                                            <td>$50.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lab Tests</td>
+                                            <td>Blood work ran for various culture tests</td>
+                                            <td>$100.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>X-Ray Imaging</td>
+                                            <td>Imaging to find any internal issues.</td>
+                                            <td>$250.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Prescription</td>
+                                            <td>Prescription filled by doctor for Adderall</td>
+                                            <td>$100.00</td>
+                                        </tr>
+                                        <!-- More items can be added dynamically -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -136,30 +134,11 @@
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <!-- Page level custom scripts -->
     <script>
-          function convertTo12Hour(time) {
-        const [hour, minute] = time.split(':');
-        const hourInt = parseInt(hour, 10);
-        const ampm = hourInt >= 12 ? 'PM' : 'AM';
-        const convertedHour = hourInt % 12 || 12;
-
-        return `${convertedHour}:${minute} ${ampm}`;
-    }
         $(document).ready(function() {
-            $('#dataTable').DataTable();
-            
-            let appointments = JSON.parse(localStorage.getItem('myAppointments')) || [];
-            let table = $('#dataTable').DataTable();
-
-            appointments.forEach(function(appointment) {
-            table.row.add([
-                appointment.appointmentDate,
-                convertTo12Hour(appointment.appointmentTime),
-                appointment.patientName,
-                appointment.doctorSelect,
-                'Scheduled'
-            ]).draw(false);
-            });
+            $('#itemizedTable').DataTable();
         });
     </script>
+
 </body>
+
 </html>
